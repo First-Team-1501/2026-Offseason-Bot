@@ -1,6 +1,9 @@
 plugins {
     id "java"
     id "edu.wpi.first.GradleRIO" version "2026.1.1"
+    id "com.peterabeles.gversion" version "1.10"
+    id("com.diffplug.spotless") version "7.0.0.BETA4"
+    id "io.freefair.lombok" version "6.6.1"
 }
 
 java {
@@ -27,6 +30,25 @@ deploy {
                 // getTargetTypeClass is a shortcut to get the class type using a string
 
                 frcJava(getArtifactTypeClass('FRCJavaArtifact')) {
+                    jvmArgs.add("-XX:+UnlockExperimentalVMOptions")
+                    jvmArgs.add("-XX:GCTimeRatio=5")
+                    jvmArgs.add("-XX:+UseSerialGC")
+                    jvmArgs.add("-XX:MaxGCPauseMillis=50")
+
+                    // Set the minimum heap size to the maximum heap size to avoid resizing
+                    // Only works on Rio 2
+                    final MAX_JAVA_HEAP_SIZE_MB = 100;
+                    jvmArgs.add("-Xmx" + MAX_JAVA_HEAP_SIZE_MB + "M")
+                    jvmArgs.add("-Xms" + MAX_JAVA_HEAP_SIZE_MB + "M")
+                    jvmArgs.add("-XX:+AlwaysPreTouch")
+
+                    // Enable VisualVM connection
+                    jvmArgs.add("-Dcom.sun.management.jmxremote=true")
+                    jvmArgs.add("-Dcom.sun.management.jmxremote.port=1198")
+                    jvmArgs.add("-Dcom.sun.management.jmxremote.local.only=false")
+                    jvmArgs.add("-Dcom.sun.management.jmxremote.ssl=false")
+                    jvmArgs.add("-Dcom.sun.management.jmxremote.authenticate=false")
+                    jvmArgs.add("-Djava.rmi.server.hostname=10.74.57.2")
                 }
 
                 // Static files artifact
@@ -34,7 +56,7 @@ deploy {
                     files = project.fileTree('src/main/deploy')
                     directory = '/home/lvuser/deploy'
                     deleteOldFiles = true  // Change to true to delete files on roboRIO that no
-                                           // longer exist in deploy directory of this project
+                    // longer exist in deploy directory of this project
                 }
             }
         }
@@ -88,7 +110,11 @@ wpi.sim.addDriverstation()
 // in order to make them all available at runtime. Also adding the manifest so WPILib
 // knows where to look for our Robot Class.
 jar {
-    from { configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) } }
+    from {
+        configurations.runtimeClasspath.collect {
+            it.isDirectory() ? it : zipTree(it)
+        }
+    }
     from('src') { into 'backup/src' }
     from('vendordeps') { into 'backup/vendordeps' }
     from('build.gradle') { into 'backup' }
@@ -104,4 +130,54 @@ wpi.java.configureTestTasks(test)
 // Configure string concat to always inline compile
 tasks.withType(JavaCompile) {
     options.compilerArgs.add '-XDstringConcat=inline'
+}
+
+// Create version file
+project.compileJava.dependsOn(createVersionFile)
+gversion {
+    srcDir       = "src/main/java/"
+    classPackage = "org.supurdueper"
+    className    = "BuildConstants"
+    dateFormat   = "yyyy-MM-dd HH:mm:ss z"
+    timeZone     = "America/New_York"
+    indent       = "  "
+}
+
+repositories {
+    mavenLocal()
+}
+
+// Spotless formatting
+project.compileJava.dependsOn(spotlessApply)
+spotless {
+    java {
+        target fileTree('.') {
+            include '**/*.java'
+            exclude '**/build/**', '**/build-*/**'
+        }
+        toggleOffOn()
+        palantirJavaFormat('2.39.0').formatJavadoc(true)
+        removeUnusedImports()
+        trimTrailingWhitespace()
+        endWithNewline()
+    }
+    groovyGradle {
+        target fileTree(".") {
+            include "**/*.gradle"
+            exclude "**/build/**", "**/build-*/**"
+        }
+        greclipse()
+        indentWithSpaces(4)
+        trimTrailingWhitespace()
+        endWithNewline()
+    }
+    format "misc", {
+        target fileTree(".") {
+            include "**/*.md", "**/.gitignore"
+            exclude "**/build/**", "**/build-*/**"
+        }
+        trimTrailingWhitespace()
+        indentWithSpaces(2)
+        endWithNewline()
+    }
 }
