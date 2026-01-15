@@ -1,4 +1,4 @@
-package frc.robot;
+package org.supurdueper.robot2026.autos;
 
 import choreo.auto.AutoFactory;
 import choreo.auto.AutoRoutine;

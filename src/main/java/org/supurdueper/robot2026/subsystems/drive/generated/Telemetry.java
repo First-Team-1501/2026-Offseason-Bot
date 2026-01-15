@@ -1,4 +1,4 @@
-package frc.robot;
+package org.supurdueper.robot2026.subsystems.drive.generated;
 
 import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.swerve.SwerveDrivetrain.SwerveDriveState;

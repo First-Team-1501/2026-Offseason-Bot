@@ -1,0 +1,158 @@
+// Copyright (c) FIRST and other WPILib contributors.
+// Open Source Software; you can modify and/or share it under the terms of
+// the WPILib BSD license file in the root directory of this project.
+
+package org.supurdueper.robot2026;
+
+import org.supurdueper.BuildConstants;
+import org.supurdueper.lib.subsystems.SupurdueperRobot;
+import org.supurdueper.robot2026.autos.AutoRoutines;
+
+import com.ctre.phoenix6.HootAutoReplay;
+
+import choreo.auto.AutoChooser;
+import choreo.auto.AutoFactory;
+import dev.doglog.DogLog;
+import dev.doglog.DogLogOptions;
+import edu.wpi.first.math.util.Units;
+import edu.wpi.first.net.PortForwarder;
+import edu.wpi.first.wpilibj.Threads;
+import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
+
+public class Robot extends SupurdueperRobot {
+    private Command m_autonomousCommand;
+
+    private final RobotContainer m_robotContainer;
+
+    /* Path follower */
+    private final AutoFactory autoFactory;
+    private final AutoRoutines autoRoutines;
+    private final AutoChooser autoChooser = new AutoChooser();
+
+    /* log and replay timestamp and joystick data */
+    private final HootAutoReplay m_timeAndJoystickReplay =
+            new HootAutoReplay().withTimestampReplay().withJoystickReplay();
+
+    public Robot() {
+        m_robotContainer = new RobotContainer();
+        autoFactory = RobotContainer.getDrivetrain().createAutoFactory();
+        autoRoutines = new AutoRoutines(autoFactory);
+
+        autoChooser.addRoutine("SimplePath", autoRoutines::simplePathAuto);
+        SmartDashboard.putData("Auto Chooser", autoChooser);
+    }
+
+    
+
+    @Override
+    public void robotInit() {
+        DogLog.setOptions(new DogLogOptions()
+                .withLogExtras(false)
+                .withCaptureDs(false)
+                .withNtPublish(Constants.publishToNT)
+                .withCaptureNt(false));
+        // Record metadata
+        DogLog.log("Git/ProjectName", BuildConstants.MAVEN_NAME);
+        DogLog.log("Git/BuildDate", BuildConstants.BUILD_DATE);
+        DogLog.log("Git/GitSHA", BuildConstants.GIT_SHA);
+        DogLog.log("Git/GitDate", BuildConstants.GIT_DATE);
+        DogLog.log("Git/GitBranch", BuildConstants.GIT_BRANCH);
+        switch (BuildConstants.DIRTY) {
+            case 0:
+                DogLog.log("Git/GitDirty", "All changes committed");
+                break;
+            case 1:
+                DogLog.log("Git/GitDirty", "Uncomitted changes");
+                break;
+            default:
+                DogLog.log("Git/GitDirty", "Unknown");
+                break;
+        }
+
+        // Limelight port fowarding
+        for (int port = 5800; port <= 5809; port++) {
+            PortForwarder.add(port, "10.74.57.11", port);
+            PortForwarder.add(port + 100, "10.74.57.12", port);
+        }
+
+        resetCommandsAndButtons();
+    }
+
+
+
+    @Override
+    public void robotPeriodic() {
+        m_timeAndJoystickReplay.update();
+                Threads.setCurrentThreadPriority(true, 1);
+        double startTime = Timer.getFPGATimestamp();
+        CommandScheduler.getInstance().run();
+        double endTime = Timer.getFPGATimestamp();
+        Threads.setCurrentThreadPriority(false, 0);
+        DogLog.log("Loop Time", endTime - startTime);
+    }
+
+    @Override
+    public void disabledInit() {}
+
+    @Override
+    public void disabledPeriodic() {}
+
+    @Override
+    public void disabledExit() {}
+
+    @Override
+    public void autonomousInit() {
+        autoChooser.selectedCommandScheduler().schedule();
+    }
+
+    @Override
+    public void autonomousPeriodic() {}
+
+    @Override
+    public void autonomousExit() {}
+
+    @Override
+    public void teleopInit() {
+        if (m_autonomousCommand != null) {
+            CommandScheduler.getInstance().cancel(m_autonomousCommand);
+        }
+    }
+
+    @Override
+    public void teleopPeriodic() {}
+
+    @Override
+    public void teleopExit() {}
+
+    @Override
+    public void testInit() {
+        CommandScheduler.getInstance().cancelAll();
+    }
+
+    @Override
+    public void testPeriodic() {}
+
+    @Override
+    public void testExit() {}
+
+    @Override
+    public void simulationPeriodic() {}
+
+        /**
+     * This method cancels all commands and returns subsystems to their default commands and the gamepad configs are
+     * reset so that new bindings can be assigned based on mode This method should be called when each mode is
+     * initialized
+     */
+    public void resetCommandsAndButtons() {
+        CommandScheduler.getInstance().cancelAll(); // Disable any currently running commands
+        CommandScheduler.getInstance().getActiveButtonLoop().clear();
+
+        // Bind Triggers for all subsystems
+        bindCommands();
+        m_robotContainer.configureBindings();
+    }
+}
