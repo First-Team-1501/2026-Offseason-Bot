@@ -7,18 +7,13 @@ import static org.supurdueper.robot2026.state.RobotStates.*;
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.ctre.phoenix6.swerve.SwerveRequest.FieldCentricFacingAngle;
-import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-import java.util.function.Supplier;
 // import org.supurdueper.lib.swerve.DriveToPose;
 import org.supurdueper.lib.utils.AllianceFlip;
-import org.supurdueper.robot2026.Constants.DriveConstants;
-import static org.supurdueper.robot2026.Constants.DriveConstants.*;
 import org.supurdueper.robot2026.RobotContainer;
 import org.supurdueper.robot2026.state.Driver;
-import org.supurdueper.robot2026.state.RobotStates;
 import org.supurdueper.robot2026.subsystems.drive.DriveSysId.SysIdSwerveTranslationCurrent;
 import org.supurdueper.robot2026.subsystems.drive.generated.TunerConstants;
 

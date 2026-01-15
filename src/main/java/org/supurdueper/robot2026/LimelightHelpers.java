@@ -20,8 +20,6 @@ import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.TimestampedDoubleArray;
-import org.supurdueper.robot2026.LimelightHelpers.LimelightResults;
-import org.supurdueper.robot2026.LimelightHelpers.PoseEstimate;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
@@ -29,6 +27,8 @@ import java.net.URL;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
+import org.supurdueper.robot2026.LimelightHelpers.LimelightResults;
+import org.supurdueper.robot2026.LimelightHelpers.PoseEstimate;
 
 /**
  * LimelightHelpers provides static methods and classes for interfacing with Limelight vision cameras in FRC. This

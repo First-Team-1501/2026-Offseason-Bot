@@ -5,7 +5,6 @@ import static edu.wpi.first.units.Units.*;
 import choreo.Choreo.TrajectoryLogger;
 import choreo.auto.AutoFactory;
 import choreo.trajectory.SwerveSample;
-import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.swerve.SwerveDrivetrainConstants;
 import com.ctre.phoenix6.swerve.SwerveModuleConstants;
@@ -22,11 +21,8 @@ import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
-import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
-
 import java.util.Optional;
 import java.util.function.Supplier;
-
 import org.supurdueper.robot2026.subsystems.drive.generated.TunerConstants.TunerSwerveDrivetrain;
 
 /**
@@ -55,8 +51,6 @@ public class Drivetrain extends TunerSwerveDrivetrain implements Subsystem {
     private final PIDController m_pathYController = new PIDController(10, 0, 0);
     private final PIDController m_pathThetaController = new PIDController(7, 0, 0);
 
-    
-
     /**
      * Constructs a CTRE SwerveDrivetrain using the specified constants.
      *
@@ -66,8 +60,7 @@ public class Drivetrain extends TunerSwerveDrivetrain implements Subsystem {
      * @param drivetrainConstants Drivetrain-wide constants for the swerve drive
      * @param modules Constants for each specific module
      */
-    public Drivetrain(
-            SwerveDrivetrainConstants drivetrainConstants, SwerveModuleConstants<?, ?, ?>... modules) {
+    public Drivetrain(SwerveDrivetrainConstants drivetrainConstants, SwerveModuleConstants<?, ?, ?>... modules) {
         super(drivetrainConstants, modules);
         if (Utils.isSimulation()) {
             startSimThread();
@@ -177,8 +170,6 @@ public class Drivetrain extends TunerSwerveDrivetrain implements Subsystem {
                 .withWheelForceFeedforwardsX(sample.moduleForcesX())
                 .withWheelForceFeedforwardsY(sample.moduleForcesY()));
     }
-
-   
 
     @Override
     public void periodic() {

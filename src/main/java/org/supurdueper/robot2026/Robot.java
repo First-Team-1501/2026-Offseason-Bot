@@ -4,24 +4,20 @@
 
 package org.supurdueper.robot2026;
 
-import org.supurdueper.BuildConstants;
-import org.supurdueper.lib.subsystems.SupurdueperRobot;
-import org.supurdueper.robot2026.autos.AutoRoutines;
-
-import com.ctre.phoenix6.HootAutoReplay;
-
 import choreo.auto.AutoChooser;
 import choreo.auto.AutoFactory;
+import com.ctre.phoenix6.HootAutoReplay;
 import dev.doglog.DogLog;
 import dev.doglog.DogLogOptions;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.net.PortForwarder;
 import edu.wpi.first.wpilibj.Threads;
-import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import org.supurdueper.BuildConstants;
+import org.supurdueper.lib.subsystems.SupurdueperRobot;
+import org.supurdueper.robot2026.autos.AutoRoutines;
 
 public class Robot extends SupurdueperRobot {
     private Command m_autonomousCommand;
@@ -45,8 +41,6 @@ public class Robot extends SupurdueperRobot {
         autoChooser.addRoutine("SimplePath", autoRoutines::simplePathAuto);
         SmartDashboard.putData("Auto Chooser", autoChooser);
     }
-
-    
 
     @Override
     public void robotInit() {
@@ -82,12 +76,10 @@ public class Robot extends SupurdueperRobot {
         resetCommandsAndButtons();
     }
 
-
-
     @Override
     public void robotPeriodic() {
         m_timeAndJoystickReplay.update();
-                Threads.setCurrentThreadPriority(true, 1);
+        Threads.setCurrentThreadPriority(true, 1);
         double startTime = Timer.getFPGATimestamp();
         CommandScheduler.getInstance().run();
         double endTime = Timer.getFPGATimestamp();
@@ -117,9 +109,7 @@ public class Robot extends SupurdueperRobot {
 
     @Override
     public void teleopInit() {
-        if (m_autonomousCommand != null) {
-            CommandScheduler.getInstance().cancel(m_autonomousCommand);
-        }
+        resetCommandsAndButtons();
     }
 
     @Override
@@ -130,7 +120,7 @@ public class Robot extends SupurdueperRobot {
 
     @Override
     public void testInit() {
-        CommandScheduler.getInstance().cancelAll();
+        resetCommandsAndButtons();
     }
 
     @Override
@@ -142,7 +132,7 @@ public class Robot extends SupurdueperRobot {
     @Override
     public void simulationPeriodic() {}
 
-        /**
+    /**
      * This method cancels all commands and returns subsystems to their default commands and the gamepad configs are
      * reset so that new bindings can be assigned based on mode This method should be called when each mode is
      * initialized
