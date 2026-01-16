@@ -11,8 +11,6 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import org.supurdueper.lib.LimelightHelpers;
 import org.supurdueper.lib.subsystems.SupurdueperSubsystem;
-import org.supurdueper.lib.utils.AllianceFlip;
-import org.supurdueper.robot2026.FieldConstants;
 import org.supurdueper.robot2026.Robot;
 import org.supurdueper.robot2026.RobotContainer;
 import org.supurdueper.robot2026.subsystems.drive.Drivetrain;
@@ -77,8 +75,7 @@ public class Vision extends SubsystemBase implements SupurdueperSubsystem {
         LimelightHelpers.SetThrottle(leftLimelightName, 0);
     }
 
-    public static void setAprilTagFilter() {
-    }
+    public static void setAprilTagFilter() {}
 
     @Override
     public void bindCommands() {}
