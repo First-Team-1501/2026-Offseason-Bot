@@ -17,6 +17,7 @@ import static edu.wpi.first.units.Units.*;
 
 import com.ctre.phoenix6.CANBus;
 import edu.wpi.first.units.measure.AngularVelocity;
+import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.LinearVelocity;
 import org.supurdueper.lib.utils.ExpCurve;
 
@@ -46,5 +47,12 @@ public final class Constants {
         public static final double translationKd = 0.1;
         public static final AngularVelocity rotationClosedLoopDeadband = RadiansPerSecond.of(0.05);
         public static final LinearVelocity translationClosedLoopDeadband = MetersPerSecond.of(0.01);
+        public static final Distance robotToBumperCenter = null;
+    }
+
+    public static boolean disableHAL = false;
+
+    public static void disableHAL() {
+        disableHAL = true;
     }
 }

@@ -19,4 +19,9 @@ public final class RobotStates {
     private RobotStates() {
         throw new IllegalStateException("Utility class");
     }
+
+    public static void setAimed(boolean b) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'setAimed'");
+    }
 }
