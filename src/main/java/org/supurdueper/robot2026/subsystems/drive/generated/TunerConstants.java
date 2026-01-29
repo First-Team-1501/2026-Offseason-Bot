@@ -11,6 +11,8 @@ import com.ctre.phoenix6.swerve.SwerveModuleConstants.*;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
+import edu.wpi.first.math.util.Units;
+import edu.wpi.first.units.Unit;
 import edu.wpi.first.units.measure.*;
 import org.supurdueper.robot2026.subsystems.drive.Drivetrain;
 
@@ -212,6 +214,8 @@ public class TunerConstants {
                     kInvertRightSide,
                     kBackRightSteerMotorInverted,
                     kBackRightEncoderInverted);
+    public static final LinearVelocity kMaxAutoAimSpeed = InchesPerSecond.of(0);
+    public static final LinearAcceleration kMaxAutoAimAcceleration = InchesPerSecondPerSecond.of(0);
 
     /** Creates a CommandSwerveDrivetrain instance. This should only be called once in your robot program,. */
     public static Drivetrain createDrivetrain() {
