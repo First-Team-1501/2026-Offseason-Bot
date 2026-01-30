@@ -4,89 +4,87 @@
 
 package org.supurdueper.robot2026.subsystems;
 
-import org.supurdueper.lib.subsystems.VelocitySubsystem;
-import org.supurdueper.robot2026.CanId;
-
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.SoftwareLimitSwitchConfigs;
-
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import org.supurdueper.lib.subsystems.VelocitySubsystem;
+import org.supurdueper.robot2026.CanId;
 
 public class Shooter extends VelocitySubsystem {
-  /** Creates a new VelocityTest. */
-  public Shooter() {}
+    /** Creates a new VelocityTest. */
+    public Shooter() {}
 
-  @Override
-  public void periodic() {
-    // This method will be called once per scheduler run
-  }
+    @Override
+    public void periodic() {
+        // This method will be called once per scheduler run
+    }
 
-  @Override
-  public CanId canIdLeader() {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'canIdLeader'");
-  }
+    @Override
+    public CanId canIdLeader() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'canIdLeader'");
+    }
 
-  @Override
-  public CanId canIdFollower() {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'canIdFollower'");
-  }
+    @Override
+    public CanId canIdFollower() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'canIdFollower'");
+    }
 
-  @Override
-  public boolean followerInverted() {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'followerInverted'");
-  }
+    @Override
+    public boolean followerInverted() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'followerInverted'");
+    }
 
-  @Override
-  public CurrentLimitsConfigs currentLimits() {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'currentLimits'");
-  }
+    @Override
+    public CurrentLimitsConfigs currentLimits() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'currentLimits'");
+    }
 
-  @Override
-  public boolean inverted() {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'inverted'");
-  }
+    @Override
+    public boolean inverted() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'inverted'");
+    }
 
-  @Override
-  public boolean brakeMode() {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'brakeMode'");
-  }
+    @Override
+    public boolean brakeMode() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'brakeMode'");
+    }
 
-  @Override
-  public Slot0Configs pidGains() {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'pidGains'");
-  }
+    @Override
+    public Slot0Configs pidGains() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'pidGains'");
+    }
 
-  @Override
-  public MotionMagicConfigs motionMagicConfig() {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'motionMagicConfig'");
-  }
+    @Override
+    public MotionMagicConfigs motionMagicConfig() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'motionMagicConfig'");
+    }
 
-  @Override
-  public SoftwareLimitSwitchConfigs softLimitConfig() {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'softLimitConfig'");
-  }
+    @Override
+    public SoftwareLimitSwitchConfigs softLimitConfig() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'softLimitConfig'");
+    }
 
-  @Override
-  public AngularVelocity velocityTolerance() {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'velocityTolerance'");
-  }
+    @Override
+    public AngularVelocity velocityTolerance() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'velocityTolerance'");
+    }
 
-  @Override
-  public SysIdRoutine sysIdConfig() {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'sysIdConfig'");
-  }
+    @Override
+    public SysIdRoutine sysIdConfig() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'sysIdConfig'");
+    }
 }

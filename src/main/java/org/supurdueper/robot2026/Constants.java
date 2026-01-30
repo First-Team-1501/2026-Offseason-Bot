@@ -16,6 +16,8 @@ package org.supurdueper.robot2026;
 import static edu.wpi.first.units.Units.*;
 
 import com.ctre.phoenix6.CANBus;
+import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
+import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.LinearVelocity;
@@ -54,5 +56,23 @@ public final class Constants {
 
     public static void disableHAL() {
         disableHAL = true;
+    }
+
+    public class ShooerHoodConstants {
+        public static final Angle positionTolerance = Angle.ofBaseUnits(0, null);
+        public static final Angle kAbsEncoderOffset = null;
+        public static final double kAbsEncoderRatio = 0;
+        public static final double kp = 0;
+        public static final double ki = 0;
+        public static final double kd = 0;
+        public static final double ks = 0;
+        public static final double kv = 0;
+        public static final double ka = 0;
+        public static final double kg = 0;
+        public static final double profileKa = 0;
+        public static final double profileKv = 0;
+        public static final Angle kForwardSoftLimit = null;
+        public static final Angle kReverseSoftLimit = null;
+        public static final CurrentLimitsConfigs kCurrentLimit = null;
     }
 }

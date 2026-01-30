@@ -18,7 +18,27 @@ public enum CanId {
     CANCODER_STEER_BL(23, Constants.canivoreBus),
     CANCODER_STEER_BR(24, Constants.canivoreBus),
     PIGEON(25, Constants.canivoreBus),
-    CANDLE(29, Constants.rioBus);
+    CANDLE(29, Constants.rioBus),
+
+    // Intake
+    INTAKE(9, Constants.canivoreBus),
+    // Indexer
+    INDEXER_ONE(10, Constants.canivoreBus),
+    INDEXER_TWO(11, Constants.canivoreBus),
+    INDEXER_THREE(12, Constants.canivoreBus),
+
+    // Shooter
+    SHOOTER_HOOD(13, Constants.canivoreBus),
+    CANCODER_HOOD(26, Constants.canivoreBus),
+    SHOOTER_ONE(14, Constants.canivoreBus),
+    SHOOTER_TWO(15, Constants.canivoreBus),
+    SHOOTER_THREE(16, Constants.canivoreBus),
+    SHOOTER_FOUR(17, Constants.canivoreBus),
+    SHOOTER_FIVE(18, Constants.canivoreBus),
+    SHOOTER_SIX(19, Constants.canivoreBus),
+
+    // CLIMBER
+    CLIMBER(20, Constants.canivoreBus);
 
     private final int mDeviceNumber;
     private final CANBus mBus;

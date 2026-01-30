@@ -4,55 +4,52 @@
 
 package org.supurdueper.robot2026.subsystems;
 
+import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import org.supurdueper.lib.subsystems.TalonFXSubsystem;
 import org.supurdueper.robot2026.CanId;
 
-import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
-
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
-
 public class Hopper extends TalonFXSubsystem {
-  /** Creates a new Hopper. */
-  public Hopper() {}
+    /** Creates a new Hopper. */
+    public Hopper() {}
 
-  @Override
-  public void periodic() {
-    // This method will be called once per scheduler run
-  }
+    @Override
+    public void periodic() {
+        // This method will be called once per scheduler run
+    }
 
-  @Override
-  public CanId canIdLeader() {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'canIdLeader'");
-  }
+    @Override
+    public CanId canIdLeader() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'canIdLeader'");
+    }
 
-  @Override
-  public CanId canIdFollower() {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'canIdFollower'");
-  }
+    @Override
+    public CanId canIdFollower() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'canIdFollower'");
+    }
 
-  @Override
-  public boolean followerInverted() {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'followerInverted'");
-  }
+    @Override
+    public boolean followerInverted() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'followerInverted'");
+    }
 
-  @Override
-  public CurrentLimitsConfigs currentLimits() {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'currentLimits'");
-  }
+    @Override
+    public CurrentLimitsConfigs currentLimits() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'currentLimits'");
+    }
 
-  @Override
-  public boolean inverted() {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'inverted'");
-  }
+    @Override
+    public boolean inverted() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'inverted'");
+    }
 
-  @Override
-  public boolean brakeMode() {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'brakeMode'");
-  }
+    @Override
+    public boolean brakeMode() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'brakeMode'");
+    }
 }
