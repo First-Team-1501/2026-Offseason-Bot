@@ -5,51 +5,58 @@
 package org.supurdueper.robot2026.subsystems;
 
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
+
+import org.supurdueper.lib.subsystems.SupurdueperSubsystem;
 import org.supurdueper.lib.subsystems.TalonFXSubsystem;
 import org.supurdueper.robot2026.CanId;
+import org.supurdueper.robot2026.Constants;
+import org.supurdueper.robot2026.Robot;
 
-public class Intake extends TalonFXSubsystem {
+public class Intake extends TalonFXSubsystem implements SupurdueperSubsystem {
     /** Creates a new Intake. */
-    public Intake() {}
+    public Intake() {
+        configureMotors();
+        Robot.add(this);
+    }
 
     @Override
     public void periodic() {
-        // This method will be called once per scheduler run
+        super.periodic();
     }
 
     @Override
     public CanId canIdLeader() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'canIdLeader'");
+        return CanId.INTAKE;
     }
 
     @Override
     public CanId canIdFollower() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'canIdFollower'");
+      return null;
     }
 
     @Override
     public boolean followerInverted() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'followerInverted'");
+        return false;
     }
 
     @Override
     public CurrentLimitsConfigs currentLimits() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'currentLimits'");
+        return Constants.IntakeConstants.kCurrentLimit;
     }
 
     @Override
     public boolean inverted() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'inverted'");
+        return false;
     }
 
     @Override
     public boolean brakeMode() {
+        return true;
+    }
+
+    @Override
+    public void bindCommands() {
         // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'brakeMode'");
+        throw new UnsupportedOperationException("Unimplemented method 'bindCommands'");
     }
 }

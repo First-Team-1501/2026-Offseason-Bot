@@ -53,7 +53,7 @@ public final class Constants {
     }
 
     public static boolean disableHAL = false;
-
+  
     public static void disableHAL() {
         disableHAL = true;
     }
@@ -74,5 +74,17 @@ public final class Constants {
         public static final Angle kForwardSoftLimit = null;
         public static final Angle kReverseSoftLimit = null;
         public static final CurrentLimitsConfigs kCurrentLimit = null;
+    }
+
+
+    public class HopperConstants {
+        public static final CurrentLimitsConfigs kCurrentLimit = null;
+        
+    }
+
+    public class IntakeConstants {
+
+        public static final CurrentLimitsConfigs kCurrentLimit = null;
+
     }
 }
