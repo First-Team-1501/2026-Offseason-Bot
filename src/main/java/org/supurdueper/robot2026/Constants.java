@@ -21,6 +21,8 @@ import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.LinearVelocity;
+import edu.wpi.first.units.measure.Voltage;
+
 import org.supurdueper.lib.utils.ExpCurve;
 
 public final class Constants {
@@ -86,5 +88,10 @@ public final class Constants {
 
         public static final CurrentLimitsConfigs kCurrentLimit = null;
 
+    }
+
+    public class ClimberConstants{
+        public static final CurrentLimitsConfigs kCurrentLimit = null;
+        public static final Voltage kIntakeVoltage = Volts.of(5); //TODO change this to real value
     }
 }

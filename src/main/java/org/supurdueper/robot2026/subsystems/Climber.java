@@ -5,51 +5,127 @@
 package org.supurdueper.robot2026.subsystems;
 
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
+import com.ctre.phoenix6.configs.MotionMagicConfigs;
+import com.ctre.phoenix6.configs.Slot0Configs;
+import com.ctre.phoenix6.configs.SoftwareLimitSwitchConfigs;
+
+import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+
+import static edu.wpi.first.units.Units.Volts;
+
+import org.supurdueper.lib.subsystems.PositionSubsystem;
+import org.supurdueper.lib.subsystems.SupurdueperSubsystem;
 import org.supurdueper.lib.subsystems.TalonFXSubsystem;
 import org.supurdueper.robot2026.CanId;
+import org.supurdueper.robot2026.Constants;
+import org.supurdueper.robot2026.Robot;
 
-public class Climber extends TalonFXSubsystem {
+public class Climber extends PositionSubsystem implements SupurdueperSubsystem  {
     /** Creates a new Climber. */
-    public Climber() {}
+    public Climber() {
+        configureMotors();
+        Robot.add(this);
+    }
+
+    public void run(){
+        runVoltage(Constants.ClimberConstants.kIntakeVoltage);
+    }
+
+    public void stop(){
+        runVoltage(Volts.of(0));
+    }
+
+
 
     @Override
     public void periodic() {
-        // This method will be called once per scheduler run
+        super.periodic();
     }
 
     @Override
     public CanId canIdLeader() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'canIdLeader'");
+        return(CanId.CLIMBER);
     }
 
     @Override
     public CanId canIdFollower() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'canIdFollower'");
+        return null;
     }
 
     @Override
     public boolean followerInverted() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'followerInverted'");
+        return false;
     }
 
     @Override
     public CurrentLimitsConfigs currentLimits() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'currentLimits'");
+        return Constants.ClimberConstants.kCurrentLimit;
     }
 
     @Override
     public boolean inverted() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'inverted'");
+        return true; //TODO change this into it's real value
     }
 
     @Override
     public boolean brakeMode() {
+        return true;
+    }
+
+    @Override
+    public void bindCommands() {
         // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'brakeMode'");
+        throw new UnsupportedOperationException("Unimplemented method 'bindCommands'");
+    }
+
+
+
+
+
+    @Override
+    public Slot0Configs pidGains() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'pidGains'");
+    }
+
+
+
+
+
+    @Override
+    public MotionMagicConfigs motionMagicConfig() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'motionMagicConfig'");
+    }
+
+
+
+
+
+    @Override
+    public SoftwareLimitSwitchConfigs softLimitConfig() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'softLimitConfig'");
+    }
+
+
+
+
+
+    @Override
+    public Angle positionTolerance() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'positionTolerance'");
+    }
+
+
+
+
+
+    @Override
+    public SysIdRoutine sysIdConfig() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'sysIdConfig'");
     }
 }

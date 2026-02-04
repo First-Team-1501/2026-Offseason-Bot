@@ -10,11 +10,14 @@ import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.SoftwareLimitSwitchConfigs;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+
+import org.supurdueper.lib.subsystems.SupurdueperSubsystem;
 import org.supurdueper.lib.subsystems.VelocitySubsystem;
 import org.supurdueper.robot2026.CanId;
 
-public class Shooter extends VelocitySubsystem {
+public class Shooter extends VelocitySubsystem implements SupurdueperSubsystem {
     /** Creates a new VelocityTest. */
+
     public Shooter() {}
 
     @Override
@@ -24,15 +27,14 @@ public class Shooter extends VelocitySubsystem {
 
     @Override
     public CanId canIdLeader() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'canIdLeader'");
+        return CanId.SHOOTER_ONE;
     }
 
     @Override
     public CanId canIdFollower() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'canIdFollower'");
+        return CanId.SHOOTER_FOUR;
     }
+
 
     @Override
     public boolean followerInverted() {
@@ -86,5 +88,11 @@ public class Shooter extends VelocitySubsystem {
     public SysIdRoutine sysIdConfig() {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'sysIdConfig'");
+    }
+
+    @Override
+    public void bindCommands() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'bindCommands'");
     }
 }
