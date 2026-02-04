@@ -15,12 +15,16 @@ package org.supurdueper.robot2026;
 
 import static edu.wpi.first.units.Units.*;
 
+import java.util.function.DoubleSupplier;
+
 import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.LinearVelocity;
+import edu.wpi.first.units.measure.Voltage;
+
 import org.supurdueper.lib.utils.ExpCurve;
 
 public final class Constants {
@@ -79,12 +83,16 @@ public final class Constants {
 
     public class HopperConstants {
         public static final CurrentLimitsConfigs kCurrentLimit = null;
+        public static final Voltage kIntakeVoltage = null;
+        public static final Voltage kPurgeVoltage = null;
         
     }
 
     public class IntakeConstants {
 
         public static final CurrentLimitsConfigs kCurrentLimit = null;
+        public static final Voltage kIntakeVoltage = Volts.of(2);
+        public static final Voltage kPurgeVoltage = Volts.of(-2);
 
     }
 }
