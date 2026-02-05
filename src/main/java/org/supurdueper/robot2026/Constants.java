@@ -19,6 +19,7 @@ import java.util.function.DoubleSupplier;
 
 import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
+import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.StaticFeedforwardSignValue;
 
 import edu.wpi.first.units.measure.Angle;
@@ -82,17 +83,6 @@ public final class Constants {
         public static final CurrentLimitsConfigs kCurrentLimit = null;
     }
 
-    public class ShooterConstants {
-        public static final CurrentLimitsConfigs kCurrentLimit = null;
-        public static final double kP = 0;
-        public static final double kI = 0;
-        public static final double kD = 0;
-        public static final double kS = 0;
-        public static final double kV = 0;
-        public static final StaticFeedforwardSignValue kfeedforward = null;
-
-    }
-
 
     public class HopperConstants {
         public static final CurrentLimitsConfigs kCurrentLimit = null;
@@ -112,5 +102,13 @@ public final class Constants {
     public class ClimberConstants{
         public static final CurrentLimitsConfigs kCurrentLimit = null;
         public static final Voltage kIntakeVoltage = Volts.of(5); //TODO change this to real value
+        public static final GravityTypeValue GravityType = GravityTypeValue.Elevator_Static;
+        public static final double kp = 0;
+        public static final double ki = 0;
+        public static final double kd = 0;
+        public static final double ks = 0;
+        public static final double kv = 0;
+        public static final double ka = 0;
+        public static final double kg = 0;
     }
 }

@@ -8,6 +8,7 @@ import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.SoftwareLimitSwitchConfigs;
+import com.ctre.phoenix6.signals.GravityTypeValue;
 
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
@@ -85,8 +86,15 @@ public class Climber extends PositionSubsystem implements SupurdueperSubsystem  
 
     @Override
     public Slot0Configs pidGains() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'pidGains'");
+        return new Slot0Configs()
+                .withGravityType(Constants.ClimberConstants.GravityType)
+                .withKP(Constants.ClimberConstants.kp)
+                .withKI(Constants.ClimberConstants.ki)
+                .withKD(Constants.ClimberConstants.kd)
+                .withKS(Constants.ClimberConstants.ks)
+                .withKV(Constants.ClimberConstants.kv)
+                .withKA(Constants.ClimberConstants.ka)
+                .withKG(Constants.ClimberConstants.kg);
     }
 
 
@@ -95,8 +103,9 @@ public class Climber extends PositionSubsystem implements SupurdueperSubsystem  
 
     @Override
     public MotionMagicConfigs motionMagicConfig() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'motionMagicConfig'");
+        return new MotionMagicConfigs()
+                .withMotionMagicExpo_kV(Constants.ShooerHoodConstants.profileKv)
+                .withMotionMagicExpo_kA(Constants.ShooerHoodConstants.profileKa);
     }
 
 
