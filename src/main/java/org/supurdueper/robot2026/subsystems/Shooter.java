@@ -69,8 +69,7 @@ public class Shooter extends VelocitySubsystem implements SupurdueperSubsystem {
             .withKI(Constants.ShooterConstants.kI)
             .withKD(Constants.ShooterConstants.kD)
             .withKS(Constants.ShooterConstants.kS)
-            .withKV(Constants.ShooterConstants.kV)
-            .withStaticFeedforwardSign(Constants.ShooterConstants.kfeedforward);
+            .withKV(Constants.ShooterConstants.kV);
     }
 
     @Override
