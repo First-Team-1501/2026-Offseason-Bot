@@ -8,21 +8,29 @@ import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.SoftwareLimitSwitchConfigs;
+import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.StaticFeedforwardSignValue;
+
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 
+import org.supurdueper.lib.TalonFXFactory;
 import org.supurdueper.lib.subsystems.SupurdueperSubsystem;
 import org.supurdueper.lib.subsystems.VelocitySubsystem;
 import org.supurdueper.robot2026.CanId;
+import org.supurdueper.robot2026.Constants;
 
 public class Shooter extends VelocitySubsystem implements SupurdueperSubsystem {
     /** Creates a new VelocityTest. */
-
-    public Shooter() {}
+    public Shooter() {
+        followerMotor = TalonFXFactory.createPermanentFollowerTalon(CanId.SHOOTER_THREE, motor, false);
+        followerMotor = TalonFXFactory.createPermanentFollowerTalon(CanId.SHOOTER_FOUR, motor, false);
+        followerMotor = TalonFXFactory.createPermanentFollowerTalon(CanId.SHOOTER_FIVE, motor, false);
+    }
 
     @Override
     public void periodic() {
-        // This method will be called once per scheduler run
+        super.periodic();
     }
 
     @Override
@@ -34,36 +42,35 @@ public class Shooter extends VelocitySubsystem implements SupurdueperSubsystem {
     public CanId canIdFollower() {
         return CanId.SHOOTER_FOUR;
     }
-
-
     @Override
     public boolean followerInverted() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'followerInverted'");
+        return false;
     }
 
     @Override
     public CurrentLimitsConfigs currentLimits() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'currentLimits'");
+        return Constants.ShooterConstants.kCurrentLimit;
     }
 
     @Override
     public boolean inverted() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'inverted'");
+        return true;
     }
 
     @Override
     public boolean brakeMode() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'brakeMode'");
+        return false;
     }
 
     @Override
     public Slot0Configs pidGains() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'pidGains'");
+        return new Slot0Configs()
+            .withKP(Constants.ShooterConstants.kP)
+            .withKI(Constants.ShooterConstants.kI)
+            .withKD(Constants.ShooterConstants.kD)
+            .withKS(Constants.ShooterConstants.kS)
+            .withKV(Constants.ShooterConstants.kV)
+            .withStaticFeedforwardSign(Constants.ShooterConstants.kfeedforward);
     }
 
     @Override

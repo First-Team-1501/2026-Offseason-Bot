@@ -66,10 +66,6 @@ public class Hopper extends TalonFXSubsystem implements SupurdueperSubsystem {
         runVoltage(Constants.HopperConstants.kPurgeVoltage);
     }
 
-    public void stop() {
-        runVoltage(Volts.of(0));
-    }
-
     @Override
     public void bindCommands() {
         // TODO Auto-generated method stub

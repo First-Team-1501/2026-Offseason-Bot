@@ -4,6 +4,8 @@ import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.SoftwareLimitSwitchConfigs;
+import com.ctre.phoenix6.controls.MotionMagicExpoTorqueCurrentFOC;
+import com.ctre.phoenix6.controls.MotionMagicTorqueCurrentFOC;
 import com.ctre.phoenix6.controls.MotionMagicVelocityTorqueCurrentFOC;
 import edu.wpi.first.units.Units;
 import edu.wpi.first.units.measure.AngularVelocity;
@@ -27,6 +29,7 @@ public abstract class VelocitySubsystem extends TalonFXSubsystem {
     private final LoggedTunableNumber ks;
     private final LoggedTunableNumber kv;
     private final LoggedTunableNumber ka;
+    private final LoggedTunableNumber kfeedforward;
     private final LoggedTunableNumber profileKv;
     private final LoggedTunableNumber profileKa;
     private final LoggedTunableNumber profileV;
@@ -103,6 +106,7 @@ public abstract class VelocitySubsystem extends TalonFXSubsystem {
         ks = new LoggedTunableNumber(name + "/Ks");
         kv = new LoggedTunableNumber(name + "/Kv");
         ka = new LoggedTunableNumber(name + "/Ka");
+        kfeedforward = new LoggedTunableNumber(name + "/kfeedforward");
         profileKv = new LoggedTunableNumber(name + "/profileKv");
         profileKa = new LoggedTunableNumber(name + "/profileKa");
         profileV = new LoggedTunableNumber(name + "/profileVel");

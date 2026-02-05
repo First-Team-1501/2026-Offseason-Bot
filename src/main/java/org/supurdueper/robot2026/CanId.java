@@ -21,24 +21,30 @@ public enum CanId {
     CANDLE(29, Constants.rioBus),
 
     // Intake
-    INTAKE(9, Constants.canivoreBus),
-    // Indexer
-    INDEXER_ONE(10, Constants.canivoreBus),
-    INDEXER_TWO(11, Constants.canivoreBus),
-    INDEXER_THREE(12, Constants.canivoreBus),
+    INTAKE_ONE(9, Constants.canivoreBus),
+    INTAKE_TWO(10, Constants.canivoreBus),
 
-    // Shooter
-    SHOOTER_HOOD(13, Constants.canivoreBus),
+    // Hopper
+    INDEXER_ONE(11, Constants.canivoreBus),
+    INDEXER_TWO(12, Constants.canivoreBus),
+
+    //Feeder
+    FEEDER_ONE(13, Constants.canivoreBus),
+    FEEDER_TWO(14, Constants.canivoreBus),
+
+    // Shooter Hood
+    SHOOTER_HOOD(15, Constants.canivoreBus),
     CANCODER_HOOD(26, Constants.canivoreBus),
-    SHOOTER_ONE(14, Constants.canivoreBus),
-    SHOOTER_TWO(15, Constants.canivoreBus),
-    SHOOTER_THREE(16, Constants.canivoreBus),
-    SHOOTER_FOUR(17, Constants.canivoreBus),
-    SHOOTER_FIVE(18, Constants.canivoreBus),
-    SHOOTER_SIX(19, Constants.canivoreBus),
+
+    //Shooter
+    SHOOTER_ONE(16, Constants.canivoreBus),
+    SHOOTER_TWO(17, Constants.canivoreBus),
+    SHOOTER_THREE(18, Constants.canivoreBus),
+    SHOOTER_FOUR(19, Constants.canivoreBus),
+    SHOOTER_FIVE(20, Constants.canivoreBus),
 
     // CLIMBER
-    CLIMBER(20, Constants.canivoreBus);
+    CLIMBER(21, Constants.canivoreBus);
 
     private final int mDeviceNumber;
     private final CANBus mBus;

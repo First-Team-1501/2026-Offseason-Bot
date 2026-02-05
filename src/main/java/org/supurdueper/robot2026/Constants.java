@@ -19,6 +19,8 @@ import java.util.function.DoubleSupplier;
 
 import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
+import com.ctre.phoenix6.signals.StaticFeedforwardSignValue;
+
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Distance;
@@ -78,6 +80,17 @@ public final class Constants {
         public static final Angle kForwardSoftLimit = null;
         public static final Angle kReverseSoftLimit = null;
         public static final CurrentLimitsConfigs kCurrentLimit = null;
+    }
+
+    public class ShooterConstants {
+        public static final CurrentLimitsConfigs kCurrentLimit = null;
+        public static final double kP = 0;
+        public static final double kI = 0;
+        public static final double kD = 0;
+        public static final double kS = 0;
+        public static final double kV = 0;
+        public static final StaticFeedforwardSignValue kfeedforward = null;
+
     }
 
 

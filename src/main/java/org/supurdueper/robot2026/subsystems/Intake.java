@@ -31,12 +31,12 @@ public class Intake extends TalonFXSubsystem implements SupurdueperSubsystem {
 
     @Override
     public CanId canIdLeader() {
-        return CanId.INTAKE;
+        return CanId.INTAKE_ONE;
     }
 
     @Override
     public CanId canIdFollower() {
-      return null;
+        return CanId.INTAKE_TWO;
     }
 
     @Override
@@ -65,10 +65,6 @@ public class Intake extends TalonFXSubsystem implements SupurdueperSubsystem {
 
     public void purge() {
         runVoltage(Constants.IntakeConstants.kPurgeVoltage);
-    }
-
-    public void stop() {
-        runVoltage(Volts.of(0));
     }
 
     public Command runintake() {
