@@ -95,4 +95,9 @@ public final class Constants {
         public static final Voltage kPurgeVoltage = Volts.of(-2);
 
     }
+
+    public class ClimberConstants{
+        public static final CurrentLimitsConfigs kCurrentLimit = null;
+        public static final Voltage kIntakeVoltage = Volts.of(5); //TODO change this to real value
+    }
 }
