@@ -136,4 +136,9 @@ public final class Constants {
         public static Voltage kPurgeVoltage = Volts.of(-2);
 
     }
+
+    public class LightsConstants{
+        public static double brightness = 0.5;
+        public static int LEDCount = 7;
+    }
 }
