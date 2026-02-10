@@ -10,6 +10,7 @@ import com.ctre.phoenix6.controls.TwinkleAnimation;
 import com.ctre.phoenix6.hardware.CANdle;
 import com.ctre.phoenix6.signals.RGBWColor;
 import com.ctre.phoenix6.signals.StripTypeValue;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import org.supurdueper.lib.subsystems.SupurdueperSubsystem;
 import org.supurdueper.robot2026.CanId;
@@ -57,17 +58,17 @@ public class Lights extends SubsystemBase implements SupurdueperSubsystem {
         setLED(255, 255, 255);
     }
 
-    private void turnOff() {
-        setLED(0, 0, 0);
-    }
+  private void turnOff(){
+    setLED(0, 0, 0);
+  }
 
     private void goldLED() {
         setLED(217, 160, 15);
     }
 
-    private void goldTwinkle() {
-        twinkleLED(217, 160, 15);
-    }
+  private void goldTwinkle(){
+    twinkleLED(217, 160, 15);
+  }
 
     @Override
     public void periodic() {
