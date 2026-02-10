@@ -6,6 +6,7 @@ package org.supurdueper.robot2026.subsystems;
 
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 
+import dev.doglog.DogLog;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 
@@ -16,6 +17,7 @@ import org.supurdueper.lib.subsystems.TalonFXSubsystem;
 import org.supurdueper.robot2026.CanId;
 import org.supurdueper.robot2026.Constants;
 import org.supurdueper.robot2026.Robot;
+import org.supurdueper.robot2026.state.RobotStates;
 
 public class Intake extends TalonFXSubsystem implements SupurdueperSubsystem {
     /** Creates a new Intake. */
@@ -27,6 +29,10 @@ public class Intake extends TalonFXSubsystem implements SupurdueperSubsystem {
     @Override
     public void periodic() {
         super.periodic();
+
+        DogLog.log("Intake/Follower Inverted", followerInverted());
+        DogLog.log("Intake/ Inverted", inverted());
+
     }
 
     @Override
@@ -68,18 +74,18 @@ public class Intake extends TalonFXSubsystem implements SupurdueperSubsystem {
     }
 
     public Command runintake() {
-        return Commands.runEnd(this::run, this::stop);
+        return Commands.runEnd(this::run, this::stop).withName("Intake/intake");
     }
 
     public Command runPurge() {
-        return Commands.runEnd(this::purge, this::stop);
+        return Commands.runEnd(this::purge, this::stop).withName("Intake/purge");
     }
 
 
     @Override
     public void bindCommands() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'bindCommands'");
+        RobotStates.actionIntake.onTrue(runintake());
+        RobotStates.actionPurge.onTrue(runPurge());
     }
 
 

@@ -19,13 +19,18 @@ import java.util.function.DoubleSupplier;
 
 import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
+import com.ctre.phoenix6.configs.SoftwareLimitSwitchConfigs;
 import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.StaticFeedforwardSignValue;
 
+import edu.wpi.first.units.AngularAccelerationUnit;
+import edu.wpi.first.units.AngularVelocityUnit;
+import edu.wpi.first.units.VoltageUnit;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.LinearVelocity;
+import edu.wpi.first.units.measure.Per;
 import edu.wpi.first.units.measure.Voltage;
 
 import org.supurdueper.lib.utils.ExpCurve;
@@ -100,6 +105,25 @@ public final class Constants {
         public static final Voltage kIntakeVoltage = null;
         public static final Voltage kPurgeVoltage = null;
         
+    }
+
+    public class FeederConstants {
+
+        public static final double kP = 0;
+        public static final double kI = 0;
+        public static final double kD = 0;
+        public static final double kA = 0;
+        public static final double kV = 0;
+        public static final SoftwareLimitSwitchConfigs softLimitConfig = null;
+        public static final AngularVelocity velocityTolerance = null;
+        public static final CurrentLimitsConfigs kCurrentLimit = null;
+        public static final AngularVelocity kFeedRPS = RotationsPerSecond.of(30);
+        public static final AngularVelocity kPurgeRPS = RotationsPerSecond.of(-20);
+        public static final AngularVelocity kStopRPS = RotationsPerSecond.of(0);
+        public static final double kS = 0;
+        public static final Per<VoltageUnit, AngularAccelerationUnit> motionmagickA = null;
+        public static final Per<VoltageUnit, AngularVelocityUnit> motionmagickV = null;
+
     }
 
     public class IntakeConstants {

@@ -6,6 +6,8 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import lombok.Getter;
 import lombok.Setter;
 import org.supurdueper.robot2026.RobotContainer;
+import org.supurdueper.robot2026.subsystems.Hopper;
+import org.supurdueper.robot2026.subsystems.Shooter;
 
 public final class RobotStates {
 
@@ -18,14 +20,15 @@ public final class RobotStates {
     //auto
 
     //information
-
+    public static final Trigger shooterRevved = new Trigger(RobotContainer.getShooter()::atSpeed);
 
 
     // Actions
     public static final Trigger rezeroFieldHeading = driver.select.and(teleop);
     public static final Trigger actionIntake = driver.rightBumper.and(teleop);
-    public static final Trigger actionUnjam = driver.extraRight.and(teleop);
+    public static final Trigger actionPurge = driver.extraRight.and(teleop);
     public static final Trigger actionShoot = driver.leftBumper.and(teleop);
+
 
     private RobotStates() {
         throw new IllegalStateException("Utility class");
