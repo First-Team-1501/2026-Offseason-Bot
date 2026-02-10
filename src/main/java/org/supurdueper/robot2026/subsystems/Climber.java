@@ -104,8 +104,8 @@ public class Climber extends PositionSubsystem implements SupurdueperSubsystem  
     @Override
     public MotionMagicConfigs motionMagicConfig() {
         return new MotionMagicConfigs()
-                .withMotionMagicExpo_kV(Constants.ShooerHoodConstants.profileKv)
-                .withMotionMagicExpo_kA(Constants.ShooerHoodConstants.profileKa);
+                .withMotionMagicExpo_kV(Constants.ClimberConstants.profileKv)
+                .withMotionMagicExpo_kA(Constants.ClimberConstants.profileKa);
     }
 
 
@@ -114,8 +114,11 @@ public class Climber extends PositionSubsystem implements SupurdueperSubsystem  
 
     @Override
     public SoftwareLimitSwitchConfigs softLimitConfig() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'softLimitConfig'");
+        return new SoftwareLimitSwitchConfigs()
+                .withForwardSoftLimitThreshold(Constants.ClimberConstants.kForwardSoftLimit)
+                .withForwardSoftLimitEnable(true)
+                .withReverseSoftLimitThreshold(Constants.ClimberConstants.kReverseSoftLimit)
+                .withReverseSoftLimitEnable(true);
     }
 
 
@@ -124,8 +127,7 @@ public class Climber extends PositionSubsystem implements SupurdueperSubsystem  
 
     @Override
     public Angle positionTolerance() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'positionTolerance'");
+        return Constants.ClimberConstants.positionTolerance;
     }
 
 

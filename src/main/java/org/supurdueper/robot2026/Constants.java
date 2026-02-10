@@ -145,5 +145,24 @@ public final class Constants {
         public static final double kv = 0;
         public static final double ka = 0;
         public static final double kg = 0;
+        public static final double profileKa = 0;
+        public static final double profileKv = 0;
+        public static final Angle kForwardSoftLimit = null;
+        public static final Angle kReverseSoftLimit = null;
+        public static Angle positionTolerance = Angle.ofBaseUnits(0, null);
+    }
+
+    public class IndexerConstants{
+
+        public static CurrentLimitsConfigs kCurrentLimit = null;
+        public static Voltage kIndexIntakeVoltage = Volts.of(2);
+        public static Voltage kIndexShooterVoltage = Volts.of(4);
+        public static Voltage kPurgeVoltage = Volts.of(-2);
+
+    }
+
+    public class LightsConstants{
+        public static double brightness = 0.5;
+        public static int LEDCount = 7;
     }
 }
