@@ -5,13 +5,9 @@
 package org.supurdueper.robot2026.subsystems;
 
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
-
 import dev.doglog.DogLog;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-
-import static edu.wpi.first.units.Units.Volts;
-
 import org.supurdueper.lib.subsystems.SupurdueperSubsystem;
 import org.supurdueper.lib.subsystems.TalonFXSubsystem;
 import org.supurdueper.robot2026.CanId;
@@ -32,7 +28,6 @@ public class Intake extends TalonFXSubsystem implements SupurdueperSubsystem {
 
         DogLog.log("Intake/Follower Inverted", followerInverted());
         DogLog.log("Intake/ Inverted", inverted());
-
     }
 
     @Override
@@ -81,12 +76,9 @@ public class Intake extends TalonFXSubsystem implements SupurdueperSubsystem {
         return Commands.runEnd(this::purge, this::stop).withName("Intake/purge");
     }
 
-
     @Override
     public void bindCommands() {
         RobotStates.actionIntake.onTrue(runintake());
         RobotStates.actionPurge.onTrue(runPurge());
     }
-
-
 }

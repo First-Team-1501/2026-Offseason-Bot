@@ -5,11 +5,6 @@
 package org.supurdueper.robot2026.subsystems;
 
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
-
-import edu.wpi.first.units.measure.Voltage;
-
-import static edu.wpi.first.units.Units.Volts;
-
 import org.supurdueper.lib.subsystems.SupurdueperSubsystem;
 import org.supurdueper.lib.subsystems.TalonFXSubsystem;
 import org.supurdueper.robot2026.CanId;
@@ -40,12 +35,12 @@ public class Hopper extends TalonFXSubsystem implements SupurdueperSubsystem {
 
     @Override
     public boolean followerInverted() {
-       return true;
+        return true;
     }
 
     @Override
     public CurrentLimitsConfigs currentLimits() {
-       return Constants.HopperConstants.kCurrentLimit;
+        return Constants.HopperConstants.kCurrentLimit;
     }
 
     @Override
@@ -55,7 +50,7 @@ public class Hopper extends TalonFXSubsystem implements SupurdueperSubsystem {
 
     @Override
     public boolean brakeMode() {
-       return false;
+        return false;
     }
 
     public void run() {

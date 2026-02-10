@@ -15,14 +15,11 @@ package org.supurdueper.robot2026;
 
 import static edu.wpi.first.units.Units.*;
 
-import java.util.function.DoubleSupplier;
-
 import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.SoftwareLimitSwitchConfigs;
 import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.StaticFeedforwardSignValue;
-
 import edu.wpi.first.units.AngularAccelerationUnit;
 import edu.wpi.first.units.AngularVelocityUnit;
 import edu.wpi.first.units.VoltageUnit;
@@ -32,7 +29,6 @@ import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.units.measure.Per;
 import edu.wpi.first.units.measure.Voltage;
-
 import org.supurdueper.lib.utils.ExpCurve;
 
 public final class Constants {
@@ -65,7 +61,7 @@ public final class Constants {
     }
 
     public static boolean disableHAL = false;
-  
+
     public static void disableHAL() {
         disableHAL = true;
     }
@@ -96,15 +92,12 @@ public final class Constants {
         public static final double kS = 0;
         public static final double kV = 0;
         public static final StaticFeedforwardSignValue kfeedforward = null;
-
     }
-
 
     public class HopperConstants {
         public static final CurrentLimitsConfigs kCurrentLimit = null;
         public static final Voltage kIntakeVoltage = null;
         public static final Voltage kPurgeVoltage = null;
-        
     }
 
     public class FeederConstants {
@@ -123,7 +116,6 @@ public final class Constants {
         public static final double kS = 0;
         public static final Per<VoltageUnit, AngularAccelerationUnit> motionmagickA = null;
         public static final Per<VoltageUnit, AngularVelocityUnit> motionmagickV = null;
-
     }
 
     public class IntakeConstants {
@@ -131,12 +123,11 @@ public final class Constants {
         public static final CurrentLimitsConfigs kCurrentLimit = null;
         public static final Voltage kIntakeVoltage = Volts.of(2);
         public static final Voltage kPurgeVoltage = Volts.of(-2);
-
     }
 
-    public class ClimberConstants{
+    public class ClimberConstants {
         public static final CurrentLimitsConfigs kCurrentLimit = null;
-        public static final Voltage kIntakeVoltage = Volts.of(5); //TODO change this to real value
+        public static final Voltage kIntakeVoltage = Volts.of(5); // TODO change this to real value
         public static final GravityTypeValue GravityType = GravityTypeValue.Elevator_Static;
         public static final double kp = 0;
         public static final double ki = 0;
@@ -152,16 +143,15 @@ public final class Constants {
         public static Angle positionTolerance = Angle.ofBaseUnits(0, null);
     }
 
-    public class IndexerConstants{
+    public class IndexerConstants {
 
         public static CurrentLimitsConfigs kCurrentLimit = null;
         public static Voltage kIndexIntakeVoltage = Volts.of(2);
         public static Voltage kIndexShooterVoltage = Volts.of(4);
         public static Voltage kPurgeVoltage = Volts.of(-2);
-
     }
 
-    public class LightsConstants{
+    public class LightsConstants {
         public static double brightness = 0.5;
         public static int LEDCount = 7;
     }

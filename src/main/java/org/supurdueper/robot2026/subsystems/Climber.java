@@ -8,36 +8,20 @@ import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.SoftwareLimitSwitchConfigs;
-import com.ctre.phoenix6.signals.GravityTypeValue;
-
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
-
-import static edu.wpi.first.units.Units.Volts;
-
 import org.supurdueper.lib.subsystems.PositionSubsystem;
 import org.supurdueper.lib.subsystems.SupurdueperSubsystem;
-import org.supurdueper.lib.subsystems.TalonFXSubsystem;
 import org.supurdueper.robot2026.CanId;
 import org.supurdueper.robot2026.Constants;
 import org.supurdueper.robot2026.Robot;
 
-public class Climber extends PositionSubsystem implements SupurdueperSubsystem  {
+public class Climber extends PositionSubsystem implements SupurdueperSubsystem {
     /** Creates a new Climber. */
     public Climber() {
         configureMotors();
         Robot.add(this);
     }
-
-    public void run(){
-        runVoltage(Constants.ClimberConstants.kIntakeVoltage);
-    }
-
-    public void stop(){
-        runVoltage(Volts.of(0));
-    }
-
-
 
     @Override
     public void periodic() {
@@ -46,7 +30,7 @@ public class Climber extends PositionSubsystem implements SupurdueperSubsystem  
 
     @Override
     public CanId canIdLeader() {
-        return(CanId.CLIMBER);
+        return (CanId.CLIMBER);
     }
 
     @Override
@@ -66,7 +50,7 @@ public class Climber extends PositionSubsystem implements SupurdueperSubsystem  
 
     @Override
     public boolean inverted() {
-        return true; //TODO change this into it's real value
+        return true;
     }
 
     @Override
@@ -79,10 +63,6 @@ public class Climber extends PositionSubsystem implements SupurdueperSubsystem  
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'bindCommands'");
     }
-
-
-
-
 
     @Override
     public Slot0Configs pidGains() {
@@ -97,20 +77,12 @@ public class Climber extends PositionSubsystem implements SupurdueperSubsystem  
                 .withKG(Constants.ClimberConstants.kg);
     }
 
-
-
-
-
     @Override
     public MotionMagicConfigs motionMagicConfig() {
         return new MotionMagicConfigs()
                 .withMotionMagicExpo_kV(Constants.ClimberConstants.profileKv)
                 .withMotionMagicExpo_kA(Constants.ClimberConstants.profileKa);
     }
-
-
-
-
 
     @Override
     public SoftwareLimitSwitchConfigs softLimitConfig() {
@@ -121,18 +93,10 @@ public class Climber extends PositionSubsystem implements SupurdueperSubsystem  
                 .withReverseSoftLimitEnable(true);
     }
 
-
-
-
-
     @Override
     public Angle positionTolerance() {
         return Constants.ClimberConstants.positionTolerance;
     }
-
-
-
-
 
     @Override
     public SysIdRoutine sysIdConfig() {

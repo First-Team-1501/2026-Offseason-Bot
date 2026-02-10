@@ -28,7 +28,7 @@ public enum CanId {
     INDEXER_ONE(11, Constants.canivoreBus),
     INDEXER_TWO(12, Constants.canivoreBus),
 
-    //Feeder
+    // Feeder
     FEEDER_ONE(13, Constants.canivoreBus),
     FEEDER_TWO(14, Constants.canivoreBus),
 
@@ -36,7 +36,7 @@ public enum CanId {
     SHOOTER_HOOD(15, Constants.canivoreBus),
     CANCODER_HOOD(26, Constants.canivoreBus),
 
-    //Shooter
+    // Shooter
     SHOOTER_ONE(16, Constants.canivoreBus),
     SHOOTER_TWO(17, Constants.canivoreBus),
     SHOOTER_THREE(18, Constants.canivoreBus),

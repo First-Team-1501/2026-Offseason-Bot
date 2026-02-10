@@ -10,12 +10,8 @@ import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.SoftwareLimitSwitchConfigs;
 import com.ctre.phoenix6.controls.MotionMagicVelocityTorqueCurrentFOC;
 import com.ctre.phoenix6.controls.VelocityTorqueCurrentFOC;
-import com.ctre.phoenix6.hardware.TalonFX;
-import com.ctre.phoenix6.signals.StaticFeedforwardSignValue;
-
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
-
 import org.supurdueper.lib.TalonFXFactory;
 import org.supurdueper.lib.subsystems.SupurdueperSubsystem;
 import org.supurdueper.lib.subsystems.VelocitySubsystem;
@@ -26,6 +22,7 @@ import org.supurdueper.robot2026.Robot;
 public class Shooter extends VelocitySubsystem implements SupurdueperSubsystem {
     /** Creates a new VelocityTest. */
     private VelocityTorqueCurrentFOC currentRequest = new VelocityTorqueCurrentFOC(0);
+
     private MotionMagicVelocityTorqueCurrentFOC velocityCurrentRequest = new MotionMagicVelocityTorqueCurrentFOC(0);
 
     public Shooter() {
@@ -55,6 +52,7 @@ public class Shooter extends VelocitySubsystem implements SupurdueperSubsystem {
     public CanId canIdFollower() {
         return CanId.SHOOTER_FOUR;
     }
+
     @Override
     public boolean followerInverted() {
         return false;
@@ -78,11 +76,11 @@ public class Shooter extends VelocitySubsystem implements SupurdueperSubsystem {
     @Override
     public Slot0Configs pidGains() {
         return new Slot0Configs()
-            .withKP(Constants.ShooterConstants.kP)
-            .withKI(Constants.ShooterConstants.kI)
-            .withKD(Constants.ShooterConstants.kD)
-            .withKS(Constants.ShooterConstants.kS)
-            .withKV(Constants.ShooterConstants.kV);
+                .withKP(Constants.ShooterConstants.kP)
+                .withKI(Constants.ShooterConstants.kI)
+                .withKD(Constants.ShooterConstants.kD)
+                .withKS(Constants.ShooterConstants.kS)
+                .withKV(Constants.ShooterConstants.kV);
     }
 
     @Override
