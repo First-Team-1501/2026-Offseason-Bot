@@ -8,6 +8,8 @@ import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.SoftwareLimitSwitchConfigs;
+import com.ctre.phoenix6.controls.MotionMagicVelocityTorqueCurrentFOC;
+import com.ctre.phoenix6.controls.VelocityTorqueCurrentFOC;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.StaticFeedforwardSignValue;
 
@@ -19,13 +21,24 @@ import org.supurdueper.lib.subsystems.SupurdueperSubsystem;
 import org.supurdueper.lib.subsystems.VelocitySubsystem;
 import org.supurdueper.robot2026.CanId;
 import org.supurdueper.robot2026.Constants;
+import org.supurdueper.robot2026.Robot;
 
 public class Shooter extends VelocitySubsystem implements SupurdueperSubsystem {
     /** Creates a new VelocityTest. */
+    private VelocityTorqueCurrentFOC currentRequest = new VelocityTorqueCurrentFOC(0);
+    private MotionMagicVelocityTorqueCurrentFOC velocityCurrentRequest = new MotionMagicVelocityTorqueCurrentFOC(0);
+
     public Shooter() {
         followerMotor = TalonFXFactory.createPermanentFollowerTalon(CanId.SHOOTER_THREE, motor, false);
         followerMotor = TalonFXFactory.createPermanentFollowerTalon(CanId.SHOOTER_FOUR, motor, false);
         followerMotor = TalonFXFactory.createPermanentFollowerTalon(CanId.SHOOTER_FIVE, motor, false);
+
+        configureMotors();
+        Robot.add(this);
+    }
+
+    public boolean atSpeed() {
+        return true;
     }
 
     @Override
