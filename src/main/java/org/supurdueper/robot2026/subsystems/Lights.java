@@ -20,6 +20,7 @@ import com.ctre.phoenix6.hardware.CANdle;
 import com.ctre.phoenix6.signals.RGBWColor;
 import com.ctre.phoenix6.signals.StripTypeValue;
 
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Lights extends SubsystemBase implements SupurdueperSubsystem {
@@ -65,7 +66,7 @@ public class Lights extends SubsystemBase implements SupurdueperSubsystem {
     setLED(255, 255, 255);
   }
 
-  private void turnOff(){
+  private void OffLED(){
     setLED(0, 0, 0);
   }
 
@@ -75,6 +76,34 @@ public class Lights extends SubsystemBase implements SupurdueperSubsystem {
 
   private void goldTwinkle(){
     twinkleLED(217, 160, 15);
+  }
+
+  public Command setRed(){
+    return run(this::redLED);
+  }
+
+  public Command setGreen(){
+    return run(this::greenLED);
+  }
+
+  public Command setBlue(){
+    return run(this::blueLED);
+  }
+  
+  public Command setWhite(){
+    return run(this::whiteLED);
+  }
+
+  public Command turnOff(){
+    return run(this::OffLED);
+  }
+
+  public Command setGold(){
+    return run(this::goldLED);
+  }
+
+  public Command setGoldTwinkle(){
+    return run(this::goldTwinkle);
   }
 
   @Override
