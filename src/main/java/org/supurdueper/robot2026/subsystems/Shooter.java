@@ -10,8 +10,16 @@ import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.SoftwareLimitSwitchConfigs;
 import com.ctre.phoenix6.controls.MotionMagicVelocityTorqueCurrentFOC;
 import com.ctre.phoenix6.controls.VelocityTorqueCurrentFOC;
+
+import dev.doglog.DogLog;
 import edu.wpi.first.units.measure.AngularVelocity;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import lombok.Getter;
+
+import static edu.wpi.first.units.Units.RotationsPerSecond;
+
 import org.supurdueper.lib.TalonFXFactory;
 import org.supurdueper.lib.subsystems.SupurdueperSubsystem;
 import org.supurdueper.lib.subsystems.VelocitySubsystem;
@@ -22,8 +30,19 @@ import org.supurdueper.robot2026.Robot;
 public class Shooter extends VelocitySubsystem implements SupurdueperSubsystem {
     /** Creates a new VelocityTest. */
     private VelocityTorqueCurrentFOC currentRequest = new VelocityTorqueCurrentFOC(0);
-
     private MotionMagicVelocityTorqueCurrentFOC velocityCurrentRequest = new MotionMagicVelocityTorqueCurrentFOC(0);
+
+    public enum shooterrps {
+        idle,
+        stop,
+        purge,
+        shootFar,
+        shootClose,
+        feed;
+    }
+
+    @Getter
+    private shooterrps rpsState;
 
     public Shooter() {
         followerMotor = TalonFXFactory.createPermanentFollowerTalon(CanId.SHOOTER_THREE, motor, false);
@@ -32,14 +51,64 @@ public class Shooter extends VelocitySubsystem implements SupurdueperSubsystem {
 
         configureMotors();
         Robot.add(this);
+
+        rpsState = shooterrps.stop;
     }
 
     public boolean atSpeed() {
-        return true;
+        return atVelocity() & rpsState.equals(shooterrps.shootClose);
+    }
+
+    public Command setVelocityState(shooterrps velocity) {
+        return Commands.runOnce(()-> rpsState = velocity);
+    }
+
+    public AngularVelocity getRpsSetpoint(shooterrps rps) {
+        AngularVelocity setpoint;
+        switch (rps) {
+            case shootClose:
+                setpoint = Constants.ShooterConstants.kShootCloseRps;
+                break;
+            case shootFar:
+                setpoint = Constants.ShooterConstants.kShootFarRps;
+                break;
+            case purge:
+                setpoint = Constants.ShooterConstants.kPurgeRPS;
+            case idle:
+                setpoint = Constants.ShooterConstants.kIdleRps;
+            case stop:
+            default:
+                setpoint = Constants.ShooterConstants.kStopRPS;
+        }
+        return setpoint;
+    }
+
+        @Override
+    protected void setVelocity(AngularVelocity velocity) {
+        motor.setControl(velocityCurrentRequest.withVelocity(velocity));
+    }
+
+    @Override
+    protected void setVelocity(double velocity) {
+        motor.setControl(velocityCurrentRequest.withVelocity(velocity));
+    }
+
+    public Command goToVelocity() {
+        return goToVelocity(() -> getRpsSetpoint(rpsState));
+    }
+
+    public Command goToVelocityBlocking() {
+        return goToVelocity(() -> getRpsSetpoint(rpsState)).withName("goToRPS(" + rpsState.toString() + ")");
     }
 
     @Override
     public void periodic() {
+
+        DogLog.log("Shooter/RPS", getVelocity().in(RotationsPerSecond));
+        DogLog.log("Shooter/Target RPS", getRpsSetpoint(rpsState));
+        DogLog.log("Shooter/RPS State", rpsState.toString());
+        DogLog.log("Shooter/ At Velocity", atVelocity());
+        
         super.periodic();
     }
 
@@ -85,20 +154,19 @@ public class Shooter extends VelocitySubsystem implements SupurdueperSubsystem {
 
     @Override
     public MotionMagicConfigs motionMagicConfig() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'motionMagicConfig'");
+        return new MotionMagicConfigs()
+        .withMotionMagicExpo_kA(Constants.ShooterConstants.motionmagickA)
+        .withMotionMagicExpo_kV(Constants.ShooterConstants.motionmagickV);
     }
 
     @Override
     public SoftwareLimitSwitchConfigs softLimitConfig() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'softLimitConfig'");
+        return Constants.ShooterConstants.kSoftLimits;
     }
 
     @Override
     public AngularVelocity velocityTolerance() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'velocityTolerance'");
+        return Constants.ShooterConstants.kVelocityTolerance;
     }
 
     @Override

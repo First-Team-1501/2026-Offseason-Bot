@@ -64,12 +64,21 @@ public class Intake extends TalonFXSubsystem implements SupurdueperSubsystem {
         runVoltage(Constants.IntakeConstants.kIntakeVoltage);
     }
 
+    public void shoot() {
+        runVoltage(Constants.IntakeConstants.kShootVoltage);
+    }
+
     public void purge() {
         runVoltage(Constants.IntakeConstants.kPurgeVoltage);
     }
 
     public Command runintake() {
         return Commands.runEnd(this::run, this::stop).withName("Intake/intake");
+    }
+
+    
+    public Command runShoot() {
+        return Commands.runEnd(this::shoot, this::stop).withName("Intake/shoot");
     }
 
     public Command runPurge() {
@@ -80,5 +89,6 @@ public class Intake extends TalonFXSubsystem implements SupurdueperSubsystem {
     public void bindCommands() {
         RobotStates.actionIntake.onTrue(runintake());
         RobotStates.actionPurge.onTrue(runPurge());
+        RobotStates.actionShoot.and(RobotStates.shooterAtSpeed).onTrue(runShoot());
     }
 }

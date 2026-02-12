@@ -90,7 +90,7 @@ public class Feeder extends VelocitySubsystem implements SupurdueperSubsystem {
 
     @Override
     public void bindCommands() {
-        RobotStates.actionShoot.and(RobotStates.shooterRevved).onTrue(setRPSState(rpsState.feed));
+        RobotStates.actionShoot.and(RobotStates.shooterAtSpeed).onTrue(setRPSState(rpsState.feed));
     }
 
     public Command setRPSState(feedRPS velocity) {
@@ -170,6 +170,6 @@ public class Feeder extends VelocitySubsystem implements SupurdueperSubsystem {
 
     @Override
     public boolean brakeMode() {
-        return true;
+        return false;
     }
 }

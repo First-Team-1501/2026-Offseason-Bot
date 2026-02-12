@@ -20,6 +20,8 @@ import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.SoftwareLimitSwitchConfigs;
 import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.StaticFeedforwardSignValue;
+
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.units.AngularAccelerationUnit;
 import edu.wpi.first.units.AngularVelocityUnit;
 import edu.wpi.first.units.VoltageUnit;
@@ -57,7 +59,7 @@ public final class Constants {
         public static final double translationKd = 0.1;
         public static final AngularVelocity rotationClosedLoopDeadband = RadiansPerSecond.of(0.05);
         public static final LinearVelocity translationClosedLoopDeadband = MetersPerSecond.of(0.01);
-        public static final Distance robotToBumperCenter = null;
+        public static final Translation2d robotToBumperCenter = null;
     }
 
     public static boolean disableHAL = false;
@@ -91,7 +93,16 @@ public final class Constants {
         public static final double kD = 0;
         public static final double kS = 0;
         public static final double kV = 0;
-        public static final StaticFeedforwardSignValue kfeedforward = null;
+        public static final double motionmagickA = 0;
+        public static final double motionmagickV = 0;
+        public static final double shooterGearRatio = 1;
+        public static final SoftwareLimitSwitchConfigs kSoftLimits = null;
+        public static final AngularVelocity kVelocityTolerance = null;
+        public static final AngularVelocity kShootCloseRps = null;
+        public static final AngularVelocity kShootFarRps = null;
+        public static final AngularVelocity kStopRPS = null;
+        public static final AngularVelocity kPurgeRPS = null;
+        public static final AngularVelocity kIdleRps = null;
     }
 
     public class HopperConstants {
@@ -114,8 +125,8 @@ public final class Constants {
         public static final AngularVelocity kPurgeRPS = RotationsPerSecond.of(-20);
         public static final AngularVelocity kStopRPS = RotationsPerSecond.of(0);
         public static final double kS = 0;
-        public static final Per<VoltageUnit, AngularAccelerationUnit> motionmagickA = null;
-        public static final Per<VoltageUnit, AngularVelocityUnit> motionmagickV = null;
+        public static final double motionmagickA = 0;
+        public static final double motionmagickV = 0;
     }
 
     public class IntakeConstants {
@@ -123,6 +134,7 @@ public final class Constants {
         public static final CurrentLimitsConfigs kCurrentLimit = null;
         public static final Voltage kIntakeVoltage = Volts.of(2);
         public static final Voltage kPurgeVoltage = Volts.of(-2);
+        public static final Voltage kShootVoltage = null;
     }
 
     public class ClimberConstants {
@@ -154,5 +166,9 @@ public final class Constants {
     public class LightsConstants {
         public static double brightness = 0.5;
         public static int LEDCount = 7;
+    }
+
+    public  class LookupTables {
+
     }
 }
