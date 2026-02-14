@@ -20,6 +20,8 @@ import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.SoftwareLimitSwitchConfigs;
 import com.ctre.phoenix6.signals.GravityTypeValue;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularAcceleration;
 import edu.wpi.first.units.measure.AngularVelocity;
@@ -80,6 +82,9 @@ public final class Constants {
         public static final Angle kReverseSoftLimit = null;
         public static final CurrentLimitsConfigs kCurrentLimit =
                 new CurrentLimitsConfigs().withStatorCurrentLimit(40).withStatorCurrentLimitEnable(true);
+        public static final AngularVelocity profileV = null;
+        public static final AngularAcceleration profileA = null;
+        public static final double kDegreesPerRotation = 0;
         ;
     }
 
@@ -177,5 +182,30 @@ public final class Constants {
         public static int LEDCount = 7;
     }
 
-    public class LookupTables {}
+    public class LookupTables {
+
+        public static final InterpolatingDoubleTreeMap distanceToShooterAngle = new InterpolatingDoubleTreeMap();
+
+        private static void addPointToDistanceToShooterAngle(double distanceInches, double angleDegrees) {
+            distanceToShooterAngle.put(Units.inchesToMeters(distanceInches), Units.degreesToRotations(angleDegrees));
+        }
+
+        static {
+            addPointToDistanceToShooterAngle(00, 51.0);
+            addPointToDistanceToShooterAngle(12, 48.5);
+            addPointToDistanceToShooterAngle(24, 42.5);
+            addPointToDistanceToShooterAngle(36, 38.5);
+            addPointToDistanceToShooterAngle(48, 35.5);
+            addPointToDistanceToShooterAngle(60, 33.5);
+            addPointToDistanceToShooterAngle(72, 31.5);
+            addPointToDistanceToShooterAngle(84, 29.5);
+            addPointToDistanceToShooterAngle(96, 27);
+            addPointToDistanceToShooterAngle(108, 25.5);
+            addPointToDistanceToShooterAngle(120, 24.5);
+            addPointToDistanceToShooterAngle(132, 24.5);
+            addPointToDistanceToShooterAngle(144, 23);
+            addPointToDistanceToShooterAngle(156, 22.5);
+            addPointToDistanceToShooterAngle(190, 22);
+        }
+    }
 }

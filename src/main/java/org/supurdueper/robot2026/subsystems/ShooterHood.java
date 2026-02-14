@@ -4,19 +4,20 @@
 
 package org.supurdueper.robot2026.subsystems;
 
-import com.ctre.phoenix6.configs.CANcoderConfiguration;
+import static edu.wpi.first.units.Units.Degrees;
+import static edu.wpi.first.units.Units.Rotations;
+
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
-import com.ctre.phoenix6.configs.FeedbackConfigs;
-import com.ctre.phoenix6.configs.MagnetSensorConfigs;
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.SoftwareLimitSwitchConfigs;
-import com.ctre.phoenix6.hardware.CANcoder;
-import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
+import com.ctre.phoenix6.controls.MotionMagicTorqueCurrentFOC;
+import com.ctre.phoenix6.controls.TorqueCurrentFOC;
 import com.ctre.phoenix6.signals.GravityTypeValue;
-import com.ctre.phoenix6.signals.SensorDirectionValue;
 import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import java.util.function.Supplier;
 import org.supurdueper.lib.subsystems.PositionSubsystem;
 import org.supurdueper.lib.subsystems.SupurdueperSubsystem;
 import org.supurdueper.robot2026.CanId;
@@ -24,21 +25,13 @@ import org.supurdueper.robot2026.Constants;
 import org.supurdueper.robot2026.Robot;
 
 public class ShooterHood extends PositionSubsystem implements SupurdueperSubsystem {
-    private final CANcoder hoodCancoder;
+
+    private TorqueCurrentFOC currentRequest = new TorqueCurrentFOC(0);
+    private MotionMagicTorqueCurrentFOC positionCurrentRequest = new MotionMagicTorqueCurrentFOC(0);
 
     /** Creates a new ShooterHood. */
     public ShooterHood() {
-        hoodCancoder = new CANcoder(CanId.CANCODER_HOOD.getDeviceNumber(), CanId.CANCODER_HOOD.getBus());
-        MagnetSensorConfigs cancoderConfig = new MagnetSensorConfigs()
-                .withMagnetOffset(Constants.ShooerHoodConstants.kAbsEncoderOffset)
-                .withAbsoluteSensorDiscontinuityPoint(0.5)
-                .withSensorDirection(SensorDirectionValue.Clockwise_Positive);
-        hoodCancoder.getConfigurator().apply(new CANcoderConfiguration().withMagnetSensor(cancoderConfig));
 
-        config = config.withFeedback(new FeedbackConfigs()
-                .withFeedbackRemoteSensorID(CanId.CANCODER_HOOD.getDeviceNumber())
-                .withFeedbackSensorSource(FeedbackSensorSourceValue.RemoteCANcoder)
-                .withSensorToMechanismRatio(Constants.ShooerHoodConstants.kAbsEncoderRatio));
         configureMotors();
         Robot.add(this);
     }
@@ -47,6 +40,19 @@ public class ShooterHood extends PositionSubsystem implements SupurdueperSubsyst
     public void periodic() {
         super.periodic();
         // This method will be called once per scheduler run
+    }
+
+    @Override
+    public Command goToPosition(Supplier<Angle> rotations) {
+        return run(() -> motor.setControl(positionCurrentRequest.withPosition(rotations.get())));
+    }
+
+    private Angle degreesToMotorRotations(Angle degrees) {
+        return Rotations.of(degrees.in(Degrees) / Constants.ShooerHoodConstants.kDegreesPerRotation);
+    }
+
+    private Angle motorRotationsToDegrees(Angle motorRotations) {
+        return Degrees.of(motorRotations.in(Rotations) * Constants.ShooerHoodConstants.kDegreesPerRotation);
     }
 
     @Override
@@ -66,7 +72,9 @@ public class ShooterHood extends PositionSubsystem implements SupurdueperSubsyst
     public MotionMagicConfigs motionMagicConfig() {
         return new MotionMagicConfigs()
                 .withMotionMagicExpo_kV(Constants.ShooerHoodConstants.profileKv)
-                .withMotionMagicExpo_kA(Constants.ShooerHoodConstants.profileKa);
+                .withMotionMagicExpo_kA(Constants.ShooerHoodConstants.profileKa)
+                .withMotionMagicCruiseVelocity(Constants.ShooerHoodConstants.profileV)
+                .withMotionMagicAcceleration(Constants.ShooerHoodConstants.profileA);
     }
 
     @Override
