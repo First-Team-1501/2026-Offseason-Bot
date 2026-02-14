@@ -299,6 +299,13 @@ public class FieldConstants {
                 0, AprilTagLayoutType.OFFICIAL.getLayout().getTagPose(29).get().getY());
     }
 
+    public static Rotation2d getHubHeading(Translation2d robotTranslation) {
+        Hub.innerCenterPoint.toTranslation2d();
+        Rotation2d facingHubCenter =
+                Hub.innerCenterPoint.toTranslation2d().minus(robotTranslation).getAngle();
+        return facingHubCenter;
+    }
+
     @RequiredArgsConstructor
     public enum FieldType {
         ANDYMARK("andymark"),
@@ -355,6 +362,5 @@ public class FieldConstants {
             }
             return layoutString;
         }
-
     }
 }

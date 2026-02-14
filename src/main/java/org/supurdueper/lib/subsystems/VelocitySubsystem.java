@@ -1,5 +1,7 @@
 package org.supurdueper.lib.subsystems;
 
+import static edu.wpi.first.units.Units.RotationsPerSecond;
+
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
@@ -12,9 +14,6 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
-
-import static edu.wpi.first.units.Units.RotationsPerSecond;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
@@ -92,7 +91,8 @@ public abstract class VelocitySubsystem extends TalonFXSubsystem {
     }
 
     protected boolean atVelocity() {
-        return (getSetpoint().minus(getVelocity())).abs(RotationsPerSecond) < (velocityTolerance).abs(RotationsPerSecond);
+        return (getSetpoint().minus(getVelocity())).abs(RotationsPerSecond)
+                < (velocityTolerance).abs(RotationsPerSecond);
     }
 
     public VelocitySubsystem() {

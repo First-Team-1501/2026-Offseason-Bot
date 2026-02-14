@@ -76,7 +76,6 @@ public class Intake extends TalonFXSubsystem implements SupurdueperSubsystem {
         return Commands.runEnd(this::run, this::stop).withName("Intake/intake");
     }
 
-    
     public Command runShoot() {
         return Commands.runEnd(this::shoot, this::stop).withName("Intake/shoot");
     }

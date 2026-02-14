@@ -123,8 +123,8 @@ public class Feeder extends VelocitySubsystem implements SupurdueperSubsystem {
     @Override
     public MotionMagicConfigs motionMagicConfig() {
         return new MotionMagicConfigs()
-                .withMotionMagicExpo_kA(Constants.FeederConstants.motionmagickA)
-                .withMotionMagicExpo_kV(Constants.FeederConstants.motionmagickV);
+                .withMotionMagicExpo_kA(Constants.FeederConstants.profilekA)
+                .withMotionMagicExpo_kV(Constants.FeederConstants.profilekV);
     }
 
     @Override

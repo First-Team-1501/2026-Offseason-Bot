@@ -19,17 +19,12 @@ import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.SoftwareLimitSwitchConfigs;
 import com.ctre.phoenix6.signals.GravityTypeValue;
-import com.ctre.phoenix6.signals.StaticFeedforwardSignValue;
-
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.units.AngularAccelerationUnit;
-import edu.wpi.first.units.AngularVelocityUnit;
-import edu.wpi.first.units.VoltageUnit;
 import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.units.measure.AngularAcceleration;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.LinearVelocity;
-import edu.wpi.first.units.measure.Per;
 import edu.wpi.first.units.measure.Voltage;
 import org.supurdueper.lib.utils.ExpCurve;
 
@@ -83,32 +78,47 @@ public final class Constants {
         public static final double profileKv = 0;
         public static final Angle kForwardSoftLimit = null;
         public static final Angle kReverseSoftLimit = null;
-        public static final CurrentLimitsConfigs kCurrentLimit = null;
+        public static final CurrentLimitsConfigs kCurrentLimit =
+                new CurrentLimitsConfigs().withStatorCurrentLimit(40).withStatorCurrentLimitEnable(true);
+        ;
     }
 
     public class ShooterConstants {
-        public static final CurrentLimitsConfigs kCurrentLimit = null;
+        public static final CurrentLimitsConfigs kCurrentLimit =
+                new CurrentLimitsConfigs().withStatorCurrentLimit(20).withStatorCurrentLimitEnable(true);
         public static final double kP = 0;
         public static final double kI = 0;
         public static final double kD = 0;
         public static final double kS = 0;
         public static final double kV = 0;
-        public static final double motionmagickA = 0;
-        public static final double motionmagickV = 0;
+        public static final double profilekA = 0;
+        public static final double profilekV = 0;
         public static final double shooterGearRatio = 1;
         public static final SoftwareLimitSwitchConfigs kSoftLimits = null;
-        public static final AngularVelocity kVelocityTolerance = null;
-        public static final AngularVelocity kShootCloseRps = null;
-        public static final AngularVelocity kShootFarRps = null;
-        public static final AngularVelocity kStopRPS = null;
-        public static final AngularVelocity kPurgeRPS = null;
-        public static final AngularVelocity kIdleRps = null;
+        public static final AngularVelocity kVelocityTolerance = RotationsPerSecond.of(0);
+        public static final AngularVelocity kShootCloseRps = RotationsPerSecond.of(0);
+        public static final AngularVelocity kShootFarRps = RotationsPerSecond.of(0);
+        public static final AngularVelocity kStopRPS = RotationsPerSecond.of(0);
+        public static final AngularVelocity kPurgeRPS = RotationsPerSecond.of(0);
+        public static final AngularVelocity kIdleRps = RotationsPerSecond.of(0);
     }
 
     public class HopperConstants {
-        public static final CurrentLimitsConfigs kCurrentLimit = null;
-        public static final Voltage kIntakeVoltage = null;
-        public static final Voltage kPurgeVoltage = null;
+        public static final CurrentLimitsConfigs kCurrentLimit =
+                new CurrentLimitsConfigs().withStatorCurrentLimit(60).withStatorCurrentLimitEnable(true);
+        ;
+        public static final Voltage kIntakeVoltage = Volts.of(0);
+        public static final Voltage kPurgeVoltage = Volts.of(0);
+        public static final double kA = 0;
+        public static final double kV = 0;
+        public static final double kS = 0;
+        public static final double kD = 0;
+        public static final double kI = 0;
+        public static final double kP = 0;
+        public static final double profilekA = 0;
+        public static final double profilekV = 0;
+        public static final SoftwareLimitSwitchConfigs softLimitConfig = null;
+        public static final AngularVelocity velocityTolerance = null;
     }
 
     public class FeederConstants {
@@ -119,27 +129,31 @@ public final class Constants {
         public static final double kA = 0;
         public static final double kV = 0;
         public static final SoftwareLimitSwitchConfigs softLimitConfig = null;
-        public static final AngularVelocity velocityTolerance = null;
-        public static final CurrentLimitsConfigs kCurrentLimit = null;
+        public static final AngularVelocity velocityTolerance = RotationsPerSecond.of(10);
+        public static final CurrentLimitsConfigs kCurrentLimit =
+                new CurrentLimitsConfigs().withStatorCurrentLimit(20).withStatorCurrentLimitEnable(true);
+        ;
         public static final AngularVelocity kFeedRPS = RotationsPerSecond.of(30);
         public static final AngularVelocity kPurgeRPS = RotationsPerSecond.of(-20);
         public static final AngularVelocity kStopRPS = RotationsPerSecond.of(0);
         public static final double kS = 0;
-        public static final double motionmagickA = 0;
-        public static final double motionmagickV = 0;
+        public static final double profilekA = 0;
+        public static final double profilekV = 0;
     }
 
     public class IntakeConstants {
 
-        public static final CurrentLimitsConfigs kCurrentLimit = null;
+        public static final CurrentLimitsConfigs kCurrentLimit =
+                new CurrentLimitsConfigs().withStatorCurrentLimit(60).withStatorCurrentLimitEnable(true);
+        ;
         public static final Voltage kIntakeVoltage = Volts.of(2);
         public static final Voltage kPurgeVoltage = Volts.of(-2);
         public static final Voltage kShootVoltage = null;
     }
 
     public class ClimberConstants {
-        public static final CurrentLimitsConfigs kCurrentLimit = null;
-        public static final Voltage kIntakeVoltage = Volts.of(5); // TODO change this to real value
+        public static final CurrentLimitsConfigs kCurrentLimit =
+                new CurrentLimitsConfigs().withStatorCurrentLimit(120).withStatorCurrentLimitEnable(true);
         public static final GravityTypeValue GravityType = GravityTypeValue.Elevator_Static;
         public static final double kp = 0;
         public static final double ki = 0;
@@ -150,17 +164,12 @@ public final class Constants {
         public static final double kg = 0;
         public static final double profileKa = 0;
         public static final double profileKv = 0;
-        public static final Angle kForwardSoftLimit = null;
-        public static final Angle kReverseSoftLimit = null;
-        public static Angle positionTolerance = Angle.ofBaseUnits(0, null);
-    }
-
-    public class IndexerConstants {
-
-        public static CurrentLimitsConfigs kCurrentLimit = null;
-        public static Voltage kIndexIntakeVoltage = Volts.of(2);
-        public static Voltage kIndexShooterVoltage = Volts.of(4);
-        public static Voltage kPurgeVoltage = Volts.of(-2);
+        public static final Distance kForwardSoftLimit = Inches.of(0);
+        public static final Distance kReverseSoftLimit = Inches.of(0);
+        public static final double kInchesPerRotation = 0;
+        public static final AngularVelocity profileV = null;
+        public static final AngularAcceleration profileA = null;
+        public static Distance positionTolerance = Inches.of(0);
     }
 
     public class LightsConstants {
@@ -168,7 +177,5 @@ public final class Constants {
         public static int LEDCount = 7;
     }
 
-    public  class LookupTables {
-
-    }
+    public class LookupTables {}
 }

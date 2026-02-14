@@ -4,11 +4,16 @@
 
 package org.supurdueper.robot2026.subsystems;
 
+import static edu.wpi.first.units.Units.Inches;
+import static edu.wpi.first.units.Units.Rotation;
+import static edu.wpi.first.units.Units.Rotations;
+
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.SoftwareLimitSwitchConfigs;
 import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import org.supurdueper.lib.subsystems.PositionSubsystem;
 import org.supurdueper.lib.subsystems.SupurdueperSubsystem;
@@ -18,6 +23,12 @@ import org.supurdueper.robot2026.Robot;
 
 public class Climber extends PositionSubsystem implements SupurdueperSubsystem {
     /** Creates a new Climber. */
+    public enum climbPosition {
+        home,
+        dropIntake,
+        raiseClimber;
+    }
+
     public Climber() {
         configureMotors();
         Robot.add(this);
@@ -81,21 +92,29 @@ public class Climber extends PositionSubsystem implements SupurdueperSubsystem {
     public MotionMagicConfigs motionMagicConfig() {
         return new MotionMagicConfigs()
                 .withMotionMagicExpo_kV(Constants.ClimberConstants.profileKv)
-                .withMotionMagicExpo_kA(Constants.ClimberConstants.profileKa);
+                .withMotionMagicExpo_kA(Constants.ClimberConstants.profileKa)
+                .withMotionMagicCruiseVelocity(Constants.ClimberConstants.profileV)
+                .withMotionMagicAcceleration(Constants.ClimberConstants.profileA);
+    }
+
+    private Distance motorRotationToHeight(Angle motorRotations) {
+        return Inches.of(motorRotations.in(Rotation) * Constants.ClimberConstants.kInchesPerRotation);
+    }
+
+    private Angle heightToMotorRotations(Distance height) {
+        return Rotations.of(height.in(Inches) / Constants.ClimberConstants.kInchesPerRotation);
     }
 
     @Override
     public SoftwareLimitSwitchConfigs softLimitConfig() {
         return new SoftwareLimitSwitchConfigs()
-                .withForwardSoftLimitThreshold(Constants.ClimberConstants.kForwardSoftLimit)
-                .withForwardSoftLimitEnable(true)
-                .withReverseSoftLimitThreshold(Constants.ClimberConstants.kReverseSoftLimit)
-                .withReverseSoftLimitEnable(true);
+                .withForwardSoftLimitThreshold(heightToMotorRotations(Constants.ClimberConstants.kForwardSoftLimit))
+                .withReverseSoftLimitThreshold(heightToMotorRotations(Constants.ClimberConstants.kReverseSoftLimit));
     }
 
     @Override
     public Angle positionTolerance() {
-        return Constants.ClimberConstants.positionTolerance;
+        return heightToMotorRotations(Constants.ClimberConstants.positionTolerance);
     }
 
     @Override

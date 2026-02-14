@@ -18,94 +18,94 @@ import org.supurdueper.robot2026.Constants;
 import org.supurdueper.robot2026.Robot;
 
 public class Lights extends SubsystemBase implements SupurdueperSubsystem {
-  /** Creates a new Lights. */
-  private CANdle candle;
+    /** Creates a new Lights. */
+    private CANdle candle;
 
-  private CANdleConfiguration candleConfig;
+    private CANdleConfiguration candleConfig;
 
-  public Lights() {
-    super();
-    candle = new CANdle(CanId.CANDLE.getDeviceNumber());
-    candleConfig = new CANdleConfiguration();
-    candleConfig.LED.StripType = StripTypeValue.GRB;
-    candleConfig.LED.BrightnessScalar = Constants.LightsConstants.brightness;
-    candle.getConfigurator().apply(candleConfig);
-    Robot.add(this);
-  }
+    public Lights() {
+        super();
+        candle = new CANdle(CanId.CANDLE.getDeviceNumber());
+        candleConfig = new CANdleConfiguration();
+        candleConfig.LED.StripType = StripTypeValue.GRB;
+        candleConfig.LED.BrightnessScalar = Constants.LightsConstants.brightness;
+        candle.getConfigurator().apply(candleConfig);
+        Robot.add(this);
+    }
 
-  private void setLED(int r, int g, int b) {
-    candle.setControl(new SolidColor(0, Constants.LightsConstants.LEDCount).withColor(new RGBWColor(r, g, b)));
-  }
+    private void setLED(int r, int g, int b) {
+        candle.setControl(new SolidColor(0, Constants.LightsConstants.LEDCount).withColor(new RGBWColor(r, g, b)));
+    }
 
-  private void twinkleLED(int r, int g, int b) {
-    candle.setControl(
-        new TwinkleAnimation(0, Constants.LightsConstants.LEDCount).withColor(new RGBWColor(r, g, b)));
-  }
+    private void twinkleLED(int r, int g, int b) {
+        candle.setControl(
+                new TwinkleAnimation(0, Constants.LightsConstants.LEDCount).withColor(new RGBWColor(r, g, b)));
+    }
 
-  private void redLED() {
-    setLED(255, 0, 0);
-  }
+    private void redLED() {
+        setLED(255, 0, 0);
+    }
 
-  private void greenLED() {
-    setLED(0, 255, 0);
-  }
+    private void greenLED() {
+        setLED(0, 255, 0);
+    }
 
-  private void blueLED() {
-    setLED(0, 0, 255);
-  }
+    private void blueLED() {
+        setLED(0, 0, 255);
+    }
 
-  private void whiteLED() {
-    setLED(255, 255, 255);
-  }
+    private void whiteLED() {
+        setLED(255, 255, 255);
+    }
 
-  private void OffLED() {
-    setLED(0, 0, 0);
-  }
+    private void OffLED() {
+        setLED(0, 0, 0);
+    }
 
-  private void goldLED() {
-    setLED(217, 160, 15);
-  }
+    private void goldLED() {
+        setLED(217, 160, 15);
+    }
 
-  private void goldTwinkle() {
-    twinkleLED(217, 160, 15);
-  }
+    private void goldTwinkle() {
+        twinkleLED(217, 160, 15);
+    }
 
-  public Command setRed() {
-    return run(this::redLED);
-  }
+    public Command setRed() {
+        return run(this::redLED);
+    }
 
-  public Command setGreen() {
-    return run(this::greenLED);
-  }
+    public Command setGreen() {
+        return run(this::greenLED);
+    }
 
-  public Command setBlue() {
-    return run(this::blueLED);
-  }
+    public Command setBlue() {
+        return run(this::blueLED);
+    }
 
-  public Command setWhite() {
-    return run(this::whiteLED);
-  }
+    public Command setWhite() {
+        return run(this::whiteLED);
+    }
 
-  public Command turnOff() {
-    return run(this::OffLED);
-  }
+    public Command turnOff() {
+        return run(this::OffLED);
+    }
 
-  public Command setGold() {
-    return run(this::goldLED);
-  }
+    public Command setGold() {
+        return run(this::goldLED);
+    }
 
-  public Command setGoldTwinkle() {
-    return run(this::goldTwinkle);
-  }
+    public Command setGoldTwinkle() {
+        return run(this::goldTwinkle);
+    }
 
-  @Override
-  public void periodic() {
-    // This method will be called once per scheduler run
-  }
+    @Override
+    public void periodic() {
+        // This method will be called once per scheduler run
+    }
 
-  @Override
-  public void bindCommands() {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'bindCommands'");
-  }
+    @Override
+    public void bindCommands() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'bindCommands'");
+    }
 }
