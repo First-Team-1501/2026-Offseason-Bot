@@ -22,6 +22,9 @@ public final class RobotStates {
     public static final Trigger actionIntake = driver.rightBumper.and(teleop);
     public static final Trigger actionPurge = driver.extraRight.and(teleop);
     public static final Trigger actionShoot = driver.leftBumper.and(teleop);
+    public static final Trigger actionClimbPrep = driver.downDpad.and(teleop);
+    public static final Trigger actionDropIntake = auto.onTrue(null);
+
 
     private RobotStates() {
         throw new IllegalStateException("Utility class");

@@ -152,6 +152,8 @@ public final class Constants {
         public static final double kInchesPerRotation = 0;
         public static final AngularVelocity profileV = null;
         public static final AngularAcceleration profileA = null;
+        public static final Distance kDropIntakePosition = null;
+        public static final Distance kPrepClimbPosition = null;
         public static Distance positionTolerance = Inches.of(0);
     }
 
