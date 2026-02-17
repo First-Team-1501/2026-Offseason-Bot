@@ -16,7 +16,6 @@ public final class RobotStates {
     // auto
 
     // information
-    public static final Trigger shooterAtSpeed = new Trigger(RobotContainer.getShooter()::atSpeed);
 
     // Actions
     public static final Trigger rezeroFieldHeading = driver.select.and(teleop);

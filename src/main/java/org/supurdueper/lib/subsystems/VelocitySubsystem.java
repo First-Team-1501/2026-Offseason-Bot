@@ -3,10 +3,8 @@ package org.supurdueper.lib.subsystems;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
 
 import com.ctre.phoenix6.StatusSignal;
-import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
-import com.ctre.phoenix6.configs.SoftwareLimitSwitchConfigs;
-import com.ctre.phoenix6.controls.MotionMagicVelocityTorqueCurrentFOC;
+import com.ctre.phoenix6.controls.VelocityTorqueCurrentFOC;
 import edu.wpi.first.units.Units;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -24,17 +22,10 @@ public abstract class VelocitySubsystem extends TalonFXSubsystem {
 
     // Tunable numbers
     private final LoggedTunableNumber kp;
-    private final LoggedTunableNumber ki;
-    private final LoggedTunableNumber kd;
     private final LoggedTunableNumber ks;
     private final LoggedTunableNumber kv;
-    private final LoggedTunableNumber ka;
-    private final LoggedTunableNumber profileKv;
-    private final LoggedTunableNumber profileKa;
-    private final LoggedTunableNumber profileV;
-    private final LoggedTunableNumber profileA;
     private final List<LoggedTunableNumber> pidGains;
-    private final MotionMagicVelocityTorqueCurrentFOC velocityRequest = new MotionMagicVelocityTorqueCurrentFOC(0);
+    private final VelocityTorqueCurrentFOC velocityRequest = new VelocityTorqueCurrentFOC(0);
     protected final AngularVelocity velocityTolerance;
     private final SysIdRoutine sysIdRoutine;
     private final Trigger atVelocity = new Trigger(this::atVelocity);
@@ -71,11 +62,11 @@ public abstract class VelocitySubsystem extends TalonFXSubsystem {
     }
 
     protected void setVelocity(AngularVelocity angularvelocity) {
-        motor.setControl(velocityRequest);
+        motor.setControl(velocityRequest.withVelocity(angularvelocity));
     }
 
     protected void setVelocity(double angularvelocity) {
-        motor.setControl(velocityRequest);
+        motor.setControl(velocityRequest.withVelocity(angularvelocity));
     }
 
     protected AngularVelocity getPosition() {
@@ -83,11 +74,11 @@ public abstract class VelocitySubsystem extends TalonFXSubsystem {
     }
 
     protected AngularVelocity getVelocity() {
-        return Units.DegreesPerSecond.of(motorSetpointSignal.getValueAsDouble());
+        return Units.RotationsPerSecond.of(motorVelocitySignal.getValueAsDouble());
     }
 
     protected AngularVelocity getSetpoint() {
-        return Units.DegreesPerSecond.of(motorSetpointSignal.getValueAsDouble());
+        return Units.RotationsPerSecond.of(motorSetpointSignal.getValueAsDouble());
     }
 
     protected boolean atVelocity() {
@@ -101,34 +92,18 @@ public abstract class VelocitySubsystem extends TalonFXSubsystem {
         // Setup tunable pid gains
         String name = this.getName();
         kp = new LoggedTunableNumber(name + "/Kp");
-        ki = new LoggedTunableNumber(name + "/Ki");
-        kd = new LoggedTunableNumber(name + "/Kd");
         ks = new LoggedTunableNumber(name + "/Ks");
         kv = new LoggedTunableNumber(name + "/Kv");
-        ka = new LoggedTunableNumber(name + "/Ka");
-        new LoggedTunableNumber(name + "/kfeedforward");
-        profileKv = new LoggedTunableNumber(name + "/profileKv");
-        profileKa = new LoggedTunableNumber(name + "/profileKa");
-        profileV = new LoggedTunableNumber(name + "/profileVel");
-        profileA = new LoggedTunableNumber(name + "/profileAcc");
         Slot0Configs gains = pidGains();
         kp.initDefault(gains.kP);
-        ki.initDefault(gains.kI);
-        kd.initDefault(gains.kD);
         ks.initDefault(gains.kS);
         kv.initDefault(gains.kV);
-        ka.initDefault(gains.kA);
-        MotionMagicConfigs motionMagicConfig = motionMagicConfig();
-        profileKv.initDefault(motionMagicConfig.MotionMagicExpo_kV);
-        profileKa.initDefault(motionMagicConfig.MotionMagicExpo_kA);
-        profileV.initDefault(motionMagicConfig.MotionMagicCruiseVelocity);
-        profileA.initDefault(motionMagicConfig.MotionMagicAcceleration);
         pidGains = new ArrayList<>();
-        pidGains.addAll(List.of(kp, ki, kd, ks, kv, ka, profileKa, profileKv, profileV, profileA));
+        pidGains.addAll(List.of(kp, ks, kv));
         velocityTolerance = velocityTolerance();
         sysIdRoutine = sysIdConfig();
         // Add motion magic items to config
-        config = config.withSlot0(gains).withMotionMagic(motionMagicConfig).withSoftwareLimitSwitch(softLimitConfig());
+        config = config.withSlot0(gains);
     }
 
     @Override
@@ -137,19 +112,9 @@ public abstract class VelocitySubsystem extends TalonFXSubsystem {
             for (LoggedTunableNumber gain : pidGains) {
                 if (gain.hasChanged(hashCode())) {
                     // Send new PID gains to talon
-                    Slot0Configs slot0config = new Slot0Configs()
-                            .withKP(kp.get())
-                            .withKI(ki.get())
-                            .withKD(kd.get())
-                            .withKS(ks.get())
-                            .withKV(kv.get())
-                            .withKA(ka.get());
-                    MotionMagicConfigs motionMagicConfigs = new MotionMagicConfigs()
-                            .withMotionMagicExpo_kA(profileKa.get())
-                            .withMotionMagicExpo_kV(profileKv.get())
-                            .withMotionMagicCruiseVelocity(profileV.get())
-                            .withMotionMagicAcceleration(profileA.get());
-                    motor.getConfigurator().apply(config.withSlot0(slot0config).withMotionMagic(motionMagicConfigs));
+                    Slot0Configs slot0config =
+                            new Slot0Configs().withKP(kp.get()).withKS(ks.get()).withKV(kv.get());
+                    motor.getConfigurator().apply(config.withSlot0(slot0config));
                     break;
                 }
             }
@@ -166,10 +131,6 @@ public abstract class VelocitySubsystem extends TalonFXSubsystem {
     }
 
     public abstract Slot0Configs pidGains();
-
-    public abstract MotionMagicConfigs motionMagicConfig();
-
-    public abstract SoftwareLimitSwitchConfigs softLimitConfig();
 
     public abstract AngularVelocity velocityTolerance();
 

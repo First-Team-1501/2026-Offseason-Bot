@@ -4,14 +4,10 @@
 
 package org.supurdueper.robot2026.subsystems;
 
-import static edu.wpi.first.units.Units.RotationsPerSecond;
+import static edu.wpi.first.units.Units.RPM;
 
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
-import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
-import com.ctre.phoenix6.configs.SoftwareLimitSwitchConfigs;
-import com.ctre.phoenix6.controls.MotionMagicVelocityTorqueCurrentFOC;
-import com.ctre.phoenix6.controls.VelocityTorqueCurrentFOC;
 import dev.doglog.DogLog;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -22,114 +18,70 @@ import org.supurdueper.lib.subsystems.VelocitySubsystem;
 import org.supurdueper.robot2026.CanId;
 import org.supurdueper.robot2026.Constants;
 import org.supurdueper.robot2026.Robot;
-import org.supurdueper.robot2026.state.RobotStates;
 
 public class Feeder extends VelocitySubsystem implements SupurdueperSubsystem {
 
-    private VelocityTorqueCurrentFOC currentRequest = new VelocityTorqueCurrentFOC(0);
-    private MotionMagicVelocityTorqueCurrentFOC velocityCurrentRequest = new MotionMagicVelocityTorqueCurrentFOC(0);
     /** Creates a new Feeder. */
-    public enum feedRPS {
-        feed,
-        purge,
-        stop;
+    public enum FeedState {
+        feed(Constants.FeederConstants.kFeedRPS),
+        purge(Constants.FeederConstants.kPurgeRPS),
+        stop(RPM.of(0));
+
+        public AngularVelocity velocity;
+
+        FeedState(AngularVelocity velocity) {
+            this.velocity = velocity;
+        }
     }
 
     @Getter
-    private feedRPS rpsState;
+    private FeedState feedState;
 
     public Feeder() {
         configureMotors();
         Robot.add(this);
 
-        rpsState = feedRPS.stop;
-    }
-
-    public AngularVelocity getRpsSetpoint(feedRPS rps) {
-        AngularVelocity setpoint;
-        switch (rps) {
-            case feed:
-                setpoint = Constants.FeederConstants.kFeedRPS;
-                break;
-            case purge:
-                setpoint = Constants.FeederConstants.kPurgeRPS;
-                break;
-            case stop:
-            default:
-                setpoint = Constants.FeederConstants.kStopRPS;
-        }
-        return setpoint;
-    }
-
-    @Override
-    protected void setVelocity(AngularVelocity velocity) {
-        motor.setControl(velocityCurrentRequest.withVelocity(velocity));
-    }
-
-    @Override
-    protected void setVelocity(double velocity) {
-        motor.setControl(velocityCurrentRequest.withVelocity(velocity));
-    }
-
-    public Command goToVelocity() {
-        return goToVelocity(() -> getRpsSetpoint(rpsState));
-    }
-
-    public Command goToVelocityBlocking() {
-        return goToVelocity(() -> getRpsSetpoint(rpsState)).withName("goToRPS(" + rpsState.toString() + ")");
+        feedState = FeedState.stop;
     }
 
     @Override
     public void periodic() {
         super.periodic();
-        DogLog.log("Feeder/RPS", getVelocity().in(RotationsPerSecond));
-        DogLog.log("Feeder/Target RPS", getRpsSetpoint(rpsState));
-        DogLog.log("Feeder/RPS State", rpsState.toString());
-        DogLog.log("Feeder/ At Velocity", atVelocity());
+        setVelocity(feedState.velocity);
+        DogLog.log("Feeder/RPM", getVelocity().in(RPM));
+        DogLog.log("Feeder/Target RPM", feedState.velocity.in(RPM));
+        DogLog.log("Feeder/State", feedState.name());
+        DogLog.log("Feeder/At Velocity", atVelocity());
     }
 
     @Override
-    public void bindCommands() {
-        RobotStates.actionShoot.and(RobotStates.shooterAtSpeed).onTrue(setRPSState(rpsState.feed));
-    }
+    public void bindCommands() {}
 
-    public Command setRPSState(feedRPS velocity) {
-        return runOnce(() -> rpsState = velocity);
+    public Command setRPSState(FeedState velocity) {
+        return runOnce(() -> feedState = velocity);
     }
 
     public boolean atFeed() {
-        return rpsState.equals(feedRPS.feed);
+        return feedState.equals(FeedState.feed);
     }
 
     public boolean atPurge() {
-        return rpsState.equals(feedRPS.purge);
+        return feedState.equals(FeedState.purge);
     }
 
     public boolean atStop() {
-        return rpsState.equals(feedRPS.stop);
+        return feedState.equals(FeedState.stop);
     }
 
     @Override
     public Slot0Configs pidGains() {
         return new Slot0Configs()
                 .withKP(Constants.FeederConstants.kP)
-                .withKI(Constants.FeederConstants.kI)
-                .withKD(Constants.FeederConstants.kD)
+                .withKI(0)
+                .withKD(0)
                 .withKS(Constants.FeederConstants.kS)
                 .withKV(Constants.FeederConstants.kV)
-                .withKA(Constants.FeederConstants.kA);
-    }
-
-    @Override
-    public MotionMagicConfigs motionMagicConfig() {
-        return new MotionMagicConfigs()
-                .withMotionMagicExpo_kA(Constants.FeederConstants.profilekA)
-                .withMotionMagicExpo_kV(Constants.FeederConstants.profilekV);
-    }
-
-    @Override
-    public SoftwareLimitSwitchConfigs softLimitConfig() {
-        return Constants.FeederConstants.softLimitConfig;
+                .withKA(0);
     }
 
     @Override
@@ -155,7 +107,7 @@ public class Feeder extends VelocitySubsystem implements SupurdueperSubsystem {
 
     @Override
     public boolean followerInverted() {
-        return true;
+        return false;
     }
 
     @Override

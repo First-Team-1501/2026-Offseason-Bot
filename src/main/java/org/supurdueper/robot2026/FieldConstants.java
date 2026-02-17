@@ -10,7 +10,6 @@ package org.supurdueper.robot2026;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.util.Units;
@@ -27,7 +26,7 @@ import lombok.RequiredArgsConstructor;
  * alliance station
  */
 public class FieldConstants {
-    public static final FieldType fieldType = FieldType.ANDYMARK;
+    public static final FieldType fieldType = FieldType.WELDED;
 
     // AprilTag related constants
     public static final int aprilTagCount =
@@ -40,6 +39,9 @@ public class FieldConstants {
             AprilTagLayoutType.OFFICIAL.getLayout().getFieldLength();
     public static final double fieldWidth =
             AprilTagLayoutType.OFFICIAL.getLayout().getFieldWidth();
+
+    // Fuel dimensions
+    public static final double fuelDiameter = Units.inchesToMeters(5.91);
 
     /** Officially defined and relevant vertical lines found on the field (defined by X-axis offset) */
     public static class LinesVertical {
@@ -297,13 +299,6 @@ public class FieldConstants {
         // Relevant reference points on alliance side
         public static final Translation2d centerPoint = new Translation2d(
                 0, AprilTagLayoutType.OFFICIAL.getLayout().getTagPose(29).get().getY());
-    }
-
-    public static Rotation2d getHubHeading(Translation2d robotTranslation) {
-        Hub.innerCenterPoint.toTranslation2d();
-        Rotation2d facingHubCenter =
-                Hub.innerCenterPoint.toTranslation2d().minus(robotTranslation).getAngle();
-        return facingHubCenter;
     }
 
     @RequiredArgsConstructor
