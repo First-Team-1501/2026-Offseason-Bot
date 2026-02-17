@@ -5,9 +5,7 @@
 package org.supurdueper.robot2026.subsystems;
 
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
-import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
-import com.ctre.phoenix6.configs.SoftwareLimitSwitchConfigs;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import org.supurdueper.lib.subsystems.SupurdueperSubsystem;
@@ -76,23 +74,11 @@ public class Hopper extends VelocitySubsystem implements SupurdueperSubsystem {
     public Slot0Configs pidGains() {
         return new Slot0Configs()
                 .withKP(Constants.HopperConstants.kP)
-                .withKI(Constants.HopperConstants.kI)
-                .withKD(Constants.HopperConstants.kD)
+                .withKI(0)
+                .withKD(0)
                 .withKS(Constants.HopperConstants.kS)
                 .withKV(Constants.HopperConstants.kV)
-                .withKA(Constants.HopperConstants.kA);
-    }
-
-    @Override
-    public MotionMagicConfigs motionMagicConfig() {
-        return new MotionMagicConfigs()
-                .withMotionMagicExpo_kA(Constants.HopperConstants.profilekA)
-                .withMotionMagicExpo_kV(Constants.HopperConstants.profilekV);
-    }
-
-    @Override
-    public SoftwareLimitSwitchConfigs softLimitConfig() {
-        return Constants.HopperConstants.softLimitConfig;
+                .withKA(0);
     }
 
     @Override

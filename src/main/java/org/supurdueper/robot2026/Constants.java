@@ -17,7 +17,6 @@ import static edu.wpi.first.units.Units.*;
 
 import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
-import com.ctre.phoenix6.configs.SoftwareLimitSwitchConfigs;
 import com.ctre.phoenix6.signals.GravityTypeValue;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
@@ -34,7 +33,7 @@ public final class Constants {
     public static boolean tuningMode = false;
     public static boolean publishToNT = true;
     public static CANBus canivoreBus = new CANBus("canivore");
-    public static CANBus rioBus = new CANBus("canivore");
+    public static CANBus rioBus = new CANBus("rio");
 
     public static final class DriverConstants {
         public static final int kControllerPort = 0;
@@ -92,58 +91,37 @@ public final class Constants {
         public static final CurrentLimitsConfigs kCurrentLimit =
                 new CurrentLimitsConfigs().withStatorCurrentLimit(20).withStatorCurrentLimitEnable(true);
         public static final double kP = 0;
-        public static final double kI = 0;
-        public static final double kD = 0;
         public static final double kS = 0;
         public static final double kV = 0;
-        public static final double profilekA = 0;
-        public static final double profilekV = 0;
-        public static final double shooterGearRatio = 1;
-        public static final SoftwareLimitSwitchConfigs kSoftLimits = null;
-        public static final AngularVelocity kVelocityTolerance = RotationsPerSecond.of(0);
-        public static final AngularVelocity kShootCloseRps = RotationsPerSecond.of(0);
-        public static final AngularVelocity kShootFarRps = RotationsPerSecond.of(0);
-        public static final AngularVelocity kStopRPS = RotationsPerSecond.of(0);
-        public static final AngularVelocity kPurgeRPS = RotationsPerSecond.of(0);
-        public static final AngularVelocity kIdleRps = RotationsPerSecond.of(0);
+        public static final double shooterGearRatio = 30.0 / 24.0;
+        public static final AngularVelocity kVelocityTolerance = RPM.of(0);
+        public static final AngularVelocity kShootRPM = RPM.of(0);
+        public static final AngularVelocity kStopRPM = RPM.of(0);
+        public static final AngularVelocity kIdleRPM = RPM.of(0);
     }
 
     public class HopperConstants {
         public static final CurrentLimitsConfigs kCurrentLimit =
                 new CurrentLimitsConfigs().withStatorCurrentLimit(60).withStatorCurrentLimitEnable(true);
-        ;
         public static final Voltage kIntakeVoltage = Volts.of(0);
         public static final Voltage kPurgeVoltage = Volts.of(0);
-        public static final double kA = 0;
         public static final double kV = 0;
         public static final double kS = 0;
-        public static final double kD = 0;
-        public static final double kI = 0;
         public static final double kP = 0;
-        public static final double profilekA = 0;
-        public static final double profilekV = 0;
-        public static final SoftwareLimitSwitchConfigs softLimitConfig = null;
         public static final AngularVelocity velocityTolerance = null;
     }
 
     public class FeederConstants {
 
         public static final double kP = 0;
-        public static final double kI = 0;
-        public static final double kD = 0;
-        public static final double kA = 0;
+        public static final double kS = 0;
         public static final double kV = 0;
-        public static final SoftwareLimitSwitchConfigs softLimitConfig = null;
         public static final AngularVelocity velocityTolerance = RotationsPerSecond.of(10);
         public static final CurrentLimitsConfigs kCurrentLimit =
                 new CurrentLimitsConfigs().withStatorCurrentLimit(20).withStatorCurrentLimitEnable(true);
-        ;
         public static final AngularVelocity kFeedRPS = RotationsPerSecond.of(30);
         public static final AngularVelocity kPurgeRPS = RotationsPerSecond.of(-20);
         public static final AngularVelocity kStopRPS = RotationsPerSecond.of(0);
-        public static final double kS = 0;
-        public static final double profilekA = 0;
-        public static final double profilekV = 0;
     }
 
     public class IntakeConstants {
