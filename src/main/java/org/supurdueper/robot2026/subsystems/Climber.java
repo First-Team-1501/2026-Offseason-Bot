@@ -50,13 +50,13 @@ public class Climber extends PositionSubsystem implements SupurdueperSubsystem {
     }
 
     public Command prepClimb() {
-        return Commands.runOnce(() ->
-                        goToPosition(() -> heightToMotorRotations(Constants.ClimberConstants.kPrepClimbPosition)));
+        return Commands.runOnce(
+                () -> goToPosition(() -> heightToMotorRotations(Constants.ClimberConstants.kPrepClimbPosition)));
     }
 
     public Command climb() {
-        return Commands.runOnce(() ->
-                        goToPosition(() -> heightToMotorRotations(Constants.ClimberConstants.kHomePosition)));
+        return Commands.runOnce(
+                () -> goToPosition(() -> heightToMotorRotations(Constants.ClimberConstants.kHomePosition)));
     }
 
     @Override
