@@ -154,6 +154,7 @@ public final class Constants {
         public static final AngularAcceleration profileA = null;
         public static final Distance kDropIntakePosition = null;
         public static final Distance kPrepClimbPosition = null;
+        public static final Distance kHomePosition = null;
         public static Distance positionTolerance = Inches.of(0);
     }
 

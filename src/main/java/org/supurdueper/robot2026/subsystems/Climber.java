@@ -12,56 +12,56 @@ import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.SoftwareLimitSwitchConfigs;
+import com.ctre.phoenix6.controls.MotionMagicTorqueCurrentFOC;
+import com.ctre.phoenix6.controls.TorqueCurrentFOC;
 import edu.wpi.first.units.measure.Angle;
-import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
-import lombok.Getter;
-
+import java.util.function.Supplier;
 import org.supurdueper.lib.subsystems.PositionSubsystem;
 import org.supurdueper.lib.subsystems.SupurdueperSubsystem;
 import org.supurdueper.robot2026.CanId;
 import org.supurdueper.robot2026.Constants;
 import org.supurdueper.robot2026.Robot;
 import org.supurdueper.robot2026.state.RobotStates;
-import org.supurdueper.robot2026.subsystems.Feeder.FeedState;
 
 public class Climber extends PositionSubsystem implements SupurdueperSubsystem {
     /** Creates a new Climber. */
-    public enum ClimbState {
-        climbPrep(Constants.ClimberConstants.kPrepClimbPosition),
-        dropIntake(Constants.ClimberConstants.kDropIntakePosition),
-        home(Inches.of(0));
+    private TorqueCurrentFOC currentRequest = new TorqueCurrentFOC(0);
 
-        public Distance position;
-
-        ClimbState(Distance position) {
-            this.position = position;
-        }
-    }
-
-    @Getter
-    private ClimbState climbstate;
+    private MotionMagicTorqueCurrentFOC positionCurrentRequest = new MotionMagicTorqueCurrentFOC(0);
 
     public Climber() {
         configureMotors();
         Robot.add(this);
     }
 
-    public Command setClimbState(ClimbState position) {
-        return runOnce(() -> climbstate = position);
-    }
-
-
     @Override
     public void periodic() {
         super.periodic();
     }
 
+    public Command releaseIntake() {
+        return Commands.runOnce(() ->
+                        goToPosition(() -> heightToMotorRotations(Constants.ClimberConstants.kDropIntakePosition)))
+                .andThen(() -> goToPosition(() -> heightToMotorRotations(Constants.ClimberConstants.kHomePosition)));
+    }
 
-    public Command goToPosition(double rotations) {
-        return goToPosition(() -> Rotations.of(rotations));
+    public Command prepClimb() {
+        return Commands.runOnce(() ->
+                        goToPosition(() -> heightToMotorRotations(Constants.ClimberConstants.kPrepClimbPosition)));
+    }
+
+    public Command climb() {
+        return Commands.runOnce(() ->
+                        goToPosition(() -> heightToMotorRotations(Constants.ClimberConstants.kHomePosition)));
+    }
+
+    @Override
+    public Command goToPosition(Supplier<Angle> rotations) {
+        return run(() -> motor.setControl(positionCurrentRequest.withPosition(rotations.get())));
     }
 
     @Override
@@ -96,7 +96,9 @@ public class Climber extends PositionSubsystem implements SupurdueperSubsystem {
 
     @Override
     public void bindCommands() {
-
+        RobotStates.auto.onTrue(releaseIntake());
+        RobotStates.actionClimbPrep.onTrue(prepClimb());
+        RobotStates.actionClimb.onTrue(climb());
     }
 
     @Override
