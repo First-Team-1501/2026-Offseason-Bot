@@ -143,6 +143,5 @@ public class Robot extends SupurdueperRobot {
 
         // Bind Triggers for all subsystems
         bindCommands();
-        m_robotContainer.configureBindings();
     }
 }

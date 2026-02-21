@@ -8,13 +8,6 @@ import static edu.wpi.first.units.Units.*;
 
 import lombok.Getter;
 import org.supurdueper.robot2026.state.Driver;
-import org.supurdueper.robot2026.subsystems.Climber;
-import org.supurdueper.robot2026.subsystems.Feeder;
-import org.supurdueper.robot2026.subsystems.Hopper;
-import org.supurdueper.robot2026.subsystems.Intake;
-import org.supurdueper.robot2026.subsystems.Shooter;
-import org.supurdueper.robot2026.subsystems.ShooterHood;
-import org.supurdueper.robot2026.subsystems.Vision;
 import org.supurdueper.robot2026.subsystems.drive.Drivetrain;
 import org.supurdueper.robot2026.subsystems.drive.generated.TunerConstants;
 
@@ -26,31 +19,29 @@ public class RobotContainer {
     @Getter
     private static Driver driver;
 
-    @Getter
-    private static Shooter shooter;
+    // @Getter
+    // private static Shooter shooter;
 
-    @Getter
-    private static Feeder feeder;
+    // @Getter
+    // private static Feeder feeder;
 
-    @Getter
-    private static Hopper hopper;
+    // @Getter
+    // private static Hopper hopper;
 
-    @Getter
-    private static Climber climber;
+    // @Getter
+    // private static Climber climber;
 
-    @Getter
-    private static Intake intake;
+    // @Getter
+    // private static Intake intake;
 
-    @Getter
-    private static ShooterHood shooterHood;
+    // @Getter
+    // private static ShooterHood shooterHood;
 
-    @Getter
-    private static Vision vision;
+    // @Getter
+    // private static Vision vision;
 
     public RobotContainer() {
+        driver = new Driver();
         drivetrain = TunerConstants.createDrivetrain();
-        configureBindings();
     }
-
-    public void configureBindings() {}
 }
