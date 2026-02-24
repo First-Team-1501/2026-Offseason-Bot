@@ -85,6 +85,8 @@ public class Robot extends SupurdueperRobot {
         double endTime = Timer.getFPGATimestamp();
         Threads.setCurrentThreadPriority(false, 0);
         DogLog.log("Loop Time", endTime - startTime);
+        //for bunker hub lights to get match time from network tables
+        SmartDashboard.putNumber("Match Time", Timer.getMatchTime());
     }
 
     @Override
