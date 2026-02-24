@@ -4,6 +4,8 @@
 
 package org.supurdueper.robot2026.subsystems;
 
+import static edu.wpi.first.units.Units.Volts;
+
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import edu.wpi.first.units.measure.AngularVelocity;
@@ -13,6 +15,7 @@ import org.supurdueper.lib.subsystems.VelocitySubsystem;
 import org.supurdueper.robot2026.CanId;
 import org.supurdueper.robot2026.Constants;
 import org.supurdueper.robot2026.Robot;
+import org.supurdueper.robot2026.state.RobotStates;
 
 public class Hopper extends VelocitySubsystem implements SupurdueperSubsystem {
     /** Creates a new Hopper. */
@@ -38,7 +41,7 @@ public class Hopper extends VelocitySubsystem implements SupurdueperSubsystem {
 
     @Override
     public boolean followerInverted() {
-        return true;
+        return false;
     }
 
     @Override
@@ -64,10 +67,13 @@ public class Hopper extends VelocitySubsystem implements SupurdueperSubsystem {
         runVoltage(Constants.HopperConstants.kPurgeVoltage);
     }
 
+    public void test() {
+        runVoltage(Volts.of(2));
+    }
+
     @Override
     public void bindCommands() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'bindCommands'");
+        RobotStates.actionTestHopper.whileTrue(runEnd(this::test, this::stop));
     }
 
     @Override

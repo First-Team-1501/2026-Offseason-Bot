@@ -35,8 +35,8 @@ public class Driver extends Gamepad {
     private boolean isTurboMode = false;
 
     /** Create a new Pilot with the default name and port. */
-    public Driver() {
-        super(0, kLeftStickCurve, kDeadzone, kRightStickCurve, kDeadzone, kTriggerCurve, kDeadzone);
+    public Driver(int port) {
+        super(port, kLeftStickCurve, kDeadzone, kRightStickCurve, kDeadzone, kTriggerCurve, kDeadzone);
         driving = RobotModeTriggers.teleop().and(leftStickX.or(leftStickY));
         steer = RobotModeTriggers.teleop().and(rightStickX.or(rightStickY));
     }

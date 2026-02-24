@@ -5,6 +5,7 @@
 package org.supurdueper.robot2026.subsystems;
 
 import static edu.wpi.first.units.Units.RPM;
+import static edu.wpi.first.units.Units.Volts;
 
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
@@ -17,6 +18,7 @@ import org.supurdueper.lib.subsystems.VelocitySubsystem;
 import org.supurdueper.robot2026.CanId;
 import org.supurdueper.robot2026.Constants;
 import org.supurdueper.robot2026.Robot;
+import org.supurdueper.robot2026.state.RobotStates;
 
 public class Shooter extends VelocitySubsystem implements SupurdueperSubsystem {
     /** Creates a new VelocityTest. */
@@ -80,10 +82,13 @@ public class Shooter extends VelocitySubsystem implements SupurdueperSubsystem {
         throw new UnsupportedOperationException("Unimplemented method 'sysIdConfig'");
     }
 
+    public void test() {
+        runVoltage(Volts.of(2));
+    }
+
     @Override
     public void bindCommands() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'bindCommands'");
+        RobotStates.actionTestShooter.whileTrue(runEnd(this::test, this::stop));
     }
 
     // Manually creating followers in constructor

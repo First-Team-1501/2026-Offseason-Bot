@@ -24,6 +24,7 @@ public class DriveStates {
 
     private Drivetrain drivetrain;
     private Driver driver;
+    private Driver test;
 
     /* Setting up bindings for necessary control of the swerve drive platform */
     private double MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed

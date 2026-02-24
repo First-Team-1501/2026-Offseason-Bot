@@ -5,28 +5,20 @@
 package org.supurdueper.robot2026.subsystems;
 
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
-import dev.doglog.DogLog;
+import edu.wpi.first.units.Units;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
 import org.supurdueper.lib.subsystems.SupurdueperSubsystem;
 import org.supurdueper.lib.subsystems.TalonFXSubsystem;
 import org.supurdueper.robot2026.CanId;
 import org.supurdueper.robot2026.Constants;
 import org.supurdueper.robot2026.Robot;
+import org.supurdueper.robot2026.state.RobotStates;
 
 public class Intake extends TalonFXSubsystem implements SupurdueperSubsystem {
     /** Creates a new Intake. */
     public Intake() {
         configureMotors();
         Robot.add(this);
-    }
-
-    @Override
-    public void periodic() {
-        super.periodic();
-
-        DogLog.log("Intake/Follower Inverted", followerInverted());
-        DogLog.log("Intake/ Inverted", inverted());
     }
 
     @Override
@@ -41,7 +33,7 @@ public class Intake extends TalonFXSubsystem implements SupurdueperSubsystem {
 
     @Override
     public boolean followerInverted() {
-        return false;
+        return true;
     }
 
     @Override
@@ -71,18 +63,24 @@ public class Intake extends TalonFXSubsystem implements SupurdueperSubsystem {
         runVoltage(Constants.IntakeConstants.kPurgeVoltage);
     }
 
-    public Command runintake() {
-        return Commands.runEnd(this::run, this::stop).withName("Intake/intake");
+    public void test() {
+        runVoltage(Units.Volts.of(2));
+    }
+
+    public Command runIntake() {
+        return runEnd(this::run, this::stop).withName("Intake/runIntake");
     }
 
     public Command runShoot() {
-        return Commands.runEnd(this::shoot, this::stop).withName("Intake/shoot");
+        return runEnd(this::shoot, this::stop).withName("Intake/runShoot");
     }
 
     public Command runPurge() {
-        return Commands.runEnd(this::purge, this::stop).withName("Intake/purge");
+        return runEnd(this::purge, this::stop).withName("Intake/runPurge");
     }
 
     @Override
-    public void bindCommands() {}
+    public void bindCommands() {
+        RobotStates.actionTestIntake.whileTrue(runEnd(this::test, this::stop));
+    }
 }

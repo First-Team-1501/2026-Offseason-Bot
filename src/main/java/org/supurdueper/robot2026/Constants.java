@@ -125,13 +125,11 @@ public final class Constants {
     }
 
     public class IntakeConstants {
-
         public static final CurrentLimitsConfigs kCurrentLimit =
                 new CurrentLimitsConfigs().withStatorCurrentLimit(60).withStatorCurrentLimitEnable(true);
-        ;
-        public static final Voltage kIntakeVoltage = Volts.of(2);
-        public static final Voltage kPurgeVoltage = Volts.of(-2);
-        public static final Voltage kShootVoltage = null;
+        public static final Voltage kIntakeVoltage = Volts.of(10);
+        public static final Voltage kPurgeVoltage = Volts.of(-4);
+        public static final Voltage kShootVoltage = Volts.of(10);
     }
 
     public class ClimberConstants {

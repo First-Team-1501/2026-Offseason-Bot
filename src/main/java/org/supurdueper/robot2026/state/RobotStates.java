@@ -12,6 +12,7 @@ public final class RobotStates {
     public static final Trigger auto = RobotModeTriggers.autonomous();
     public static final Trigger disabled = RobotModeTriggers.disabled();
     public static final Driver driver = RobotContainer.getDriver();
+    public static final Driver testController = RobotContainer.getTestController();
 
     // auto
 
@@ -19,11 +20,16 @@ public final class RobotStates {
 
     // Actions
     public static final Trigger rezeroFieldHeading = driver.select.and(teleop);
-    public static final Trigger actionIntake = driver.rightBumper.and(teleop);
+    public static final Trigger actionIntake = driver.A.and(teleop);
     public static final Trigger actionPurge = driver.extraRight.and(teleop);
     public static final Trigger actionShoot = driver.leftBumper.and(teleop);
     public static final Trigger actionClimbPrep = driver.downDpad.and(teleop);
     public static final Trigger actionClimb = driver.leftDpad.and(teleop);
+
+    public static final Trigger actionTestIntake = testController.A.and(teleop);
+    public static final Trigger actionTestHopper = testController.B.and(teleop);
+    public static final Trigger actionTestFeeder = testController.X.and(teleop);
+    public static final Trigger actionTestShooter = testController.Y.and(teleop);
 
     private RobotStates() {
         throw new IllegalStateException("Utility class");

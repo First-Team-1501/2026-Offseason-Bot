@@ -5,6 +5,7 @@
 package org.supurdueper.robot2026.subsystems;
 
 import static edu.wpi.first.units.Units.RPM;
+import static edu.wpi.first.units.Units.Volts;
 
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
@@ -18,6 +19,7 @@ import org.supurdueper.lib.subsystems.VelocitySubsystem;
 import org.supurdueper.robot2026.CanId;
 import org.supurdueper.robot2026.Constants;
 import org.supurdueper.robot2026.Robot;
+import org.supurdueper.robot2026.state.RobotStates;
 
 public class Feeder extends VelocitySubsystem implements SupurdueperSubsystem {
 
@@ -40,22 +42,27 @@ public class Feeder extends VelocitySubsystem implements SupurdueperSubsystem {
     public Feeder() {
         configureMotors();
         Robot.add(this);
-
         feedState = FeedState.stop;
     }
 
     @Override
     public void periodic() {
         super.periodic();
-        setVelocity(feedState.velocity);
+        // setVelocity(feedState.velocity);
         DogLog.log("Feeder/RPM", getVelocity().in(RPM));
         DogLog.log("Feeder/Target RPM", feedState.velocity.in(RPM));
         DogLog.log("Feeder/State", feedState.name());
         DogLog.log("Feeder/At Velocity", atVelocity());
     }
 
+    public void test() {
+        runVoltage(Volts.of(2));
+    }
+
     @Override
-    public void bindCommands() {}
+    public void bindCommands() {
+        RobotStates.actionTestHopper.whileTrue(runEnd(this::test, this::stop));
+    }
 
     public Command setRPSState(FeedState velocity) {
         return runOnce(() -> feedState = velocity);
