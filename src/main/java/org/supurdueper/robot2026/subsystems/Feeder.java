@@ -19,6 +19,7 @@ import org.supurdueper.lib.subsystems.VelocitySubsystem;
 import org.supurdueper.robot2026.CanId;
 import org.supurdueper.robot2026.Constants;
 import org.supurdueper.robot2026.Robot;
+import org.supurdueper.robot2026.state.RobotStates;
 
 public class Feeder extends VelocitySubsystem implements SupurdueperSubsystem {
 
@@ -49,7 +50,7 @@ public class Feeder extends VelocitySubsystem implements SupurdueperSubsystem {
         super.periodic();
         // setVelocity(feedState.velocity);
         DogLog.log("Feeder/RPM", getVelocity().in(RPM));
-        DogLog.log("Feeder/Target RPM", feedState.velocity.in(RPM));
+        DogLog.log("Feeder/Target RPM", getSetpoint().in(RPM));
         DogLog.log("Feeder/State", feedState.name());
         DogLog.log("Feeder/At Velocity", atVelocity());
     }
@@ -59,7 +60,12 @@ public class Feeder extends VelocitySubsystem implements SupurdueperSubsystem {
     }
 
     @Override
-    public void bindCommands() {}
+    public void bindCommands() {
+        RobotStates.actionTestA.onTrue(run(() -> stop()));
+        RobotStates.actionTestB.onTrue(run(() -> setVelocity(RPM.of(1000))));
+        RobotStates.actionTestX.onTrue(run(() -> setVelocity(RPM.of(2000))));
+        RobotStates.actionTestY.onTrue(run(() -> setVelocity(RPM.of(3000))));
+    }
 
     public Command setRPSState(FeedState velocity) {
         return runOnce(() -> feedState = velocity);

@@ -5,19 +5,19 @@
 package org.supurdueper.robot2026.subsystems;
 
 import static edu.wpi.first.units.Units.Degrees;
-import static edu.wpi.first.units.Units.Rotations;
+import static org.supurdueper.robot2026.Constants.ShooerHoodConstants.*;
 
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
+import com.ctre.phoenix6.configs.FeedbackConfigs;
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.SoftwareLimitSwitchConfigs;
-import com.ctre.phoenix6.controls.MotionMagicTorqueCurrentFOC;
-import com.ctre.phoenix6.controls.TorqueCurrentFOC;
+import com.ctre.phoenix6.configs.VoltageConfigs;
+import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.signals.GravityTypeValue;
+import dev.doglog.DogLog;
 import edu.wpi.first.units.measure.Angle;
-import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
-import java.util.function.Supplier;
 import org.supurdueper.lib.subsystems.PositionSubsystem;
 import org.supurdueper.lib.subsystems.SupurdueperSubsystem;
 import org.supurdueper.robot2026.CanId;
@@ -26,33 +26,37 @@ import org.supurdueper.robot2026.Robot;
 
 public class ShooterHood extends PositionSubsystem implements SupurdueperSubsystem {
 
-    private TorqueCurrentFOC currentRequest = new TorqueCurrentFOC(0);
-    private MotionMagicTorqueCurrentFOC positionCurrentRequest = new MotionMagicTorqueCurrentFOC(0);
+    private PositionVoltage noMagicMotion = new PositionVoltage(0);
 
     /** Creates a new ShooterHood. */
     public ShooterHood() {
-
+        config = config.withFeedback(new FeedbackConfigs().withSensorToMechanismRatio(gearRatio))
+                .withVoltage(new VoltageConfigs()
+                        .withPeakForwardVoltage(kPeakForwardVoltage)
+                        .withPeakReverseVoltage(kPeakReverseVoltage));
         configureMotors();
         Robot.add(this);
+        motor.setPosition(kZeroPosition);
+    }
+
+    @Override
+    protected void setPosition(Angle position) {
+        motor.setControl(noMagicMotion.withPosition(position));
+    }
+
+    @Override
+    protected void setPosition(double position) {
+        motor.setControl(noMagicMotion.withPosition(position));
     }
 
     @Override
     public void periodic() {
         super.periodic();
-        // This method will be called once per scheduler run
-    }
-
-    @Override
-    public Command goToPosition(Supplier<Angle> rotations) {
-        return run(() -> motor.setControl(positionCurrentRequest.withPosition(rotations.get())));
-    }
-
-    private Angle degreesToMotorRotations(Angle degrees) {
-        return Rotations.of(degrees.in(Degrees) / Constants.ShooerHoodConstants.kDegreesPerRotation);
-    }
-
-    private Angle motorRotationsToDegrees(Angle motorRotations) {
-        return Degrees.of(motorRotations.in(Rotations) * Constants.ShooerHoodConstants.kDegreesPerRotation);
+        DogLog.log("ShooterHood/Position (Deg)", getPosition().in(Degrees));
+        DogLog.log("ShooterHood/Target Position (Deg)", getSetpoint().in(Degrees));
+        if ((getCurrentCommand() != null) && (getCurrentCommand().getName() != null)) {
+            DogLog.log("ShooterHood/Command", getCurrentCommand().getName());
+        }
     }
 
     @Override
@@ -93,7 +97,7 @@ public class ShooterHood extends PositionSubsystem implements SupurdueperSubsyst
 
     @Override
     public SysIdRoutine sysIdConfig() {
-        throw new UnsupportedOperationException("Unimplemented method 'sysIdConfig'");
+        return null;
     }
 
     @Override
@@ -128,7 +132,9 @@ public class ShooterHood extends PositionSubsystem implements SupurdueperSubsyst
 
     @Override
     public void bindCommands() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'bindCommands'");
+        // RobotStates.actionTestA.onTrue(run(() -> stop()).withName("stop"));
+        // RobotStates.actionTestB.onTrue(goToPosition(() -> Degrees.of(22)).withName("22"));
+        // RobotStates.actionTestX.onTrue(goToPosition(() -> Degrees.of(28)).withName("28"));
+        // RobotStates.actionTestY.onTrue(goToPosition(() -> Degrees.of(35)).withName("35"));
     }
 }

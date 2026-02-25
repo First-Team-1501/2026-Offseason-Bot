@@ -19,7 +19,6 @@ import org.supurdueper.lib.subsystems.VelocitySubsystem;
 import org.supurdueper.robot2026.CanId;
 import org.supurdueper.robot2026.Constants;
 import org.supurdueper.robot2026.Robot;
-import org.supurdueper.robot2026.state.RobotStates;
 
 public class Shooter extends VelocitySubsystem implements SupurdueperSubsystem {
     /** Creates a new VelocityTest. */
@@ -89,10 +88,10 @@ public class Shooter extends VelocitySubsystem implements SupurdueperSubsystem {
 
     @Override
     public void bindCommands() {
-        RobotStates.actionTestA.onTrue(run(() -> stop()));
-        RobotStates.actionTestB.onTrue(run(() -> setVelocity(RPM.of(1000))));
-        RobotStates.actionTestX.onTrue(run(() -> setVelocity(RPM.of(2000))));
-        RobotStates.actionTestY.onTrue(run(() -> setVelocity(RPM.of(3000))));
+        // RobotStates.actionTestA.onTrue(run(() -> stop()));
+        // RobotStates.actionTestB.onTrue(run(() -> setVelocity(RPM.of(1000))));
+        // RobotStates.actionTestX.onTrue(run(() -> setVelocity(RPM.of(2000))));
+        // RobotStates.actionTestY.onTrue(run(() -> setVelocity(RPM.of(3000))));
     }
 
     // Manually creating followers in constructor

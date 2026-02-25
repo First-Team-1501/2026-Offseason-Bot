@@ -65,26 +65,26 @@ public final class Constants {
     }
 
     public class ShooerHoodConstants {
-        public static final Angle positionTolerance = Angle.ofBaseUnits(0, null);
-        public static final Angle kAbsEncoderOffset = null;
-        public static final double kAbsEncoderRatio = 0;
-        public static final double kp = 0;
-        public static final double ki = 0;
-        public static final double kd = 0;
+        public static final double kp = 1000.0;
+        public static final double ki = 2000.0;
+        public static final double kd = 8.0;
         public static final double ks = 0;
         public static final double kv = 0;
         public static final double ka = 0;
         public static final double kg = 0;
         public static final double profileKa = 0;
         public static final double profileKv = 0;
-        public static final Angle kForwardSoftLimit = null;
-        public static final Angle kReverseSoftLimit = null;
+        public static final Angle kForwardSoftLimit = Degrees.of(37);
+        public static final Angle kReverseSoftLimit = Degrees.of(19);
+        public static final Voltage kPeakForwardVoltage = Volts.of(3);
+        public static final Voltage kPeakReverseVoltage = Volts.of(-3);
+        public static final Angle kZeroPosition = Degrees.of(19);
         public static final CurrentLimitsConfigs kCurrentLimit =
-                new CurrentLimitsConfigs().withStatorCurrentLimit(40).withStatorCurrentLimitEnable(true);
-        public static final AngularVelocity profileV = null;
-        public static final AngularAcceleration profileA = null;
-        public static final double kDegreesPerRotation = 0;
-        ;
+                new CurrentLimitsConfigs().withStatorCurrentLimit(20).withStatorCurrentLimitEnable(true);
+        public static final AngularVelocity profileV = RotationsPerSecond.of(0);
+        public static final AngularAcceleration profileA = RotationsPerSecondPerSecond.of(0);
+        public static final double gearRatio = 300.0 / 20.0 * 53.0 / 10.0;
+        public static Angle positionTolerance = Rotations.of(0);
     }
 
     public class ShooterConstants {
@@ -113,12 +113,12 @@ public final class Constants {
 
     public class FeederConstants {
 
-        public static final double kP = 0;
-        public static final double kS = 0;
+        public static final double kP = 5.0;
+        public static final double kS = 3.5;
         public static final double kV = 0;
         public static final AngularVelocity velocityTolerance = RotationsPerSecond.of(10);
         public static final CurrentLimitsConfigs kCurrentLimit =
-                new CurrentLimitsConfigs().withStatorCurrentLimit(20).withStatorCurrentLimitEnable(true);
+                new CurrentLimitsConfigs().withStatorCurrentLimit(60).withStatorCurrentLimitEnable(true);
         public static final AngularVelocity kFeedRPS = RotationsPerSecond.of(30);
         public static final AngularVelocity kPurgeRPS = RotationsPerSecond.of(-20);
         public static final AngularVelocity kStopRPS = RotationsPerSecond.of(0);
