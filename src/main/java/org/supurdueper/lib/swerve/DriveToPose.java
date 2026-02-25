@@ -19,7 +19,6 @@ import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.LinearAcceleration;
 import edu.wpi.first.units.measure.LinearVelocity;
 import org.supurdueper.lib.utils.GeomUtil;
-import org.supurdueper.robot2026.state.RobotStates;
 
 public class DriveToPose implements SwerveRequest {
 
@@ -81,10 +80,8 @@ public class DriveToPose implements SwerveRequest {
         driveVelocityMagnitude += throttleController.getSetpoint().velocity * ffScaler;
         // Check if we're aimed
         if (distanceToGoalMeters < positionTolerance.in(Meters)) {
-            RobotStates.setAimed(true);
             driveVelocityMagnitude = 0;
         } else {
-            RobotStates.setAimed(false);
         }
         DogLog.log("Drive To Pose/Distance To Goal", distanceToGoalMeters);
         DogLog.log("Drive To Pose/Throttle Setpoint", throttleController.getSetpoint().position);

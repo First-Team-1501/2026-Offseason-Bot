@@ -11,6 +11,7 @@ import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import dev.doglog.DogLog;
 import edu.wpi.first.units.measure.AngularVelocity;
+import edu.wpi.first.wpilibj.RobotState;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import lombok.Getter;
@@ -25,8 +26,9 @@ public class Feeder extends VelocitySubsystem implements SupurdueperSubsystem {
 
     /** Creates a new Feeder. */
     public enum FeedState {
-        feed(Constants.FeederConstants.kFeedRPS),
-        purge(Constants.FeederConstants.kPurgeRPS),
+        feed(Constants.FeederConstants.feedVelocity),
+        idle(Constants.FeederConstants.idleVelocity),
+        purge(Constants.FeederConstants.purgeVelocity),
         stop(RPM.of(0));
 
         public AngularVelocity velocity;
@@ -48,7 +50,11 @@ public class Feeder extends VelocitySubsystem implements SupurdueperSubsystem {
     @Override
     public void periodic() {
         super.periodic();
-        // setVelocity(feedState.velocity);
+        if (feedState.equals(FeedState.stop)) {
+            run(() -> stop());
+        } else {
+            setVelocity(feedState.velocity);
+        }
         DogLog.log("Feeder/RPM", getVelocity().in(RPM));
         DogLog.log("Feeder/Target RPM", getSetpoint().in(RPM));
         DogLog.log("Feeder/State", feedState.name());
@@ -61,13 +67,11 @@ public class Feeder extends VelocitySubsystem implements SupurdueperSubsystem {
 
     @Override
     public void bindCommands() {
-        RobotStates.actionTestA.onTrue(run(() -> stop()));
-        RobotStates.actionTestB.onTrue(run(() -> setVelocity(RPM.of(1000))));
-        RobotStates.actionTestX.onTrue(run(() -> setVelocity(RPM.of(2000))));
-        RobotStates.actionTestY.onTrue(run(() -> setVelocity(RPM.of(3000))));
+        RobotStates.actionAim.or(RobotStates.actionShoot).onTrue(setState(FeedState.feed));
+        RobotStates.actionAim.or(RobotStates.actionShoot).onFalse(setState(FeedState.idle));
     }
 
-    public Command setRPSState(FeedState velocity) {
+    public Command setState(FeedState velocity) {
         return runOnce(() -> feedState = velocity);
     }
 
@@ -77,6 +81,10 @@ public class Feeder extends VelocitySubsystem implements SupurdueperSubsystem {
 
     public boolean atPurge() {
         return feedState.equals(FeedState.purge);
+    }
+
+    public boolean atIdle() {
+        return feedState.equals(FeedState.idle);
     }
 
     public boolean atStop() {

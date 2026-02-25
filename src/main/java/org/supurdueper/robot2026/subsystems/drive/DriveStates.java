@@ -14,17 +14,17 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import org.supurdueper.lib.swerve.FieldCentricFacingPoint;
 // import org.supurdueper.lib.swerve.DriveToPose;
 import org.supurdueper.lib.utils.AllianceFlip;
-import org.supurdueper.robot2026.FieldConstants;
 import org.supurdueper.robot2026.RobotContainer;
 import org.supurdueper.robot2026.state.Driver;
+import org.supurdueper.robot2026.state.RobotStates;
 import org.supurdueper.robot2026.subsystems.drive.DriveSysId.SysIdSwerveTranslationCurrent;
 import org.supurdueper.robot2026.subsystems.drive.generated.TunerConstants;
+import org.supurdueper.robot2026.utils.FieldConstants;
 
 public class DriveStates {
 
     private Drivetrain drivetrain;
     private Driver driver;
-    private Driver test;
 
     /* Setting up bindings for necessary control of the swerve drive platform */
     private double MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
@@ -47,6 +47,7 @@ public class DriveStates {
         drivetrain.setDefaultCommand(normalTeleopDrive());
         rezeroFieldHeading.onTrue(
                 Commands.runOnce(() -> drivetrain.resetRotation(AllianceFlip.apply(Rotation2d.kZero))));
+        actionAim.or(actionShoot).whileTrue(driveFacingHub());
     }
 
     private Command normalTeleopDrive() {

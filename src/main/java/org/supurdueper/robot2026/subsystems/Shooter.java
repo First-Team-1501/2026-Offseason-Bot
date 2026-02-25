@@ -19,11 +19,14 @@ import org.supurdueper.lib.subsystems.VelocitySubsystem;
 import org.supurdueper.robot2026.CanId;
 import org.supurdueper.robot2026.Constants;
 import org.supurdueper.robot2026.Robot;
+import org.supurdueper.robot2026.Constants.ShooterConstants;
+import org.supurdueper.robot2026.state.RobotStates;
+import org.supurdueper.robot2026.subsystems.Feeder.FeedState;
 
 public class Shooter extends VelocitySubsystem implements SupurdueperSubsystem {
     /** Creates a new VelocityTest. */
     public Shooter() {
-        config = config.withFeedback(new FeedbackConfigs().withSensorToMechanismRatio(30.0 / 24.0));
+        config = config.withFeedback(new FeedbackConfigs().withSensorToMechanismRatio(ShooterConstants.shooterGearRatio));
         configureMotors();
         // Manually create followers since we have more than two
         TalonFXFactory.createPermanentFollowerTalon(CanId.SHOOTER_TWO, motor, false);
@@ -86,12 +89,19 @@ public class Shooter extends VelocitySubsystem implements SupurdueperSubsystem {
         runVoltage(Volts.of(2));
     }
 
+    private AngularVelocity getShotVelocity() {
+        //TODO: Change velocity based on distance to goal?
+        return ShooterConstants.kShootRPM;
+    }
+
     @Override
     public void bindCommands() {
-        // RobotStates.actionTestA.onTrue(run(() -> stop()));
-        // RobotStates.actionTestB.onTrue(run(() -> setVelocity(RPM.of(1000))));
-        // RobotStates.actionTestX.onTrue(run(() -> setVelocity(RPM.of(2000))));
-        // RobotStates.actionTestY.onTrue(run(() -> setVelocity(RPM.of(3000))));
+        RobotStates.actionTestA.onTrue(run(() -> stop()));
+        RobotStates.actionTestB.onTrue(run(() -> setVelocity(RPM.of(1000))));
+        RobotStates.actionTestX.onTrue(run(() -> setVelocity(RPM.of(2000))));
+        RobotStates.actionTestY.onTrue(run(() -> setVelocity(RPM.of(3000))));
+        RobotStates.actionAim.or(RobotStates.actionShoot).onTrue(goToVelocity(this::getShotVelocity));
+        RobotStates.actionAim.or(RobotStates.actionShoot).onFalse(goToVelocity(() -> ShooterConstants.kIdleRPM));
     }
 
     // Manually creating followers in constructor

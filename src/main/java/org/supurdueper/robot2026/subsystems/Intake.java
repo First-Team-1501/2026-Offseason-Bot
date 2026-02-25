@@ -12,6 +12,7 @@ import org.supurdueper.lib.subsystems.TalonFXSubsystem;
 import org.supurdueper.robot2026.CanId;
 import org.supurdueper.robot2026.Constants;
 import org.supurdueper.robot2026.Robot;
+import org.supurdueper.robot2026.state.RobotStates;
 
 public class Intake extends TalonFXSubsystem implements SupurdueperSubsystem {
     /** Creates a new Intake. */
@@ -50,7 +51,7 @@ public class Intake extends TalonFXSubsystem implements SupurdueperSubsystem {
         return false;
     }
 
-    public void run() {
+    public void intake() {
         runVoltage(Constants.IntakeConstants.kIntakeVoltage);
     }
 
@@ -67,7 +68,7 @@ public class Intake extends TalonFXSubsystem implements SupurdueperSubsystem {
     }
 
     public Command runIntake() {
-        return runEnd(this::run, this::stop).withName("Intake/runIntake");
+        return runEnd(this::intake, this::stop).withName("Intake/runIntake");
     }
 
     public Command runShoot() {
@@ -79,5 +80,9 @@ public class Intake extends TalonFXSubsystem implements SupurdueperSubsystem {
     }
 
     @Override
-    public void bindCommands() {}
+    public void bindCommands() {
+        RobotStates.actionIntake.onTrue(run(this::intake));
+        RobotStates.actionShoot.onTrue(run(this::shoot));
+        RobotStates.actionAim.onTrue(run(this::stop));
+    }
 }
