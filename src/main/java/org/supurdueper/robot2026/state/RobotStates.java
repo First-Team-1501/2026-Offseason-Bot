@@ -20,9 +20,10 @@ public final class RobotStates {
 
     // Actions
     public static final Trigger rezeroFieldHeading = driver.select.and(teleop);
-    public static final Trigger actionIntake = driver.A.and(teleop);
-    public static final Trigger actionPurge = driver.extraRight.and(teleop);
-    public static final Trigger actionShoot = driver.leftBumper.and(teleop);
+    public static final Trigger actionIntake = driver.leftBumper.and(teleop);
+    public static final Trigger actionAim = driver.rightTrigger.and(teleop);
+    public static final Trigger actionShoot = driver.rightBumper.and(teleop);
+    
     public static final Trigger actionClimbPrep = driver.downDpad.and(teleop);
     public static final Trigger actionClimb = driver.leftDpad.and(teleop);
 
@@ -33,10 +34,5 @@ public final class RobotStates {
 
     private RobotStates() {
         throw new IllegalStateException("Utility class");
-    }
-
-    public static void setAimed(boolean b) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'setAimed'");
     }
 }

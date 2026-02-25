@@ -8,12 +8,17 @@ import static edu.wpi.first.units.Units.*;
 
 import lombok.Getter;
 import org.supurdueper.robot2026.state.Driver;
+import org.supurdueper.robot2026.state.RobotStates;
 import org.supurdueper.robot2026.subsystems.Feeder;
 import org.supurdueper.robot2026.subsystems.Hopper;
 import org.supurdueper.robot2026.subsystems.Intake;
 import org.supurdueper.robot2026.subsystems.Shooter;
 import org.supurdueper.robot2026.subsystems.drive.Drivetrain;
 import org.supurdueper.robot2026.subsystems.drive.generated.TunerConstants;
+import org.supurdueper.robot2026.utils.HubShiftUtil;
+
+import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 
 public class RobotContainer {
 
@@ -55,5 +60,15 @@ public class RobotContainer {
         hopper = new Hopper();
         feeder = new Feeder();
         shooter = new Shooter();
+
+        configureBindings();
+    }
+
+    public void configureBindings() {
+        // Reset hub shift timer when enabling
+        RobotStates.teleop.onTrue(Commands.runOnce(HubShiftUtil::initialize));
+        RobotStates.auto.onTrue(Commands.runOnce(HubShiftUtil::initialize));
+        RobotStates.disabled
+                .onTrue(Commands.runOnce(HubShiftUtil::initialize).ignoringDisable(true));
     }
 }
