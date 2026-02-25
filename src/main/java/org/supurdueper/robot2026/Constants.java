@@ -30,7 +30,7 @@ import edu.wpi.first.units.measure.Voltage;
 import org.supurdueper.lib.utils.ExpCurve;
 
 public final class Constants {
-    public static boolean tuningMode = false;
+    public static boolean tuningMode = true;
     public static boolean publishToNT = true;
     public static CANBus canivoreBus = new CANBus("canivore");
     public static CANBus rioBus = new CANBus("rio");
@@ -89,10 +89,10 @@ public final class Constants {
 
     public class ShooterConstants {
         public static final CurrentLimitsConfigs kCurrentLimit =
-                new CurrentLimitsConfigs().withStatorCurrentLimit(20).withStatorCurrentLimitEnable(true);
-        public static final double kP = 0;
-        public static final double kS = 0;
-        public static final double kV = 0;
+                new CurrentLimitsConfigs().withStatorCurrentLimit(60).withStatorCurrentLimitEnable(true);
+        public static final double kP = 5.0;
+        public static final double kS = 6.0;
+        public static final double kV = 0.08;
         public static final double shooterGearRatio = 30.0 / 24.0;
         public static final AngularVelocity kVelocityTolerance = RPM.of(0);
         public static final AngularVelocity kShootRPM = RPM.of(0);

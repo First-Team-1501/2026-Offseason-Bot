@@ -12,7 +12,6 @@ import org.supurdueper.lib.subsystems.TalonFXSubsystem;
 import org.supurdueper.robot2026.CanId;
 import org.supurdueper.robot2026.Constants;
 import org.supurdueper.robot2026.Robot;
-import org.supurdueper.robot2026.state.RobotStates;
 
 public class Intake extends TalonFXSubsystem implements SupurdueperSubsystem {
     /** Creates a new Intake. */
@@ -43,12 +42,12 @@ public class Intake extends TalonFXSubsystem implements SupurdueperSubsystem {
 
     @Override
     public boolean inverted() {
-        return false;
+        return true;
     }
 
     @Override
     public boolean brakeMode() {
-        return true;
+        return false;
     }
 
     public void run() {
@@ -80,7 +79,5 @@ public class Intake extends TalonFXSubsystem implements SupurdueperSubsystem {
     }
 
     @Override
-    public void bindCommands() {
-        RobotStates.actionTestIntake.whileTrue(runEnd(this::test, this::stop));
-    }
+    public void bindCommands() {}
 }

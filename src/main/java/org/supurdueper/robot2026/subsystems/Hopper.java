@@ -15,7 +15,6 @@ import org.supurdueper.lib.subsystems.VelocitySubsystem;
 import org.supurdueper.robot2026.CanId;
 import org.supurdueper.robot2026.Constants;
 import org.supurdueper.robot2026.Robot;
-import org.supurdueper.robot2026.state.RobotStates;
 
 public class Hopper extends VelocitySubsystem implements SupurdueperSubsystem {
     /** Creates a new Hopper. */
@@ -51,7 +50,7 @@ public class Hopper extends VelocitySubsystem implements SupurdueperSubsystem {
 
     @Override
     public boolean inverted() {
-        return false;
+        return true;
     }
 
     @Override
@@ -72,9 +71,7 @@ public class Hopper extends VelocitySubsystem implements SupurdueperSubsystem {
     }
 
     @Override
-    public void bindCommands() {
-        RobotStates.actionTestHopper.whileTrue(runEnd(this::test, this::stop));
-    }
+    public void bindCommands() {}
 
     @Override
     public Slot0Configs pidGains() {
@@ -94,7 +91,6 @@ public class Hopper extends VelocitySubsystem implements SupurdueperSubsystem {
 
     @Override
     public SysIdRoutine sysIdConfig() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'sysIdConfig'");
+        return null;
     }
 }

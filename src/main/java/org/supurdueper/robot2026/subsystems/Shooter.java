@@ -8,6 +8,7 @@ import static edu.wpi.first.units.Units.RPM;
 import static edu.wpi.first.units.Units.Volts;
 
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
+import com.ctre.phoenix6.configs.FeedbackConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import dev.doglog.DogLog;
 import edu.wpi.first.units.measure.AngularVelocity;
@@ -23,10 +24,11 @@ import org.supurdueper.robot2026.state.RobotStates;
 public class Shooter extends VelocitySubsystem implements SupurdueperSubsystem {
     /** Creates a new VelocityTest. */
     public Shooter() {
+        config = config.withFeedback(new FeedbackConfigs().withSensorToMechanismRatio(30.0 / 24.0));
         configureMotors();
         // Manually create followers since we have more than two
         TalonFXFactory.createPermanentFollowerTalon(CanId.SHOOTER_TWO, motor, false);
-        TalonFXFactory.createPermanentFollowerTalon(CanId.SHOOTER_THREE, motor, true);
+        TalonFXFactory.createPermanentFollowerTalon(CanId.SHOOTER_THREE, motor, false);
         TalonFXFactory.createPermanentFollowerTalon(CanId.SHOOTER_FOUR, motor, true);
         TalonFXFactory.createPermanentFollowerTalon(CanId.SHOOTER_FIVE, motor, true);
         Robot.add(this);
@@ -78,8 +80,7 @@ public class Shooter extends VelocitySubsystem implements SupurdueperSubsystem {
 
     @Override
     public SysIdRoutine sysIdConfig() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'sysIdConfig'");
+        return null;
     }
 
     public void test() {
@@ -88,7 +89,10 @@ public class Shooter extends VelocitySubsystem implements SupurdueperSubsystem {
 
     @Override
     public void bindCommands() {
-        RobotStates.actionTestShooter.whileTrue(runEnd(this::test, this::stop));
+        RobotStates.actionTestA.onTrue(run(() -> stop()));
+        RobotStates.actionTestB.onTrue(run(() -> setVelocity(RPM.of(1000))));
+        RobotStates.actionTestX.onTrue(run(() -> setVelocity(RPM.of(2000))));
+        RobotStates.actionTestY.onTrue(run(() -> setVelocity(RPM.of(3000))));
     }
 
     // Manually creating followers in constructor

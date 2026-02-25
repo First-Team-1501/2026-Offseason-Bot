@@ -19,7 +19,6 @@ import org.supurdueper.lib.subsystems.VelocitySubsystem;
 import org.supurdueper.robot2026.CanId;
 import org.supurdueper.robot2026.Constants;
 import org.supurdueper.robot2026.Robot;
-import org.supurdueper.robot2026.state.RobotStates;
 
 public class Feeder extends VelocitySubsystem implements SupurdueperSubsystem {
 
@@ -60,9 +59,7 @@ public class Feeder extends VelocitySubsystem implements SupurdueperSubsystem {
     }
 
     @Override
-    public void bindCommands() {
-        RobotStates.actionTestHopper.whileTrue(runEnd(this::test, this::stop));
-    }
+    public void bindCommands() {}
 
     public Command setRPSState(FeedState velocity) {
         return runOnce(() -> feedState = velocity);
@@ -98,8 +95,7 @@ public class Feeder extends VelocitySubsystem implements SupurdueperSubsystem {
 
     @Override
     public SysIdRoutine sysIdConfig() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'sysIdConfig'");
+        return null;
     }
 
     @Override
@@ -114,7 +110,7 @@ public class Feeder extends VelocitySubsystem implements SupurdueperSubsystem {
 
     @Override
     public boolean followerInverted() {
-        return false;
+        return true;
     }
 
     @Override

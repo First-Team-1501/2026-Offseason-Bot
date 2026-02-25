@@ -51,5 +51,9 @@ public class RobotContainer {
         driver = new Driver(0);
         testController = new Driver(2);
         drivetrain = TunerConstants.createDrivetrain();
+        intake = new Intake();
+        hopper = new Hopper();
+        feeder = new Feeder();
+        shooter = new Shooter();
     }
 }

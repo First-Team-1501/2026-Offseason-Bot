@@ -45,7 +45,6 @@ public class DriveStates {
 
     public void bindCommands() {
         drivetrain.setDefaultCommand(normalTeleopDrive());
-        driver.A.whileTrue(driveFacingHub());
         rezeroFieldHeading.onTrue(
                 Commands.runOnce(() -> drivetrain.resetRotation(AllianceFlip.apply(Rotation2d.kZero))));
     }

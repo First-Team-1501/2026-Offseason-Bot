@@ -26,10 +26,10 @@ public final class RobotStates {
     public static final Trigger actionClimbPrep = driver.downDpad.and(teleop);
     public static final Trigger actionClimb = driver.leftDpad.and(teleop);
 
-    public static final Trigger actionTestIntake = testController.A.and(teleop);
-    public static final Trigger actionTestHopper = testController.B.and(teleop);
-    public static final Trigger actionTestFeeder = testController.X.and(teleop);
-    public static final Trigger actionTestShooter = testController.Y.and(teleop);
+    public static final Trigger actionTestA = testController.A.and(teleop);
+    public static final Trigger actionTestB = testController.B.and(teleop);
+    public static final Trigger actionTestX = testController.X.and(teleop);
+    public static final Trigger actionTestY = testController.Y.and(teleop);
 
     private RobotStates() {
         throw new IllegalStateException("Utility class");
