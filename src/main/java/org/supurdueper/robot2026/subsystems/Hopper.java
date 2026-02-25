@@ -15,6 +15,7 @@ import org.supurdueper.lib.subsystems.VelocitySubsystem;
 import org.supurdueper.robot2026.CanId;
 import org.supurdueper.robot2026.Constants;
 import org.supurdueper.robot2026.Robot;
+import org.supurdueper.robot2026.state.RobotStates;
 
 public class Hopper extends VelocitySubsystem implements SupurdueperSubsystem {
     /** Creates a new Hopper. */
@@ -71,7 +72,9 @@ public class Hopper extends VelocitySubsystem implements SupurdueperSubsystem {
     }
 
     @Override
-    public void bindCommands() {}
+    public void bindCommands() {
+        RobotStates.actionShoot.whileTrue(runEnd(this::run, this::stop));
+    }
 
     @Override
     public Slot0Configs pidGains() {

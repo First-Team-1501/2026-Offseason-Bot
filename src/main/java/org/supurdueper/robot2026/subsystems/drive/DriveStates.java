@@ -16,7 +16,6 @@ import org.supurdueper.lib.swerve.FieldCentricFacingPoint;
 import org.supurdueper.lib.utils.AllianceFlip;
 import org.supurdueper.robot2026.RobotContainer;
 import org.supurdueper.robot2026.state.Driver;
-import org.supurdueper.robot2026.state.RobotStates;
 import org.supurdueper.robot2026.subsystems.drive.DriveSysId.SysIdSwerveTranslationCurrent;
 import org.supurdueper.robot2026.subsystems.drive.generated.TunerConstants;
 import org.supurdueper.robot2026.utils.FieldConstants;
@@ -47,7 +46,7 @@ public class DriveStates {
         drivetrain.setDefaultCommand(normalTeleopDrive());
         rezeroFieldHeading.onTrue(
                 Commands.runOnce(() -> drivetrain.resetRotation(AllianceFlip.apply(Rotation2d.kZero))));
-        actionAim.or(actionShoot).whileTrue(driveFacingHub());
+        // actionAim.or(actionShoot).whileTrue(driveFacingHub());
     }
 
     private Command normalTeleopDrive() {

@@ -95,14 +95,14 @@ public final class Constants {
         public static final double kV = 0.08;
         public static final double shooterGearRatio = 30.0 / 24.0;
         public static final AngularVelocity kVelocityTolerance = RPM.of(50);
-        public static final AngularVelocity kShootRPM = RPM.of(2200);
+        public static final AngularVelocity kShootRPM = RPM.of(1600);
         public static final AngularVelocity kIdleRPM = RPM.of(1000);
     }
 
     public class HopperConstants {
         public static final CurrentLimitsConfigs kCurrentLimit =
                 new CurrentLimitsConfigs().withStatorCurrentLimit(60).withStatorCurrentLimitEnable(true);
-        public static final Voltage kIntakeVoltage = Volts.of(0);
+        public static final Voltage kIntakeVoltage = Volts.of(10);
         public static final Voltage kPurgeVoltage = Volts.of(0);
         public static final double kV = 0;
         public static final double kS = 0;
@@ -118,9 +118,9 @@ public final class Constants {
         public static final AngularVelocity velocityTolerance = RPM.of(60);
         public static final CurrentLimitsConfigs kCurrentLimit =
                 new CurrentLimitsConfigs().withStatorCurrentLimit(60).withStatorCurrentLimitEnable(true);
-        public static final AngularVelocity feedVelocity = RPM.of(30);
-        public static final AngularVelocity purgeVelocity = RotationsPerSecond.of(-20);
-        public static final AngularVelocity idleVelocity = RotationsPerSecond.of(0);
+        public static final AngularVelocity feedVelocity = RPM.of(1500);
+        public static final AngularVelocity purgeVelocity = RPM.of(-500);
+        public static final AngularVelocity idleVelocity = RPM.of(1000);
     }
 
     public class IntakeConstants {

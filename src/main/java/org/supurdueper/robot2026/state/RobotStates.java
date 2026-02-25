@@ -23,7 +23,7 @@ public final class RobotStates {
     public static final Trigger actionIntake = driver.leftBumper.and(teleop);
     public static final Trigger actionAim = driver.rightTrigger.and(teleop);
     public static final Trigger actionShoot = driver.rightBumper.and(teleop);
-    
+
     public static final Trigger actionClimbPrep = driver.downDpad.and(teleop);
     public static final Trigger actionClimb = driver.leftDpad.and(teleop);
 

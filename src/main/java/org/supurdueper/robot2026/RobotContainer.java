@@ -6,6 +6,7 @@ package org.supurdueper.robot2026;
 
 import static edu.wpi.first.units.Units.*;
 
+import edu.wpi.first.wpilibj2.command.Commands;
 import lombok.Getter;
 import org.supurdueper.robot2026.state.Driver;
 import org.supurdueper.robot2026.state.RobotStates;
@@ -17,9 +18,6 @@ import org.supurdueper.robot2026.subsystems.ShooterHood;
 import org.supurdueper.robot2026.subsystems.drive.Drivetrain;
 import org.supurdueper.robot2026.subsystems.drive.generated.TunerConstants;
 import org.supurdueper.robot2026.utils.HubShiftUtil;
-
-import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 
 public class RobotContainer {
 
@@ -70,7 +68,6 @@ public class RobotContainer {
         // Reset hub shift timer when enabling
         RobotStates.teleop.onTrue(Commands.runOnce(HubShiftUtil::initialize));
         RobotStates.auto.onTrue(Commands.runOnce(HubShiftUtil::initialize));
-        RobotStates.disabled
-                .onTrue(Commands.runOnce(HubShiftUtil::initialize).ignoringDisable(true));
+        RobotStates.disabled.onTrue(Commands.runOnce(HubShiftUtil::initialize).ignoringDisable(true));
     }
 }

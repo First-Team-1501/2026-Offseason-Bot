@@ -81,8 +81,7 @@ public class Intake extends TalonFXSubsystem implements SupurdueperSubsystem {
 
     @Override
     public void bindCommands() {
-        RobotStates.actionIntake.onTrue(run(this::intake));
-        RobotStates.actionShoot.onTrue(run(this::shoot));
-        RobotStates.actionAim.onTrue(run(this::stop));
+        RobotStates.actionIntake.whileTrue(runEnd(this::intake, this::stop));
+        RobotStates.actionShoot.whileTrue(runEnd(this::intake, this::stop));
     }
 }
