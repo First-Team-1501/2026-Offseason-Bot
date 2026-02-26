@@ -38,7 +38,7 @@ public abstract class PositionSubsystem extends TalonFXSubsystem {
     private final MotionMagicExpoVoltage positionRequest = new MotionMagicExpoVoltage(0);
     protected final Angle positionTolerance;
     private final SysIdRoutine sysIdRoutine;
-    private final Trigger atPosition = new Trigger(this::atPosition);
+    private final Trigger atPosition = new Trigger(this::isAtPosition);
 
     protected StatusSignal<Angle> motorPositionSignal;
     protected StatusSignal<Double> motorSetpointSignal;
@@ -64,10 +64,10 @@ public abstract class PositionSubsystem extends TalonFXSubsystem {
     }
 
     public Command goToPositionBlocking(Supplier<Angle> rotations) {
-        return goToPosition(rotations).andThen(Commands.waitUntil(this::atPosition));
+        return goToPosition(rotations).andThen(Commands.waitUntil(this::isAtPosition));
     }
 
-    public Trigger isAtPosition() {
+    public Trigger isAtPositionTrigger() {
         return atPosition;
     }
 
@@ -87,7 +87,7 @@ public abstract class PositionSubsystem extends TalonFXSubsystem {
         return Units.Rotations.of(motorSetpointSignal.getValueAsDouble());
     }
 
-    protected boolean atPosition() {
+    protected boolean isAtPosition() {
         return (getSetpoint().minus(getPosition())).abs(Units.Rotations) < (positionTolerance.in(Units.Rotations));
     }
 

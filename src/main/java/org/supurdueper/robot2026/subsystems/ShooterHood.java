@@ -18,6 +18,8 @@ import com.ctre.phoenix6.signals.GravityTypeValue;
 import dev.doglog.DogLog;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+
+import org.supurdueper.lib.LoggedTunableNumber;
 import org.supurdueper.lib.subsystems.PositionSubsystem;
 import org.supurdueper.lib.subsystems.SupurdueperSubsystem;
 import org.supurdueper.robot2026.CanId;
@@ -27,6 +29,7 @@ import org.supurdueper.robot2026.Robot;
 public class ShooterHood extends PositionSubsystem implements SupurdueperSubsystem {
 
     private PositionVoltage noMagicMotion = new PositionVoltage(0);
+    private final LoggedTunableNumber shooterAngle;
 
     /** Creates a new ShooterHood. */
     public ShooterHood() {
@@ -37,6 +40,8 @@ public class ShooterHood extends PositionSubsystem implements SupurdueperSubsyst
         configureMotors();
         Robot.add(this);
         motor.setPosition(kZeroPosition);
+        shooterAngle = new LoggedTunableNumber("Shot Tuning/Angle (Deg)");
+        shooterAngle.initDefault(22);
     }
 
     @Override
@@ -54,8 +59,13 @@ public class ShooterHood extends PositionSubsystem implements SupurdueperSubsyst
         super.periodic();
         DogLog.log("ShooterHood/Position (Deg)", getPosition().in(Degrees));
         DogLog.log("ShooterHood/Target Position (Deg)", getSetpoint().in(Degrees));
-        if ((getCurrentCommand() != null) && (getCurrentCommand().getName() != null)) {
-            DogLog.log("ShooterHood/Command", getCurrentCommand().getName());
+    }
+
+    public Angle getShotAngle() {
+        if (Constants.tuningMode) {
+            return Degrees.of(shooterAngle.get());
+        } else {
+            return Degrees.of(22);
         }
     }
 
@@ -132,7 +142,7 @@ public class ShooterHood extends PositionSubsystem implements SupurdueperSubsyst
 
     @Override
     public void bindCommands() {
-        this.setDefaultCommand(goToPosition(() -> Degrees.of(22)));
+        this.setDefaultCommand(goToPosition(this::getShotAngle));
         // RobotStates.actionTestA.onTrue(run(() -> stop()).withName("stop"));
         // RobotStates.actionTestB.onTrue(goToPosition(() -> Degrees.of(22)).withName("22"));
         // RobotStates.actionTestX.onTrue(goToPosition(() -> Degrees.of(28)).withName("28"));

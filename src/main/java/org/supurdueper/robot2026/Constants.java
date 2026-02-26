@@ -163,27 +163,22 @@ public final class Constants {
     public class LookupTables {
 
         public static final InterpolatingDoubleTreeMap distanceToShooterAngle = new InterpolatingDoubleTreeMap();
+        public static final InterpolatingDoubleTreeMap distanceToShooterRPM = new InterpolatingDoubleTreeMap();
 
-        private static void addPointToDistanceToShooterAngle(double distanceInches, double angleDegrees) {
-            distanceToShooterAngle.put(Units.inchesToMeters(distanceInches), Units.degreesToRotations(angleDegrees));
+        private static void addPointToDistanceToShooterAngle(double distanceMeters, double angleDegrees) {
+            distanceToShooterAngle.put(distanceMeters, angleDegrees);
+        }
+
+        private static void addPointToDistanceToShooterRPM(double distanceMeters, double velocityRPM) {
+            distanceToShooterAngle.put(distanceMeters, velocityRPM);
         }
 
         static {
             addPointToDistanceToShooterAngle(00, 51.0);
-            addPointToDistanceToShooterAngle(12, 48.5);
-            addPointToDistanceToShooterAngle(24, 42.5);
-            addPointToDistanceToShooterAngle(36, 38.5);
-            addPointToDistanceToShooterAngle(48, 35.5);
-            addPointToDistanceToShooterAngle(60, 33.5);
-            addPointToDistanceToShooterAngle(72, 31.5);
-            addPointToDistanceToShooterAngle(84, 29.5);
-            addPointToDistanceToShooterAngle(96, 27);
-            addPointToDistanceToShooterAngle(108, 25.5);
-            addPointToDistanceToShooterAngle(120, 24.5);
-            addPointToDistanceToShooterAngle(132, 24.5);
-            addPointToDistanceToShooterAngle(144, 23);
-            addPointToDistanceToShooterAngle(156, 22.5);
-            addPointToDistanceToShooterAngle(190, 22);
+
+            addPointToDistanceToShooterRPM(00, 1600);
+
+
         }
     }
 }

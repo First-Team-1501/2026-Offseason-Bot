@@ -28,7 +28,7 @@ public abstract class VelocitySubsystem extends TalonFXSubsystem {
     private final VelocityTorqueCurrentFOC velocityRequest = new VelocityTorqueCurrentFOC(0);
     protected final AngularVelocity velocityTolerance;
     private final SysIdRoutine sysIdRoutine;
-    private final Trigger atVelocity = new Trigger(this::atVelocity);
+    private final Trigger atVelocity = new Trigger(this::isAtVelocity);
 
     protected StatusSignal<AngularVelocity> motorVelocitySignal;
     protected StatusSignal<Double> motorSetpointSignal;
@@ -54,10 +54,10 @@ public abstract class VelocitySubsystem extends TalonFXSubsystem {
     }
 
     public Command goToVelocityBlocking(Supplier<AngularVelocity> angularvelocity) {
-        return goToVelocity(angularvelocity).andThen(Commands.waitUntil(this::atVelocity));
+        return goToVelocity(angularvelocity).andThen(Commands.waitUntil(this::isAtVelocity));
     }
 
-    public Trigger isAtVelocity() {
+    public Trigger isAtVelocityTrigger() {
         return atVelocity;
     }
 
@@ -81,7 +81,7 @@ public abstract class VelocitySubsystem extends TalonFXSubsystem {
         return Units.RotationsPerSecond.of(motorSetpointSignal.getValueAsDouble());
     }
 
-    protected boolean atVelocity() {
+    protected boolean isAtVelocity() {
         return (getSetpoint().minus(getVelocity())).abs(RotationsPerSecond)
                 < (velocityTolerance).abs(RotationsPerSecond);
     }

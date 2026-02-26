@@ -6,6 +6,7 @@ package org.supurdueper.robot2026;
 
 import static edu.wpi.first.units.Units.*;
 
+import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj2.command.Commands;
 import lombok.Getter;
 import org.supurdueper.robot2026.state.Driver;
@@ -15,6 +16,7 @@ import org.supurdueper.robot2026.subsystems.Hopper;
 import org.supurdueper.robot2026.subsystems.Intake;
 import org.supurdueper.robot2026.subsystems.Shooter;
 import org.supurdueper.robot2026.subsystems.ShooterHood;
+import org.supurdueper.robot2026.subsystems.Vision;
 import org.supurdueper.robot2026.subsystems.drive.Drivetrain;
 import org.supurdueper.robot2026.subsystems.drive.generated.TunerConstants;
 import org.supurdueper.robot2026.utils.HubShiftUtil;
@@ -48,8 +50,8 @@ public class RobotContainer {
     @Getter
     private static ShooterHood shooterHood;
 
-    // @Getter
-    // private static Vision vision;
+    @Getter
+    private static Vision vision;
 
     public RobotContainer() {
         driver = new Driver(0);
@@ -60,7 +62,7 @@ public class RobotContainer {
         feeder = new Feeder();
         shooter = new Shooter();
         shooterHood = new ShooterHood();
-
+        vision = new Vision();
         configureBindings();
     }
 

@@ -57,7 +57,7 @@ public class Feeder extends VelocitySubsystem implements SupurdueperSubsystem {
         DogLog.log("Feeder/RPM", getVelocity().in(RPM));
         DogLog.log("Feeder/Target RPM", getSetpoint().in(RPM));
         DogLog.log("Feeder/State", feedState.name());
-        DogLog.log("Feeder/At Velocity", atVelocity());
+        DogLog.log("Feeder/At Velocity", isAtVelocityTrigger().getAsBoolean());
     }
 
     public void test() {

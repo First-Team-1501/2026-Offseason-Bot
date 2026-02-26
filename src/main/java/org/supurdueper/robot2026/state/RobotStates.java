@@ -4,6 +4,8 @@ import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import org.supurdueper.robot2026.RobotContainer;
+import org.supurdueper.robot2026.subsystems.Shooter;
+import org.supurdueper.robot2026.subsystems.ShooterHood;
 
 public final class RobotStates {
 
@@ -13,10 +15,15 @@ public final class RobotStates {
     public static final Trigger disabled = RobotModeTriggers.disabled();
     public static final Driver driver = RobotContainer.getDriver();
     public static final Driver testController = RobotContainer.getTestController();
+    public static final Shooter shooter = RobotContainer.getShooter();
+    public static final ShooterHood hood = RobotContainer.getShooterHood();
 
     // auto
 
     // information
+    public static final Trigger infoShooterAtSpeed = shooter.isAtVelocityTrigger();
+    public static final Trigger infoHoodAtAngle = hood.isAtPositionTrigger();
+    public static final Trigger infoReadyToShoot = infoHoodAtAngle.and(infoShooterAtSpeed);
 
     // Actions
     public static final Trigger rezeroFieldHeading = driver.select.and(teleop);

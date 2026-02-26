@@ -17,9 +17,8 @@ import org.supurdueper.robot2026.subsystems.drive.Drivetrain;
 
 public class Vision extends SubsystemBase implements SupurdueperSubsystem {
 
-    public static final String leftLimelightName = "limelight-fl";
-    public static final String rightLimelimeName = "limelight-fr";
-    public static final String backLimelightName = "limelight-r";
+    public static final String frontLimelightName = "limelight-f";
+    public static final String leftLimelightName = "limelight-l";
 
     public Vision() {
         Robot.add(this);
@@ -29,9 +28,8 @@ public class Vision extends SubsystemBase implements SupurdueperSubsystem {
     public void periodic() {
         Drivetrain drivetrain = RobotContainer.getDrivetrain();
         SwerveDriveState state = drivetrain.getState();
+        updatePose3dAprilTag(frontLimelightName, drivetrain, state);
         updatePose3dAprilTag(leftLimelightName, drivetrain, state);
-        updatePose3dAprilTag(rightLimelimeName, drivetrain, state);
-        updatePose3dAprilTag(backLimelightName, drivetrain, state);
     }
 
     private void updatePose3dAprilTag(String limelightName, Drivetrain drivetrain, SwerveDriveState state) {

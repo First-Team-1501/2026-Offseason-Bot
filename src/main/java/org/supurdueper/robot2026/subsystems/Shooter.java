@@ -40,7 +40,7 @@ public class Shooter extends VelocitySubsystem implements SupurdueperSubsystem {
     public void periodic() {
         DogLog.log("Shooter/Current RPM", getVelocity().in(RPM));
         DogLog.log("Shooter/Target RPM", getSetpoint().in(RPM));
-        DogLog.log("Shooter/At Velocity", atVelocity());
+        DogLog.log("Shooter/At Velocity", isAtVelocity());
         super.periodic();
     }
 
