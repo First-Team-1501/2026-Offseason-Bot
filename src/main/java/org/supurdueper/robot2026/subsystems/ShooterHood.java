@@ -5,6 +5,7 @@
 package org.supurdueper.robot2026.subsystems;
 
 import static edu.wpi.first.units.Units.Degrees;
+import static edu.wpi.first.units.Units.Meters;
 import static org.supurdueper.robot2026.Constants.ShooerHoodConstants.*;
 
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
@@ -17,14 +18,16 @@ import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.signals.GravityTypeValue;
 import dev.doglog.DogLog;
 import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
-
 import org.supurdueper.lib.LoggedTunableNumber;
 import org.supurdueper.lib.subsystems.PositionSubsystem;
 import org.supurdueper.lib.subsystems.SupurdueperSubsystem;
 import org.supurdueper.robot2026.CanId;
 import org.supurdueper.robot2026.Constants;
 import org.supurdueper.robot2026.Robot;
+import org.supurdueper.robot2026.RobotContainer;
+import org.supurdueper.robot2026.utils.FieldCalculations;
 
 public class ShooterHood extends PositionSubsystem implements SupurdueperSubsystem {
 
@@ -59,6 +62,10 @@ public class ShooterHood extends PositionSubsystem implements SupurdueperSubsyst
         super.periodic();
         DogLog.log("ShooterHood/Position (Deg)", getPosition().in(Degrees));
         DogLog.log("ShooterHood/Target Position (Deg)", getSetpoint().in(Degrees));
+        SmartDashboard.putNumber(
+                "Tuning/Shot Tuning/Distance",
+                FieldCalculations.distanceToGoal(RobotContainer.getDrivetrain().getState().Pose)
+                        .in(Meters));
     }
 
     public Angle getShotAngle() {

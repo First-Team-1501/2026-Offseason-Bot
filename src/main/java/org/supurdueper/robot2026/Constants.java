@@ -20,7 +20,6 @@ import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.signals.GravityTypeValue;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularAcceleration;
 import edu.wpi.first.units.measure.AngularVelocity;
@@ -84,13 +83,13 @@ public final class Constants {
         public static final AngularVelocity profileV = RotationsPerSecond.of(0);
         public static final AngularAcceleration profileA = RotationsPerSecondPerSecond.of(0);
         public static final double gearRatio = 300.0 / 20.0 * 53.0 / 10.0;
-        public static Angle positionTolerance = Rotations.of(0);
+        public static Angle positionTolerance = Degrees.of(0.3);
     }
 
     public class ShooterConstants {
         public static final CurrentLimitsConfigs kCurrentLimit =
                 new CurrentLimitsConfigs().withStatorCurrentLimit(60).withStatorCurrentLimitEnable(true);
-        public static final double kP = 5.0;
+        public static final double kP = 8.0;
         public static final double kS = 6.0;
         public static final double kV = 0.08;
         public static final double shooterGearRatio = 30.0 / 24.0;
@@ -100,14 +99,15 @@ public final class Constants {
     }
 
     public class HopperConstants {
+        public static final double gearRatio = 30.0 / 14.0;
         public static final CurrentLimitsConfigs kCurrentLimit =
-                new CurrentLimitsConfigs().withStatorCurrentLimit(60).withStatorCurrentLimitEnable(true);
+                new CurrentLimitsConfigs().withStatorCurrentLimit(80).withStatorCurrentLimitEnable(true);
         public static final Voltage kIntakeVoltage = Volts.of(10);
         public static final Voltage kPurgeVoltage = Volts.of(0);
-        public static final double kV = 0;
+        public static final double kV = 3.0;
         public static final double kS = 0;
         public static final double kP = 0;
-        public static final AngularVelocity velocityTolerance = null;
+        public static final AngularVelocity velocityTolerance = RPM.of(50);
     }
 
     public class FeederConstants {
@@ -177,8 +177,6 @@ public final class Constants {
             addPointToDistanceToShooterAngle(00, 51.0);
 
             addPointToDistanceToShooterRPM(00, 1600);
-
-
         }
     }
 }

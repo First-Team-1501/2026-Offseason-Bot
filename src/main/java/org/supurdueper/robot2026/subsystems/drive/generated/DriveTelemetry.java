@@ -18,6 +18,7 @@ import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj.util.Color8Bit;
+import org.supurdueper.robot2026.subsystems.Vision;
 
 public class DriveTelemetry {
     private final double MaxSpeed;
@@ -39,6 +40,15 @@ public class DriveTelemetry {
 
     /* What to publish over networktables for telemetry */
     private final NetworkTableInstance inst = NetworkTableInstance.getDefault();
+
+    private final NetworkTable leftLimelightTable = inst.getTable(Vision.leftLimelightName);
+    private final NetworkTable frontLimelightTable = inst.getTable(Vision.frontLimelightName);
+
+    private final DoubleArrayPublisher leftLimelightRobotOrientationPublisher =
+            leftLimelightTable.getDoubleArrayTopic("robot_orientation_set").publish();
+    private final DoubleArrayPublisher frontLimelightRobotOrientationPublisher =
+            frontLimelightTable.getDoubleArrayTopic("robot_orientation_set").publish();
+    private double[] robotOrientation = {0, 0, 0, 0, 0, 0};
 
     /* Robot swerve drive state */
     private final NetworkTable driveStateTable = inst.getTable("DriveState");
@@ -97,6 +107,11 @@ public class DriveTelemetry {
 
     /** Accept the swerve drive state and telemeterize it to SmartDashboard and SignalLogger. */
     public void telemeterize(SwerveDriveState state) {
+
+        robotOrientation[0] = state.Pose.getRotation().getDegrees();
+        leftLimelightRobotOrientationPublisher.set(robotOrientation);
+        frontLimelightRobotOrientationPublisher.set(robotOrientation);
+
         /* Telemeterize the swerve drive state */
         drivePose.set(state.Pose);
         driveSpeeds.set(state.Speeds);

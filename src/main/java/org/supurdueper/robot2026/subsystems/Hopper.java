@@ -4,10 +4,14 @@
 
 package org.supurdueper.robot2026.subsystems;
 
+import static edu.wpi.first.units.Units.RPM;
 import static edu.wpi.first.units.Units.Volts;
 
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
+import com.ctre.phoenix6.configs.FeedbackConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
+
+import dev.doglog.DogLog;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import org.supurdueper.lib.subsystems.SupurdueperSubsystem;
@@ -20,6 +24,7 @@ import org.supurdueper.robot2026.state.RobotStates;
 public class Hopper extends VelocitySubsystem implements SupurdueperSubsystem {
     /** Creates a new Hopper. */
     public Hopper() {
+        config = config.withFeedback(new FeedbackConfigs().withSensorToMechanismRatio(Constants.HopperConstants.gearRatio));
         configureMotors();
         Robot.add(this);
     }
@@ -27,6 +32,9 @@ public class Hopper extends VelocitySubsystem implements SupurdueperSubsystem {
     @Override
     public void periodic() {
         super.periodic();
+        DogLog.log("Hopper/Current RPM", getVelocity().in(RPM));
+        DogLog.log("Hopper/Target RPM", getSetpoint().in(RPM));
+        DogLog.log("Hopper/At Velocity", isAtVelocity());
     }
 
     @Override
@@ -73,7 +81,13 @@ public class Hopper extends VelocitySubsystem implements SupurdueperSubsystem {
 
     @Override
     public void bindCommands() {
-        RobotStates.actionShoot.whileTrue(runEnd(this::run, this::stop));
+        RobotStates.actionShoot.and(RobotStates.infoReadyToShoot).whileTrue(runEnd(this::run, this::stop));
+        RobotStates.actionTestA.onTrue(run(this::stop));
+        RobotStates.actionTestB.onTrue(goToVelocity(() -> RPM.of(1000)));
+        RobotStates.actionTestX.onTrue(goToVelocity(() -> RPM.of(2000)));
+        RobotStates.actionTestY.onTrue(goToVelocity(() -> RPM.of(3000)));
+
+
     }
 
     @Override

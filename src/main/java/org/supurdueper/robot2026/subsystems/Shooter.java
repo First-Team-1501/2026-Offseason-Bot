@@ -13,6 +13,7 @@ import com.ctre.phoenix6.configs.Slot0Configs;
 import dev.doglog.DogLog;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import org.supurdueper.lib.LoggedTunableNumber;
 import org.supurdueper.lib.TalonFXFactory;
 import org.supurdueper.lib.subsystems.SupurdueperSubsystem;
 import org.supurdueper.lib.subsystems.VelocitySubsystem;
@@ -23,6 +24,8 @@ import org.supurdueper.robot2026.Robot;
 import org.supurdueper.robot2026.state.RobotStates;
 
 public class Shooter extends VelocitySubsystem implements SupurdueperSubsystem {
+
+    private final LoggedTunableNumber shooterVelocity;
     /** Creates a new VelocityTest. */
     public Shooter() {
         config = config.withFeedback(
@@ -34,14 +37,16 @@ public class Shooter extends VelocitySubsystem implements SupurdueperSubsystem {
         TalonFXFactory.createPermanentFollowerTalon(CanId.SHOOTER_FOUR, motor, true);
         TalonFXFactory.createPermanentFollowerTalon(CanId.SHOOTER_FIVE, motor, true);
         Robot.add(this);
+        shooterVelocity = new LoggedTunableNumber("Shot Tuning/Speed (RPM)");
+        shooterVelocity.initDefault(1500);
     }
 
     @Override
     public void periodic() {
+        super.periodic();
         DogLog.log("Shooter/Current RPM", getVelocity().in(RPM));
         DogLog.log("Shooter/Target RPM", getSetpoint().in(RPM));
         DogLog.log("Shooter/At Velocity", isAtVelocity());
-        super.periodic();
     }
 
     @Override
@@ -90,9 +95,13 @@ public class Shooter extends VelocitySubsystem implements SupurdueperSubsystem {
     }
 
     private AngularVelocity getShotVelocity() {
-        // TODO: Change velocity based on distance to goal?
-        return ShooterConstants.kShootRPM;
+        if (Constants.tuningMode) {
+            return RPM.of(shooterVelocity.get());
+        } else {
+            return ShooterConstants.kShootRPM;
+        }
     }
+    ;
 
     @Override
     public void bindCommands() {

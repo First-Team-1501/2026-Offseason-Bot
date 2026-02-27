@@ -81,6 +81,6 @@ public class Driver extends Gamepad {
         } else {
             ccwPositive *= Math.abs(kDefaultTurnScalor);
         }
-        return -1 * ccwPositive; // invert the value
+        return ccwPositive; // invert the value
     }
 }
