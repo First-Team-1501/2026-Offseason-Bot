@@ -104,9 +104,10 @@ public final class Constants {
                 new CurrentLimitsConfigs().withStatorCurrentLimit(80).withStatorCurrentLimitEnable(true);
         public static final Voltage kIntakeVoltage = Volts.of(10);
         public static final Voltage kPurgeVoltage = Volts.of(0);
-        public static final double kV = 3.0;
-        public static final double kS = 0;
-        public static final double kP = 0;
+        public static final AngularVelocity kIntakeSpeed = RPM.of(2500);
+        public static final double kV = 0.0;
+        public static final double kS = 12.0;
+        public static final double kP = 7.0;
         public static final AngularVelocity velocityTolerance = RPM.of(50);
     }
 
