@@ -11,14 +11,12 @@ import com.ctre.phoenix6.swerve.SwerveRequest.ForwardPerspectiveValue;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-import org.supurdueper.lib.swerve.FieldCentricFacingPoint;
 // import org.supurdueper.lib.swerve.DriveToPose;
 import org.supurdueper.lib.utils.AllianceFlip;
 import org.supurdueper.robot2026.RobotContainer;
 import org.supurdueper.robot2026.state.Driver;
 import org.supurdueper.robot2026.subsystems.drive.DriveSysId.SysIdSwerveTranslationCurrent;
 import org.supurdueper.robot2026.subsystems.drive.generated.TunerConstants;
-import org.supurdueper.robot2026.utils.FieldConstants;
 
 public class DriveStates {
 
@@ -31,22 +29,22 @@ public class DriveStates {
     private final SwerveRequest.FieldCentric driveFieldCentric = new SwerveRequest.FieldCentric();
     private final SysIdSwerveTranslationCurrent driveCurrentTuning = new SysIdSwerveTranslationCurrent();
     private final FieldCentricFacingAngle fieldCentricFacingAngle = new FieldCentricFacingAngle();
-    private final FieldCentricFacingPoint fieldCentricFacingPoint = new FieldCentricFacingPoint();
+    private final AimAtHub driveFacingHub = new AimAtHub();
 
     public DriveStates(Drivetrain drivetrain) {
         this.drivetrain = drivetrain;
         this.driver = RobotContainer.getDriver();
         fieldCentricFacingAngle.HeadingController.setPID(headingKp, headingKi, headingKd);
         fieldCentricFacingAngle.RotationalDeadband = rotationClosedLoopDeadband.in(RadiansPerSecond);
-        fieldCentricFacingPoint.HeadingController.setPID(headingKp, headingKi, headingKd);
-        fieldCentricFacingPoint.RotationalDeadband = rotationClosedLoopDeadband.in(RadiansPerSecond);
+        driveFacingHub.HeadingController.setPID(headingKp, headingKi, headingKd);
+        driveFacingHub.RotationalDeadband = rotationClosedLoopDeadband.in(RadiansPerSecond);
     }
 
     public void bindCommands() {
         drivetrain.setDefaultCommand(normalTeleopDrive());
         rezeroFieldHeading.onTrue(
                 Commands.runOnce(() -> drivetrain.resetRotation(AllianceFlip.apply(Rotation2d.kZero))));
-        // actionAim.or(actionShoot).whileTrue(driveFacingHub());
+        actionAim.or(actionShoot).whileTrue(driveFacingHub());
     }
 
     private Command normalTeleopDrive() {
@@ -76,10 +74,10 @@ public class DriveStates {
     }
 
     private Command driveFacingHub() {
-        return drivetrain.applyRequest(() -> fieldCentricFacingPoint
-                .withPointToFace(FieldConstants.Hub.topCenterPoint.toTranslation2d())
+        return drivetrain.applyRequest(() -> driveFacingHub
                 .withVelocityX(driver.getDriveFwdPositive() * MaxSpeed)
                 .withVelocityY(driver.getDriveLeftPositive() * MaxSpeed)
+                .withForwardPerspective(ForwardPerspectiveValue.OperatorPerspective)
                 .withDriveRequestType(DriveRequestType.OpenLoopVoltage));
     }
 }
