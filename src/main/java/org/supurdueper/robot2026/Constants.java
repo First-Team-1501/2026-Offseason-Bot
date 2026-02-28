@@ -29,7 +29,7 @@ import edu.wpi.first.units.measure.Voltage;
 import org.supurdueper.lib.utils.ExpCurve;
 
 public final class Constants {
-    public static boolean tuningMode = true;
+    public static boolean tuningMode = false;
     public static boolean publishToNT = true;
     public static CANBus canivoreBus = new CANBus("canivore");
     public static CANBus rioBus = new CANBus("rio");
@@ -104,10 +104,10 @@ public final class Constants {
                 new CurrentLimitsConfigs().withStatorCurrentLimit(80).withStatorCurrentLimitEnable(true);
         public static final Voltage kIntakeVoltage = Volts.of(10);
         public static final Voltage kPurgeVoltage = Volts.of(0);
-        public static final AngularVelocity kIntakeSpeed = RPM.of(2500);
+        public static final AngularVelocity kIntakeSpeed = RPM.of(1800);
         public static final double kV = 0.0;
         public static final double kS = 12.0;
-        public static final double kP = 7.0;
+        public static final double kP = 8.0;
         public static final AngularVelocity velocityTolerance = RPM.of(50);
     }
 
@@ -119,7 +119,7 @@ public final class Constants {
         public static final AngularVelocity velocityTolerance = RPM.of(60);
         public static final CurrentLimitsConfigs kCurrentLimit =
                 new CurrentLimitsConfigs().withStatorCurrentLimit(60).withStatorCurrentLimitEnable(true);
-        public static final AngularVelocity feedVelocity = RPM.of(1500);
+        public static final AngularVelocity feedVelocity = RPM.of(2000);
         public static final AngularVelocity purgeVelocity = RPM.of(-500);
         public static final AngularVelocity idleVelocity = RPM.of(1000);
     }
@@ -171,13 +171,29 @@ public final class Constants {
         }
 
         private static void addPointToDistanceToShooterRPM(double distanceMeters, double velocityRPM) {
-            distanceToShooterAngle.put(distanceMeters, velocityRPM);
+            distanceToShooterRPM.put(distanceMeters, velocityRPM);
         }
 
         static {
-            addPointToDistanceToShooterAngle(00, 51.0);
+            addPointToDistanceToShooterAngle(1.6, 19.0);
+            addPointToDistanceToShooterAngle(2.0, 19.0);
+            addPointToDistanceToShooterAngle(2.25, 20.0);
+            addPointToDistanceToShooterAngle(2.5, 22.0);
+            addPointToDistanceToShooterAngle(2.75, 24.0);
+            addPointToDistanceToShooterAngle(3.0, 26.5);
+            addPointToDistanceToShooterAngle(3.25, 28.0);
+            addPointToDistanceToShooterAngle(3.5, 29.0);
+            addPointToDistanceToShooterAngle(5.3, 32.0);
 
-            addPointToDistanceToShooterRPM(00, 1600);
+            addPointToDistanceToShooterRPM(1.6, 1550);
+            addPointToDistanceToShooterRPM(2.0, 1650);
+            addPointToDistanceToShooterRPM(2.25, 1700);
+            addPointToDistanceToShooterRPM(2.5, 1725);
+            addPointToDistanceToShooterRPM(2.75, 1725);
+            addPointToDistanceToShooterRPM(3.0, 1750);
+            addPointToDistanceToShooterRPM(3.25, 1775);
+            addPointToDistanceToShooterRPM(3.5, 1825);
+            addPointToDistanceToShooterRPM(5.3, 2050);
         }
     }
 }

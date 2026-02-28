@@ -35,6 +35,7 @@ public class Hopper extends VelocitySubsystem implements SupurdueperSubsystem {
         DogLog.log("Hopper/Current RPM", getVelocity().in(RPM));
         DogLog.log("Hopper/Target RPM", getSetpoint().in(RPM));
         DogLog.log("Hopper/At Velocity", isAtVelocity());
+        DogLog.log("Hopper/ReadyToShoot", RobotStates.infoReadyToShoot.getAsBoolean());
     }
 
     @Override

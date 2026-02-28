@@ -4,6 +4,7 @@
 
 package org.supurdueper.robot2026.subsystems;
 
+import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.RPM;
 import static edu.wpi.first.units.Units.Volts;
 
@@ -19,9 +20,12 @@ import org.supurdueper.lib.subsystems.SupurdueperSubsystem;
 import org.supurdueper.lib.subsystems.VelocitySubsystem;
 import org.supurdueper.robot2026.CanId;
 import org.supurdueper.robot2026.Constants;
+import org.supurdueper.robot2026.Constants.LookupTables;
 import org.supurdueper.robot2026.Constants.ShooterConstants;
 import org.supurdueper.robot2026.Robot;
+import org.supurdueper.robot2026.RobotContainer;
 import org.supurdueper.robot2026.state.RobotStates;
+import org.supurdueper.robot2026.utils.FieldCalculations;
 
 public class Shooter extends VelocitySubsystem implements SupurdueperSubsystem {
 
@@ -98,7 +102,10 @@ public class Shooter extends VelocitySubsystem implements SupurdueperSubsystem {
         if (Constants.tuningMode) {
             return RPM.of(shooterVelocity.get());
         } else {
-            return ShooterConstants.kShootRPM;
+            double distanceToGoalMeters = FieldCalculations.distanceToGoal(
+                            RobotContainer.getDrivetrain().getState().Pose)
+                    .in(Meters);
+            return RPM.of(LookupTables.distanceToShooterRPM.get(distanceToGoalMeters));
         }
     }
     ;

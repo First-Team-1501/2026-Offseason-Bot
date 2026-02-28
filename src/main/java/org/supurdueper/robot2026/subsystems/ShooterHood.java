@@ -25,6 +25,7 @@ import org.supurdueper.lib.subsystems.PositionSubsystem;
 import org.supurdueper.lib.subsystems.SupurdueperSubsystem;
 import org.supurdueper.robot2026.CanId;
 import org.supurdueper.robot2026.Constants;
+import org.supurdueper.robot2026.Constants.LookupTables;
 import org.supurdueper.robot2026.Robot;
 import org.supurdueper.robot2026.RobotContainer;
 import org.supurdueper.robot2026.utils.FieldCalculations;
@@ -72,7 +73,10 @@ public class ShooterHood extends PositionSubsystem implements SupurdueperSubsyst
         if (Constants.tuningMode) {
             return Degrees.of(shooterAngle.get());
         } else {
-            return Degrees.of(22);
+            double distanceToGoalMeters = FieldCalculations.distanceToGoal(
+                            RobotContainer.getDrivetrain().getState().Pose)
+                    .in(Meters);
+            return Degrees.of(LookupTables.distanceToShooterAngle.get(distanceToGoalMeters));
         }
     }
 
