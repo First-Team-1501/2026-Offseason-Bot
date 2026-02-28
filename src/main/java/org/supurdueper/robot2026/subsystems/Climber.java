@@ -7,6 +7,7 @@ package org.supurdueper.robot2026.subsystems;
 import static edu.wpi.first.units.Units.Inches;
 import static edu.wpi.first.units.Units.Rotation;
 import static edu.wpi.first.units.Units.Rotations;
+import static edu.wpi.first.units.Units.Volts;
 
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
@@ -99,6 +100,8 @@ public class Climber extends PositionSubsystem implements SupurdueperSubsystem {
         RobotStates.auto.onTrue(releaseIntake());
         RobotStates.actionClimbPrep.onTrue(prepClimb());
         RobotStates.actionClimb.onTrue(climb());
+        RobotStates.testController.leftStickY.whileTrue(
+                runEnd(() -> runVoltage(Volts.of(12 * RobotStates.testController.getDriveFwdPositive())), this::stop));
     }
 
     @Override
@@ -145,7 +148,6 @@ public class Climber extends PositionSubsystem implements SupurdueperSubsystem {
 
     @Override
     public SysIdRoutine sysIdConfig() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'sysIdConfig'");
+        return null;
     }
 }

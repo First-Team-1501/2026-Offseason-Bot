@@ -18,6 +18,7 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import org.supurdueper.BuildConstants;
 import org.supurdueper.lib.subsystems.SupurdueperRobot;
 import org.supurdueper.robot2026.autos.AutoRoutines;
+import org.supurdueper.robot2026.subsystems.Vision;
 
 public class Robot extends SupurdueperRobot {
     private Command m_autonomousCommand;
@@ -69,8 +70,8 @@ public class Robot extends SupurdueperRobot {
 
         // Limelight port fowarding
         for (int port = 5800; port <= 5809; port++) {
-            PortForwarder.add(port, "10.74.57.11", port);
-            PortForwarder.add(port + 100, "10.74.57.12", port);
+            PortForwarder.add(port, "10.74.57.200", port);
+            PortForwarder.add(port + 100, "10.74.57.201", port);
         }
 
         resetCommandsAndButtons();
@@ -100,6 +101,8 @@ public class Robot extends SupurdueperRobot {
 
     @Override
     public void autonomousInit() {
+        Vision.setEnabled();
+        Vision.setAprilTagFilter();
         autoChooser.selectedCommandScheduler().schedule();
     }
 
@@ -112,6 +115,8 @@ public class Robot extends SupurdueperRobot {
     @Override
     public void teleopInit() {
         resetCommandsAndButtons();
+        Vision.setEnabled();
+        Vision.setAprilTagFilter();
     }
 
     @Override

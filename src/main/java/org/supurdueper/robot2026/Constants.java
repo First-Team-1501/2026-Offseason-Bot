@@ -148,8 +148,8 @@ public final class Constants {
         public static final Distance kForwardSoftLimit = Inches.of(0);
         public static final Distance kReverseSoftLimit = Inches.of(0);
         public static final double kInchesPerRotation = 0;
-        public static final AngularVelocity profileV = null;
-        public static final AngularAcceleration profileA = null;
+        public static final AngularVelocity profileV = RotationsPerSecond.of(0);
+        public static final AngularAcceleration profileA = RotationsPerSecondPerSecond.of(0);
         public static final Distance kDropIntakePosition = null;
         public static final Distance kPrepClimbPosition = null;
         public static final Distance kHomePosition = null;

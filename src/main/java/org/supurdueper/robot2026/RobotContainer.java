@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import lombok.Getter;
 import org.supurdueper.robot2026.state.Driver;
 import org.supurdueper.robot2026.state.RobotStates;
+import org.supurdueper.robot2026.subsystems.Climber;
 import org.supurdueper.robot2026.subsystems.Feeder;
 import org.supurdueper.robot2026.subsystems.Hopper;
 import org.supurdueper.robot2026.subsystems.Intake;
@@ -43,8 +44,8 @@ public class RobotContainer {
     @Getter
     private static Intake intake;
 
-    // @Getter
-    // private static Climber climber;
+    @Getter
+    private static Climber climber;
 
     @Getter
     private static ShooterHood shooterHood;
@@ -62,6 +63,7 @@ public class RobotContainer {
         shooter = new Shooter();
         shooterHood = new ShooterHood();
         vision = new Vision();
+        climber = new Climber();
         configureBindings();
     }
 

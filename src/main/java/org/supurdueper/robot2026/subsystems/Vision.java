@@ -17,8 +17,8 @@ import org.supurdueper.robot2026.subsystems.drive.Drivetrain;
 
 public class Vision extends SubsystemBase implements SupurdueperSubsystem {
 
-    public static final String frontLimelightName = "limelight-f";
-    public static final String leftLimelightName = "limelight-l";
+    public static final String backLimelightName = "limelight-b";
+    public static final String rightLimelightName = "limelight-r";
 
     public Vision() {
         Robot.add(this);
@@ -28,8 +28,8 @@ public class Vision extends SubsystemBase implements SupurdueperSubsystem {
     public void periodic() {
         Drivetrain drivetrain = RobotContainer.getDrivetrain();
         SwerveDriveState state = drivetrain.getState();
-        updatePose3dAprilTag(frontLimelightName, drivetrain, state);
-        updatePose3dAprilTag(leftLimelightName, drivetrain, state);
+        updatePose3dAprilTag(backLimelightName, drivetrain, state);
+        updatePose3dAprilTag(rightLimelightName, drivetrain, state);
     }
 
     private void updatePose3dAprilTag(String limelightName, Drivetrain drivetrain, SwerveDriveState state) {
@@ -62,18 +62,22 @@ public class Vision extends SubsystemBase implements SupurdueperSubsystem {
     }
 
     public static void updateIMUMode() {
-        LimelightHelpers.SetIMUMode(leftLimelightName, 3);
+        LimelightHelpers.SetIMUMode(rightLimelightName, 3);
     }
 
     public static void setDisabled() {
-        LimelightHelpers.SetThrottle(leftLimelightName, 150);
+        LimelightHelpers.SetThrottle(rightLimelightName, 150);
     }
 
     public static void setEnabled() {
-        LimelightHelpers.SetThrottle(leftLimelightName, 0);
+        LimelightHelpers.SetThrottle(rightLimelightName, 0);
     }
 
-    public static void setAprilTagFilter() {}
+    public static void setAprilTagFilter() {
+        int[] ids = {2, 3, 4, 5, 8, 9, 10, 11, 13, 14, 15, 16, 18, 19, 20, 21, 24, 25, 26, 27, 29, 30, 31, 32};
+        LimelightHelpers.SetFiducialIDFiltersOverride(backLimelightName, ids);
+        LimelightHelpers.SetFiducialIDFiltersOverride(rightLimelightName, ids);
+    }
 
     @Override
     public void bindCommands() {}
