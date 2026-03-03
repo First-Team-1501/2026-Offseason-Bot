@@ -4,8 +4,6 @@
 
 package org.supurdueper.robot2026.subsystems;
 
-import static edu.wpi.first.units.Units.Inches;
-import static edu.wpi.first.units.Units.Rotation;
 import static edu.wpi.first.units.Units.Rotations;
 import static edu.wpi.first.units.Units.Volts;
 
@@ -13,12 +11,10 @@ import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.SoftwareLimitSwitchConfigs;
-import com.ctre.phoenix6.controls.MotionMagicTorqueCurrentFOC;
-import com.ctre.phoenix6.controls.TorqueCurrentFOC;
+import com.ctre.phoenix6.controls.PositionVoltage;
+import dev.doglog.DogLog;
 import edu.wpi.first.units.measure.Angle;
-import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import java.util.function.Supplier;
 import org.supurdueper.lib.subsystems.PositionSubsystem;
@@ -30,9 +26,7 @@ import org.supurdueper.robot2026.state.RobotStates;
 
 public class Climber extends PositionSubsystem implements SupurdueperSubsystem {
     /** Creates a new Climber. */
-    private TorqueCurrentFOC currentRequest = new TorqueCurrentFOC(0);
-
-    private MotionMagicTorqueCurrentFOC positionCurrentRequest = new MotionMagicTorqueCurrentFOC(0);
+    PositionVoltage noMotionMagic = new PositionVoltage(Rotations.of(0));
 
     public Climber() {
         configureMotors();
@@ -42,27 +36,25 @@ public class Climber extends PositionSubsystem implements SupurdueperSubsystem {
     @Override
     public void periodic() {
         super.periodic();
+        DogLog.log("Climber/Position", getPosition().in(Rotations));
+        DogLog.log("Climber/Setpoint", getSetpoint().in(Rotations));
     }
 
     public Command releaseIntake() {
-        return Commands.runOnce(() ->
-                        goToPosition(() -> heightToMotorRotations(Constants.ClimberConstants.kDropIntakePosition)))
-                .andThen(() -> goToPosition(() -> heightToMotorRotations(Constants.ClimberConstants.kHomePosition)));
-    }
-
-    public Command prepClimb() {
-        return Commands.runOnce(
-                () -> goToPosition(() -> heightToMotorRotations(Constants.ClimberConstants.kPrepClimbPosition)));
+        return goToPosition(() -> Rotations.of(Constants.ClimberConstants.kDropIntakePosition));
     }
 
     public Command climb() {
-        return Commands.runOnce(
-                () -> goToPosition(() -> heightToMotorRotations(Constants.ClimberConstants.kHomePosition)));
+        return goToPosition(() -> Rotations.of(Constants.ClimberConstants.kClimbPosition));
+    }
+
+    public Command home() {
+        return goToPosition(() -> Rotations.of(0));
     }
 
     @Override
     public Command goToPosition(Supplier<Angle> rotations) {
-        return run(() -> motor.setControl(positionCurrentRequest.withPosition(rotations.get())));
+        return run(() -> motor.setControl(noMotionMagic.withPosition(rotations.get())));
     }
 
     @Override
@@ -98,10 +90,13 @@ public class Climber extends PositionSubsystem implements SupurdueperSubsystem {
     @Override
     public void bindCommands() {
         RobotStates.auto.onTrue(releaseIntake());
-        RobotStates.actionClimbPrep.onTrue(prepClimb());
         RobotStates.actionClimb.onTrue(climb());
         RobotStates.testController.leftStickY.whileTrue(
                 runEnd(() -> runVoltage(Volts.of(12 * RobotStates.testController.getDriveFwdPositive())), this::stop));
+        RobotStates.testController.start.onTrue(runOnce(() -> motor.setPosition(0)));
+        RobotStates.testController.B.onTrue(home());
+        RobotStates.testController.Y.onTrue(climb());
+        RobotStates.testController.X.onTrue(releaseIntake());
     }
 
     @Override
@@ -126,24 +121,18 @@ public class Climber extends PositionSubsystem implements SupurdueperSubsystem {
                 .withMotionMagicAcceleration(Constants.ClimberConstants.profileA);
     }
 
-    private Distance motorRotationToHeight(Angle motorRotations) {
-        return Inches.of(motorRotations.in(Rotation) * Constants.ClimberConstants.kInchesPerRotation);
-    }
-
-    private Angle heightToMotorRotations(Distance height) {
-        return Rotations.of(height.in(Inches) / Constants.ClimberConstants.kInchesPerRotation);
-    }
-
     @Override
     public SoftwareLimitSwitchConfigs softLimitConfig() {
         return new SoftwareLimitSwitchConfigs()
-                .withForwardSoftLimitThreshold(heightToMotorRotations(Constants.ClimberConstants.kForwardSoftLimit))
-                .withReverseSoftLimitThreshold(heightToMotorRotations(Constants.ClimberConstants.kReverseSoftLimit));
+                .withForwardSoftLimitThreshold(Constants.ClimberConstants.kForwardSoftLimit)
+                .withReverseSoftLimitThreshold(Constants.ClimberConstants.kReverseSoftLimit)
+                .withForwardSoftLimitEnable(true)
+                .withReverseSoftLimitEnable(true);
     }
 
     @Override
     public Angle positionTolerance() {
-        return heightToMotorRotations(Constants.ClimberConstants.positionTolerance);
+        return Rotations.of(Constants.ClimberConstants.positionTolerance);
     }
 
     @Override

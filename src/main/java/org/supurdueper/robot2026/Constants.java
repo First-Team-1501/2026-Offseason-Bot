@@ -23,13 +23,12 @@ import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularAcceleration;
 import edu.wpi.first.units.measure.AngularVelocity;
-import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.units.measure.Voltage;
 import org.supurdueper.lib.utils.ExpCurve;
 
 public final class Constants {
-    public static boolean tuningMode = false;
+    public static boolean tuningMode = true;
     public static boolean publishToNT = true;
     public static CANBus canivoreBus = new CANBus("canivore");
     public static CANBus rioBus = new CANBus("rio");
@@ -145,15 +144,15 @@ public final class Constants {
         public static final double kg = 0;
         public static final double profileKa = 0;
         public static final double profileKv = 0;
-        public static final Distance kForwardSoftLimit = Inches.of(0);
-        public static final Distance kReverseSoftLimit = Inches.of(0);
+        public static final double kForwardSoftLimit = 80;
+        public static final double kReverseSoftLimit = 0;
         public static final double kInchesPerRotation = 0;
         public static final AngularVelocity profileV = RotationsPerSecond.of(0);
         public static final AngularAcceleration profileA = RotationsPerSecondPerSecond.of(0);
-        public static final Distance kDropIntakePosition = null;
-        public static final Distance kPrepClimbPosition = null;
-        public static final Distance kHomePosition = null;
-        public static Distance positionTolerance = Inches.of(0);
+        public static final double kDropIntakePosition = 80;
+        public static final double kClimbPosition = 14;
+        public static final double kHomePosition = 0;
+        public static double positionTolerance = 0;
     }
 
     public class LightsConstants {

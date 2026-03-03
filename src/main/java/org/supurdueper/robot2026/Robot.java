@@ -40,6 +40,8 @@ public class Robot extends SupurdueperRobot {
         autoRoutines = new AutoRoutines(autoFactory);
 
         autoChooser.addRoutine("SimplePath", autoRoutines::simplePathAuto);
+        autoChooser.addRoutine("Left_One_Run", autoRoutines::leftOneRun);
+        autoChooser.addRoutine("Right_One_Run", autoRoutines::rightOneRun);
         SmartDashboard.putData("Auto Chooser", autoChooser);
     }
 

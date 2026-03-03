@@ -3,6 +3,8 @@ package org.supurdueper.robot2026.state;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import lombok.Getter;
+import lombok.Setter;
 import org.supurdueper.robot2026.RobotContainer;
 import org.supurdueper.robot2026.subsystems.Shooter;
 import org.supurdueper.robot2026.subsystems.ShooterHood;
@@ -18,7 +20,22 @@ public final class RobotStates {
     public static final Shooter shooter = RobotContainer.getShooter();
     public static final ShooterHood hood = RobotContainer.getShooterHood();
 
+    @Getter
+    @Setter
+    private static boolean autoAim = false;
+
+    @Getter
+    @Setter
+    private static boolean autoIntake = false;
+
+    @Getter
+    @Setter
+    private static boolean autoShoot = false;
+
     // auto
+    // public static final Trigger autoIntake = Trigger(RobotStates::auto).and(auto);
+    // public static final Trigger autoAim = driver.rightTrigger.and(auto);
+    // public static final Trigger autoShoot = driver.rightBumper.and(auto);
 
     // information
     public static final Trigger infoShooterAtSpeed = shooter.isAtVelocityTrigger();
