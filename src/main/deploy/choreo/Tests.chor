@@ -3,8 +3,38 @@
  "version":2,
  "type":"Swerve",
  "variables":{
-  "expressions":{},
-  "poses":{}
+  "expressions":{
+   "max_Bump_Velocity":{
+    "dimension":"LinVel",
+    "var":{
+     "exp":"2 m / s",
+     "val":2.0
+    }
+   },
+   "max_Intake_Velocity":{
+    "dimension":"LinVel",
+    "var":{
+     "exp":"2 m / s",
+     "val":2.0
+    }
+   }
+  },
+  "poses":{
+   "starting_left":{
+    "x":{
+     "exp":"3.4893312454223633 m",
+     "val":3.4893312454223633
+    },
+    "y":{
+     "exp":"5.058963775634766 m",
+     "val":5.058963775634766
+    },
+    "heading":{
+     "exp":"90 deg",
+     "val":1.5707963267948966
+    }
+   }
+  }
  },
  "config":{
   "frontLeft":{
