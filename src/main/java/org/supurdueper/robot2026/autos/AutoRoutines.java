@@ -3,7 +3,10 @@ package org.supurdueper.robot2026.autos;
 import choreo.auto.AutoFactory;
 import choreo.auto.AutoRoutine;
 import choreo.auto.AutoTrajectory;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import org.supurdueper.robot2026.RobotContainer;
+import org.supurdueper.robot2026.subsystems.Intake;
 import org.supurdueper.robot2026.subsystems.drive.Drivetrain;
 
 public class AutoRoutines {
@@ -13,6 +16,11 @@ public class AutoRoutines {
     public AutoRoutines(AutoFactory factory) {
         m_factory = factory;
         drivetrain = RobotContainer.getDrivetrain();
+    }
+
+    public static Command dropIntake() {
+        return Commands.sequence(
+                Commands.runOnce(() -> RobotContainer.getClimber().releaseIntake()));
     }
 
     public AutoRoutine simplePathAuto() {
@@ -33,9 +41,18 @@ public class AutoRoutines {
 
     public AutoRoutine rightOneRun() {
         AutoRoutine routine = m_factory.newRoutine("Right One Run");
-        final AutoTrajectory right_one_run = routine.trajectory("Right_One_Run");
+        final AutoTrajectory rightOverBump = routine.trajectory("Right_One_Run, 0");
+        final AutoTrajectory rightIntakeBalls = routine.trajectory("Right_One_Run, 1");
+        final AutoTrajectory rightToHub = routine.trajectory("Right_One_Run, 2");
+        Intake intake = RobotContainer.getIntake();
 
-        routine.active().onTrue(right_one_run.resetOdometry().andThen(right_one_run.cmd()));
+        routine.active()
+                .onTrue(rightOverBump.resetOdometry().andThen(dropIntake()).andThen(rightOverBump.cmd()));
+
+        rightOverBump.recentlyDone().onTrue(rightIntakeBalls.cmd());
+
+        rightIntakeBalls.active().onTrue(intake.runIntake());
+
         return routine;
     }
 }

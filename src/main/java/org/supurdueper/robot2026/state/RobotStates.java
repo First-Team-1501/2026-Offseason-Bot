@@ -33,9 +33,9 @@ public final class RobotStates {
     private static boolean autoShoot = false;
 
     // auto
-    // public static final Trigger autoIntake = Trigger(RobotStates::auto).and(auto);
-    // public static final Trigger autoAim = driver.rightTrigger.and(auto);
-    // public static final Trigger autoShoot = driver.rightBumper.and(auto);
+    public static final Trigger auto_intake = new Trigger(RobotStates::isAutoIntake).and(auto);
+    public static final Trigger auto_aim = new Trigger(RobotStates::isAutoAim).and(auto);
+    public static final Trigger auto_shoot = new Trigger(RobotStates::isAutoShoot).and(auto);
 
     // information
     public static final Trigger infoShooterAtSpeed = shooter.isAtVelocityTrigger();

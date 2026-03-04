@@ -153,7 +153,7 @@ public class ShooterHood extends PositionSubsystem implements SupurdueperSubsyst
 
     @Override
     public void bindCommands() {
-        // this.setDefaultCommand(goToPosition(this::getShotAngle));
+        this.setDefaultCommand(goToPosition(this::getShotAngle));
         // RobotStates.actionTestA.onTrue(run(() -> stop()).withName("stop"));
         // RobotStates.actionTestB.onTrue(goToPosition(() -> Degrees.of(22)).withName("22"));
         // RobotStates.actionTestX.onTrue(goToPosition(() -> Degrees.of(28)).withName("28"));
