@@ -17,12 +17,15 @@ import org.supurdueper.lib.subsystems.SupurdueperSubsystem;
 import org.supurdueper.lib.subsystems.VelocitySubsystem;
 import org.supurdueper.robot2026.CanId;
 import org.supurdueper.robot2026.Constants;
+import org.supurdueper.robot2026.Constants.HopperConstants;
 import org.supurdueper.robot2026.Robot;
 import org.supurdueper.robot2026.state.RobotStates;
 
 public class Hopper extends VelocitySubsystem implements SupurdueperSubsystem {
     /** Creates a new Hopper. */
     public Hopper() {
+        config.TorqueCurrent.PeakForwardTorqueCurrent = HopperConstants.kMaxAmps;
+        config.TorqueCurrent.PeakReverseTorqueCurrent = HopperConstants.kMaxAmps;
         config = config.withFeedback(
                 new FeedbackConfigs().withSensorToMechanismRatio(Constants.HopperConstants.gearRatio));
         configureMotors();
@@ -72,6 +75,10 @@ public class Hopper extends VelocitySubsystem implements SupurdueperSubsystem {
         setVelocity(Constants.HopperConstants.kIntakeSpeed);
     }
 
+    public void agitate() {
+        runVoltage(Volts.of(-2));
+    }
+
     public void purge() {
         runVoltage(Constants.HopperConstants.kPurgeVoltage);
     }
@@ -83,6 +90,7 @@ public class Hopper extends VelocitySubsystem implements SupurdueperSubsystem {
     @Override
     public void bindCommands() {
         RobotStates.actionShoot.and(RobotStates.infoReadyToShoot).whileTrue(runEnd(this::run, this::stop));
+        // RobotStates.actionIntake.whileTrue(runEnd(this::agitate, this::stop));
     }
 
     @Override

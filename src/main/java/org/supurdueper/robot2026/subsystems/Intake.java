@@ -25,6 +25,8 @@ import org.supurdueper.robot2026.state.RobotStates;
 public class Intake extends VelocitySubsystem implements SupurdueperSubsystem {
     /** Creates a new Intake. */
     public Intake() {
+        config.TorqueCurrent.PeakForwardTorqueCurrent = IntakeConstants.kMaxAmps;
+        config.TorqueCurrent.PeakForwardTorqueCurrent = IntakeConstants.kMaxAmps;
         config = config.withFeedback(new FeedbackConfigs().withSensorToMechanismRatio(IntakeConstants.kGearRatio));
         configureMotors();
         Robot.add(this);
@@ -61,15 +63,15 @@ public class Intake extends VelocitySubsystem implements SupurdueperSubsystem {
     }
 
     public void intake() {
-        runVoltage(Constants.IntakeConstants.kIntakeVoltage);
+        setVelocity(IntakeConstants.kIntakeVelocity);
     }
 
     public void shoot() {
-        runVoltage(Constants.IntakeConstants.kShootVoltage);
+        setVelocity(IntakeConstants.kShootVelocity);
     }
 
     public void purge() {
-        runVoltage(Constants.IntakeConstants.kPurgeVoltage);
+        runVoltage(IntakeConstants.kPurgeVoltage);
     }
 
     public void test() {
@@ -99,6 +101,7 @@ public class Intake extends VelocitySubsystem implements SupurdueperSubsystem {
     public void bindCommands() {
         RobotStates.actionIntake.whileTrue(runEnd(this::intake, this::stop));
         RobotStates.actionShoot.whileTrue(runEnd(this::intake, this::stop));
+        RobotStates.actionPurge.whileTrue(runEnd(this::purge, this::stop));
         RobotStates.testController.A.onTrue(run(this::stop));
         RobotStates.testController.X.onTrue(goToVelocity(() -> RPM.of(1000)));
         RobotStates.testController.B.onTrue(goToVelocity(() -> RPM.of(2000)));

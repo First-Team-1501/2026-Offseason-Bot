@@ -99,6 +99,7 @@ public final class Constants {
     }
 
     public class HopperConstants {
+        public static final double kMaxAmps = 80;
         public static final double gearRatio = 30.0 / 14.0;
         public static final CurrentLimitsConfigs kCurrentLimit =
                 new CurrentLimitsConfigs().withStatorCurrentLimit(80).withStatorCurrentLimitEnable(true);
@@ -109,6 +110,7 @@ public final class Constants {
         public static final double kS = 12.0;
         public static final double kP = 8.0;
         public static final AngularVelocity velocityTolerance = RPM.of(50);
+        public static final AngularVelocity kAgitateSpeed = RPM.of(-300);
     }
 
     public class FeederConstants {
@@ -125,19 +127,20 @@ public final class Constants {
     }
 
     public class IntakeConstants {
+        public static final double kMaxAmps = 60;
         public static final CurrentLimitsConfigs kCurrentLimit =
-                new CurrentLimitsConfigs().withStatorCurrentLimit(60).withStatorCurrentLimitEnable(true);
+                new CurrentLimitsConfigs().withStatorCurrentLimit(kMaxAmps).withStatorCurrentLimitEnable(true);
         public static final Voltage kIntakeVoltage = Volts.of(6);
-        public static final Voltage kPurgeVoltage = Volts.of(-4);
+        public static final Voltage kPurgeVoltage = Volts.of(-8);
         public static final Voltage kShootVoltage = Volts.of(6);
         public static final AngularVelocity kVelocityTolerance = RPM.of(50);
-        public static final AngularVelocity kIntakeVelocity = RPM.of(6);
+        public static final AngularVelocity kIntakeVelocity = RPM.of(1700);
         public static final AngularVelocity kPurgeVelocity = RPM.of(-4);
-        public static final AngularVelocity kShootVelocity = RPM.of(6);
+        public static final AngularVelocity kShootVelocity = RPM.of(1700);
         public static final double kGearRatio = 18.0 / 12.0;
-        public static final double kp = 5.0;
-        public static final double ks = 0;
-        public static final double kv = 0;
+        public static final double kp = 10.0;
+        public static final double ks = 8.0;
+        public static final double kv = 0.12;
     }
 
     public class ClimberConstants {
