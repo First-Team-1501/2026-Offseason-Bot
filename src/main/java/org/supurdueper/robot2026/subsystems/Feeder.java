@@ -18,6 +18,7 @@ import org.supurdueper.lib.subsystems.SupurdueperSubsystem;
 import org.supurdueper.lib.subsystems.VelocitySubsystem;
 import org.supurdueper.robot2026.CanId;
 import org.supurdueper.robot2026.Constants;
+import org.supurdueper.robot2026.Constants.FeederConstants;
 import org.supurdueper.robot2026.Robot;
 import org.supurdueper.robot2026.state.RobotStates;
 
@@ -25,9 +26,9 @@ public class Feeder extends VelocitySubsystem implements SupurdueperSubsystem {
 
     /** Creates a new Feeder. */
     public enum FeedState {
-        feed(Constants.FeederConstants.feedVelocity),
-        idle(Constants.FeederConstants.idleVelocity),
-        purge(Constants.FeederConstants.purgeVelocity),
+        feed(FeederConstants.feedVelocity),
+        idle(FeederConstants.idleVelocity),
+        purge(FeederConstants.purgeVelocity),
         stop(RPM.of(0));
 
         public AngularVelocity velocity;
@@ -41,6 +42,10 @@ public class Feeder extends VelocitySubsystem implements SupurdueperSubsystem {
     private FeedState feedState;
 
     public Feeder() {
+        config.TorqueCurrent.PeakForwardTorqueCurrent = FeederConstants.kMaxAmps;
+        config.TorqueCurrent.PeakReverseTorqueCurrent = 0;
+        config.MotorOutput.PeakForwardDutyCycle = 1.0;
+        config.MotorOutput.PeakForwardDutyCycle = 0.0;
         configureMotors();
         Robot.add(this);
         feedState = FeedState.stop;

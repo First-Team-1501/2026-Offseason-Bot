@@ -86,8 +86,9 @@ public final class Constants {
     }
 
     public class ShooterConstants {
+        public static final double kMaxAmps = 60.0;
         public static final CurrentLimitsConfigs kCurrentLimit =
-                new CurrentLimitsConfigs().withStatorCurrentLimit(60).withStatorCurrentLimitEnable(true);
+                new CurrentLimitsConfigs().withStatorCurrentLimit(kMaxAmps).withStatorCurrentLimitEnable(true);
         public static final double kP = 8.0;
         public static final double kS = 6.0;
         public static final double kV = 0.08;
@@ -111,13 +112,13 @@ public final class Constants {
     }
 
     public class FeederConstants {
-
         public static final double kP = 5.0;
         public static final double kS = 3.5;
         public static final double kV = 0;
         public static final AngularVelocity velocityTolerance = RPM.of(60);
+        public static final double kMaxAmps = 60.0;
         public static final CurrentLimitsConfigs kCurrentLimit =
-                new CurrentLimitsConfigs().withStatorCurrentLimit(60).withStatorCurrentLimitEnable(true);
+                new CurrentLimitsConfigs().withStatorCurrentLimit(kMaxAmps).withStatorCurrentLimitEnable(true);
         public static final AngularVelocity feedVelocity = RPM.of(2000);
         public static final AngularVelocity purgeVelocity = RPM.of(-500);
         public static final AngularVelocity idleVelocity = RPM.of(1000);
@@ -133,7 +134,7 @@ public final class Constants {
         public static final AngularVelocity kIntakeVelocity = RPM.of(6);
         public static final AngularVelocity kPurgeVelocity = RPM.of(-4);
         public static final AngularVelocity kShootVelocity = RPM.of(6);
-        public static final double kGearRatio = 18.0/12.0;
+        public static final double kGearRatio = 18.0 / 12.0;
         public static final double kp = 5.0;
         public static final double ks = 0;
         public static final double kv = 0;

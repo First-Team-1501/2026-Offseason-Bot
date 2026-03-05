@@ -9,7 +9,6 @@ import static edu.wpi.first.units.Units.RPM;
 import static edu.wpi.first.units.Units.Volts;
 
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
-import com.ctre.phoenix6.configs.FeedbackConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import dev.doglog.DogLog;
 import edu.wpi.first.units.measure.AngularVelocity;
@@ -32,8 +31,11 @@ public class Shooter extends VelocitySubsystem implements SupurdueperSubsystem {
     private final LoggedTunableNumber shooterVelocity;
     /** Creates a new VelocityTest. */
     public Shooter() {
-        config = config.withFeedback(
-                new FeedbackConfigs().withSensorToMechanismRatio(ShooterConstants.shooterGearRatio));
+        config.Feedback.SensorToMechanismRatio = ShooterConstants.shooterGearRatio;
+        config.TorqueCurrent.PeakForwardTorqueCurrent = ShooterConstants.kMaxAmps;
+        config.TorqueCurrent.PeakReverseTorqueCurrent = 0;
+        config.MotorOutput.PeakForwardDutyCycle = 1.0;
+        config.MotorOutput.PeakForwardDutyCycle = 0.0;
         configureMotors();
         // Manually create followers since we have more than two
         TalonFXFactory.createPermanentFollowerTalon(CanId.SHOOTER_TWO, motor, false);

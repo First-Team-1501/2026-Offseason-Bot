@@ -4,18 +4,16 @@
 
 package org.supurdueper.robot2026.subsystems;
 
+import static edu.wpi.first.units.Units.RPM;
+
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.FeedbackConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
-
 import dev.doglog.DogLog;
 import edu.wpi.first.units.Units;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
-
-import static edu.wpi.first.units.Units.RPM;
-
 import org.supurdueper.lib.subsystems.SupurdueperSubsystem;
 import org.supurdueper.lib.subsystems.VelocitySubsystem;
 import org.supurdueper.robot2026.CanId;
@@ -27,8 +25,7 @@ import org.supurdueper.robot2026.state.RobotStates;
 public class Intake extends VelocitySubsystem implements SupurdueperSubsystem {
     /** Creates a new Intake. */
     public Intake() {
-        config = config.withFeedback(
-                new FeedbackConfigs().withSensorToMechanismRatio(IntakeConstants.kGearRatio));
+        config = config.withFeedback(new FeedbackConfigs().withSensorToMechanismRatio(IntakeConstants.kGearRatio));
         configureMotors();
         Robot.add(this);
     }
@@ -106,8 +103,6 @@ public class Intake extends VelocitySubsystem implements SupurdueperSubsystem {
         RobotStates.testController.X.onTrue(goToVelocity(() -> RPM.of(1000)));
         RobotStates.testController.B.onTrue(goToVelocity(() -> RPM.of(2000)));
         RobotStates.testController.Y.onTrue(goToVelocity(() -> RPM.of(4000)));
-
-
     }
 
     @Override
