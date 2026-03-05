@@ -5,18 +5,30 @@
 package org.supurdueper.robot2026.subsystems;
 
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
+import com.ctre.phoenix6.configs.FeedbackConfigs;
+import com.ctre.phoenix6.configs.Slot0Configs;
+
+import dev.doglog.DogLog;
 import edu.wpi.first.units.Units;
+import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+
+import static edu.wpi.first.units.Units.RPM;
+
 import org.supurdueper.lib.subsystems.SupurdueperSubsystem;
-import org.supurdueper.lib.subsystems.TalonFXSubsystem;
+import org.supurdueper.lib.subsystems.VelocitySubsystem;
 import org.supurdueper.robot2026.CanId;
 import org.supurdueper.robot2026.Constants;
+import org.supurdueper.robot2026.Constants.IntakeConstants;
 import org.supurdueper.robot2026.Robot;
 import org.supurdueper.robot2026.state.RobotStates;
 
-public class Intake extends TalonFXSubsystem implements SupurdueperSubsystem {
+public class Intake extends VelocitySubsystem implements SupurdueperSubsystem {
     /** Creates a new Intake. */
     public Intake() {
+        config = config.withFeedback(
+                new FeedbackConfigs().withSensorToMechanismRatio(IntakeConstants.kGearRatio));
         configureMotors();
         Robot.add(this);
     }
@@ -80,8 +92,42 @@ public class Intake extends TalonFXSubsystem implements SupurdueperSubsystem {
     }
 
     @Override
+    public void periodic() {
+        super.periodic();
+        DogLog.log("Intake/Target RPM", getSetpoint().in(RPM));
+        DogLog.log("Intake/Current RPM", getVelocity().in(RPM));
+    }
+
+    @Override
     public void bindCommands() {
         RobotStates.actionIntake.whileTrue(runEnd(this::intake, this::stop));
         RobotStates.actionShoot.whileTrue(runEnd(this::intake, this::stop));
+        RobotStates.testController.A.onTrue(run(this::stop));
+        RobotStates.testController.X.onTrue(goToVelocity(() -> RPM.of(1000)));
+        RobotStates.testController.B.onTrue(goToVelocity(() -> RPM.of(2000)));
+        RobotStates.testController.Y.onTrue(goToVelocity(() -> RPM.of(4000)));
+
+
+    }
+
+    @Override
+    public Slot0Configs pidGains() {
+        return new Slot0Configs()
+                .withKP(IntakeConstants.kp)
+                .withKI(0)
+                .withKD(0)
+                .withKS(IntakeConstants.ks)
+                .withKV(IntakeConstants.kv)
+                .withKA(0);
+    }
+
+    @Override
+    public AngularVelocity velocityTolerance() {
+        return IntakeConstants.kVelocityTolerance;
+    }
+
+    @Override
+    public SysIdRoutine sysIdConfig() {
+        return null;
     }
 }

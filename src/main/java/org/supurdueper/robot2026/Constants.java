@@ -129,6 +129,14 @@ public final class Constants {
         public static final Voltage kIntakeVoltage = Volts.of(6);
         public static final Voltage kPurgeVoltage = Volts.of(-4);
         public static final Voltage kShootVoltage = Volts.of(6);
+        public static final AngularVelocity kVelocityTolerance = RPM.of(50);
+        public static final AngularVelocity kIntakeVelocity = RPM.of(6);
+        public static final AngularVelocity kPurgeVelocity = RPM.of(-4);
+        public static final AngularVelocity kShootVelocity = RPM.of(6);
+        public static final double kGearRatio = 18.0/12.0;
+        public static final double kp = 5.0;
+        public static final double ks = 0;
+        public static final double kv = 0;
     }
 
     public class ClimberConstants {
