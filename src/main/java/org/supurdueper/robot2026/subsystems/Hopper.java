@@ -83,6 +83,7 @@ public class Hopper extends VelocitySubsystem implements SupurdueperSubsystem {
     @Override
     public void bindCommands() {
         RobotStates.actionShoot.and(RobotStates.infoReadyToShoot).whileTrue(runEnd(this::run, this::stop));
+        RobotStates.auto_shoot.and(RobotStates.infoReadyToShoot).whileTrue(runEnd(this::run, this::stop));
     }
 
     @Override

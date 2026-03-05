@@ -97,12 +97,12 @@ public class Intake extends VelocitySubsystem implements SupurdueperSubsystem {
 
     @Override
     public void bindCommands() {
-        RobotStates.actionIntake.whileTrue(runEnd(this::intake, this::stop));
-        RobotStates.actionShoot.whileTrue(runEnd(this::intake, this::stop));
-        RobotStates.testController.A.onTrue(run(this::stop));
-        RobotStates.testController.X.onTrue(goToVelocity(() -> RPM.of(1000)));
-        RobotStates.testController.B.onTrue(goToVelocity(() -> RPM.of(2000)));
-        RobotStates.testController.Y.onTrue(goToVelocity(() -> RPM.of(4000)));
+        RobotStates.actionIntake.or(RobotStates.auto_intake).whileTrue(runEnd(this::intake, this::stop));
+        RobotStates.actionShoot.or(RobotStates.auto_shoot).whileTrue(runEnd(this::intake, this::stop));
+        // RobotStates.testController.A.onTrue(run(this::stop));
+        // RobotStates.testController.X.onTrue(goToVelocity(() -> RPM.of(1000)));
+        // RobotStates.testController.B.onTrue(goToVelocity(() -> RPM.of(2000)));
+        // RobotStates.testController.Y.onTrue(goToVelocity(() -> RPM.of(4000)));
     }
 
     @Override

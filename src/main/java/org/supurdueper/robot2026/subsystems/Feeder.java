@@ -71,8 +71,14 @@ public class Feeder extends VelocitySubsystem implements SupurdueperSubsystem {
 
     @Override
     public void bindCommands() {
-        RobotStates.actionAim.or(RobotStates.actionShoot).onTrue(setState(FeedState.feed));
-        RobotStates.actionAim.or(RobotStates.actionShoot).onFalse(setState(FeedState.idle));
+        RobotStates.actionAim
+                .or(RobotStates.actionShoot)
+                .or(RobotStates.auto_shoot)
+                .onTrue(setState(FeedState.feed));
+        RobotStates.actionAim
+                .or(RobotStates.auto_shoot)
+                .or(RobotStates.actionShoot)
+                .onFalse(setState(FeedState.idle));
     }
 
     public Command setState(FeedState velocity) {
