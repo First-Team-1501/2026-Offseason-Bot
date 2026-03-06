@@ -110,7 +110,6 @@ public class Shooter extends VelocitySubsystem implements SupurdueperSubsystem {
             return RPM.of(LookupTables.distanceToShooterRPM.get(distanceToGoalMeters));
         }
     }
-    ;
 
     @Override
     public void bindCommands() {

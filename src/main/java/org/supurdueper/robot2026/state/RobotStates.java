@@ -32,10 +32,15 @@ public final class RobotStates {
     @Setter
     private static boolean autoShoot = false;
 
+    @Getter
+    @Setter
+    private static boolean autoDropIntake = false;
+
     // auto
     public static final Trigger auto_intake = new Trigger(RobotStates::isAutoIntake).and(auto);
     public static final Trigger auto_aim = new Trigger(RobotStates::isAutoAim).and(auto);
     public static final Trigger auto_shoot = new Trigger(RobotStates::isAutoShoot).and(auto);
+    public static final Trigger auto_drop_intake = new Trigger(RobotStates::isAutoDropIntake).and(auto);
 
     // information
     public static final Trigger infoShooterAtSpeed = shooter.isAtVelocityTrigger();
@@ -49,8 +54,9 @@ public final class RobotStates {
     public static final Trigger actionShoot = driver.rightBumper.and(teleop);
     public static final Trigger actionPurge = driver.leftTrigger.and(teleop);
 
-    public static final Trigger actionClimbPrep = driver.downDpad.and(teleop);
-    public static final Trigger actionClimb = driver.leftDpad.and(teleop);
+    public static final Trigger actionClimb = driver.B.and(teleop);
+    public static final Trigger actionClimberUp = driver.Y.and(teleop);
+    public static final Trigger actionClimberHome = driver.A.and(teleop);
 
     public static final Trigger actionTestA = testController.A.and(teleop);
     public static final Trigger actionTestB = testController.B.and(teleop);

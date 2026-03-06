@@ -147,7 +147,7 @@ public final class Constants {
         public static final CurrentLimitsConfigs kCurrentLimit =
                 new CurrentLimitsConfigs().withStatorCurrentLimit(120).withStatorCurrentLimitEnable(true);
         public static final GravityTypeValue GravityType = GravityTypeValue.Elevator_Static;
-        public static final double kp = 0;
+        public static final double kp = 10.0;
         public static final double ki = 0;
         public static final double kd = 0;
         public static final double ks = 0;

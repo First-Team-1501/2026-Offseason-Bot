@@ -38,18 +38,30 @@ public class Climber extends PositionSubsystem implements SupurdueperSubsystem {
         super.periodic();
         DogLog.log("Climber/Position", getPosition().in(Rotations));
         DogLog.log("Climber/Setpoint", getSetpoint().in(Rotations));
+        if (getCurrentCommand() != null && getCurrentCommand().getName() != null)
+            DogLog.log("Climber/Command", getCurrentCommand().getName());
     }
 
     public Command releaseIntake() {
-        return goToPosition(() -> Rotations.of(Constants.ClimberConstants.kDropIntakePosition));
+        return goToPosition(() -> Rotations.of(Constants.ClimberConstants.kDropIntakePosition))
+                .withName("Release Intake");
     }
 
     public Command climb() {
-        return goToPosition(() -> Rotations.of(Constants.ClimberConstants.kClimbPosition));
+        return goToPosition(() -> Rotations.of(Constants.ClimberConstants.kClimbPosition))
+                .withName("Climb");
     }
 
     public Command home() {
-        return goToPosition(() -> Rotations.of(0));
+        return goToPosition(() -> Rotations.of(0)).withName("Home");
+    }
+
+    public Command zero() {
+        return run(() -> motor.setControl(voltageRequest.withOutput(-3).withIgnoreSoftwareLimits(true)))
+                .until(() -> motor.getTorqueCurrent().getValueAsDouble() < -65.0)
+                .andThen(runOnce(
+                        () -> motor.setControl(voltageRequest.withOutput(0).withIgnoreSoftwareLimits(false))))
+                .andThen(runOnce(() -> motor.setPosition(0)));
     }
 
     @Override
@@ -89,11 +101,14 @@ public class Climber extends PositionSubsystem implements SupurdueperSubsystem {
 
     @Override
     public void bindCommands() {
-        RobotStates.auto.onTrue(releaseIntake());
         RobotStates.actionClimb.onTrue(climb());
+        RobotStates.actionClimberUp.onTrue(releaseIntake());
+        RobotStates.actionClimberHome.onTrue(home());
+        RobotStates.auto_drop_intake.onTrue(releaseIntake());
         RobotStates.testController.leftStickY.whileTrue(
                 runEnd(() -> runVoltage(Volts.of(12 * RobotStates.testController.getDriveFwdPositive())), this::stop));
         RobotStates.testController.start.onTrue(runOnce(() -> motor.setPosition(0)));
+        RobotStates.testController.downDpad.onTrue(zero());
     }
 
     @Override
