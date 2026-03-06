@@ -16,7 +16,6 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import org.supurdueper.lib.subsystems.SupurdueperSubsystem;
 import org.supurdueper.lib.subsystems.VelocitySubsystem;
 import org.supurdueper.robot2026.CanId;
-import org.supurdueper.robot2026.Constants;
 import org.supurdueper.robot2026.Constants.HopperConstants;
 import org.supurdueper.robot2026.Robot;
 import org.supurdueper.robot2026.state.RobotStates;
@@ -27,7 +26,7 @@ public class Hopper extends VelocitySubsystem implements SupurdueperSubsystem {
         config.TorqueCurrent.PeakForwardTorqueCurrent = HopperConstants.kMaxAmps;
         config.TorqueCurrent.PeakReverseTorqueCurrent = HopperConstants.kMaxAmps;
         config = config.withFeedback(
-                new FeedbackConfigs().withSensorToMechanismRatio(Constants.HopperConstants.gearRatio));
+                new FeedbackConfigs().withSensorToMechanismRatio(HopperConstants.gearRatio));
         configureMotors();
         Robot.add(this);
     }
@@ -58,7 +57,7 @@ public class Hopper extends VelocitySubsystem implements SupurdueperSubsystem {
 
     @Override
     public CurrentLimitsConfigs currentLimits() {
-        return Constants.HopperConstants.kCurrentLimit;
+        return HopperConstants.kCurrentLimit;
     }
 
     @Override
@@ -72,7 +71,7 @@ public class Hopper extends VelocitySubsystem implements SupurdueperSubsystem {
     }
 
     public void run() {
-        setVelocity(Constants.HopperConstants.kIntakeSpeed);
+        setVelocity(HopperConstants.kIntakeSpeed);
     }
 
     public void agitate() {
@@ -80,7 +79,7 @@ public class Hopper extends VelocitySubsystem implements SupurdueperSubsystem {
     }
 
     public void purge() {
-        runVoltage(Constants.HopperConstants.kPurgeVoltage);
+        runVoltage(HopperConstants.kPurgeVoltage);
     }
 
     public void test() {
@@ -96,17 +95,17 @@ public class Hopper extends VelocitySubsystem implements SupurdueperSubsystem {
     @Override
     public Slot0Configs pidGains() {
         return new Slot0Configs()
-                .withKP(Constants.HopperConstants.kP)
+                .withKP(HopperConstants.kP)
                 .withKI(0)
                 .withKD(0)
-                .withKS(Constants.HopperConstants.kS)
-                .withKV(Constants.HopperConstants.kV)
+                .withKS(HopperConstants.kS)
+                .withKV(HopperConstants.kV)
                 .withKA(0);
     }
 
     @Override
     public AngularVelocity velocityTolerance() {
-        return Constants.HopperConstants.velocityTolerance;
+        return HopperConstants.velocityTolerance;
     }
 
     @Override

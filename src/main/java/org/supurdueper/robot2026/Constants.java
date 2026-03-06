@@ -62,7 +62,7 @@ public final class Constants {
         disableHAL = true;
     }
 
-    public class ShooerHoodConstants {
+    public class ShooterHoodConstants {
         public static final double kp = 1000.0;
         public static final double ki = 2000.0;
         public static final double kd = 8.0;

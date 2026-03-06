@@ -62,7 +62,7 @@ public class Shooter extends VelocitySubsystem implements SupurdueperSubsystem {
 
     @Override
     public CurrentLimitsConfigs currentLimits() {
-        return Constants.ShooterConstants.kCurrentLimit;
+        return ShooterConstants.kCurrentLimit;
     }
 
     @Override
@@ -78,17 +78,17 @@ public class Shooter extends VelocitySubsystem implements SupurdueperSubsystem {
     @Override
     public Slot0Configs pidGains() {
         return new Slot0Configs()
-                .withKP(Constants.ShooterConstants.kP)
+                .withKP(ShooterConstants.kP)
                 .withKI(0)
                 .withKD(0)
-                .withKS(Constants.ShooterConstants.kS)
-                .withKV(Constants.ShooterConstants.kV)
+                .withKS(ShooterConstants.kS)
+                .withKV(ShooterConstants.kV)
                 .withKA(0);
     }
 
     @Override
     public AngularVelocity velocityTolerance() {
-        return Constants.ShooterConstants.kVelocityTolerance;
+        return ShooterConstants.kVelocityTolerance;
     }
 
     @Override

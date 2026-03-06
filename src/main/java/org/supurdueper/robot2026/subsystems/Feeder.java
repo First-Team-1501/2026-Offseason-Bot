@@ -17,7 +17,6 @@ import lombok.Getter;
 import org.supurdueper.lib.subsystems.SupurdueperSubsystem;
 import org.supurdueper.lib.subsystems.VelocitySubsystem;
 import org.supurdueper.robot2026.CanId;
-import org.supurdueper.robot2026.Constants;
 import org.supurdueper.robot2026.Constants.FeederConstants;
 import org.supurdueper.robot2026.Robot;
 import org.supurdueper.robot2026.state.RobotStates;
@@ -104,17 +103,17 @@ public class Feeder extends VelocitySubsystem implements SupurdueperSubsystem {
     @Override
     public Slot0Configs pidGains() {
         return new Slot0Configs()
-                .withKP(Constants.FeederConstants.kP)
+                .withKP(FeederConstants.kP)
                 .withKI(0)
                 .withKD(0)
-                .withKS(Constants.FeederConstants.kS)
-                .withKV(Constants.FeederConstants.kV)
+                .withKS(FeederConstants.kS)
+                .withKV(FeederConstants.kV)
                 .withKA(0);
     }
 
     @Override
     public AngularVelocity velocityTolerance() {
-        return Constants.FeederConstants.velocityTolerance;
+        return FeederConstants.velocityTolerance;
     }
 
     @Override
@@ -139,7 +138,7 @@ public class Feeder extends VelocitySubsystem implements SupurdueperSubsystem {
 
     @Override
     public CurrentLimitsConfigs currentLimits() {
-        return Constants.FeederConstants.kCurrentLimit;
+        return FeederConstants.kCurrentLimit;
     }
 
     @Override

@@ -6,7 +6,6 @@ package org.supurdueper.robot2026.subsystems;
 
 import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.Meters;
-import static org.supurdueper.robot2026.Constants.ShooerHoodConstants.*;
 
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.FeedbackConfigs;
@@ -26,6 +25,7 @@ import org.supurdueper.lib.subsystems.SupurdueperSubsystem;
 import org.supurdueper.robot2026.CanId;
 import org.supurdueper.robot2026.Constants;
 import org.supurdueper.robot2026.Constants.LookupTables;
+import org.supurdueper.robot2026.Constants.ShooterHoodConstants;
 import org.supurdueper.robot2026.Robot;
 import org.supurdueper.robot2026.RobotContainer;
 import org.supurdueper.robot2026.state.RobotStates;
@@ -38,13 +38,13 @@ public class ShooterHood extends PositionSubsystem implements SupurdueperSubsyst
 
     /** Creates a new ShooterHood. */
     public ShooterHood() {
-        config = config.withFeedback(new FeedbackConfigs().withSensorToMechanismRatio(gearRatio))
+        config = config.withFeedback(new FeedbackConfigs().withSensorToMechanismRatio(ShooterHoodConstants.gearRatio))
                 .withVoltage(new VoltageConfigs()
-                        .withPeakForwardVoltage(kPeakForwardVoltage)
-                        .withPeakReverseVoltage(kPeakReverseVoltage));
+                        .withPeakForwardVoltage(ShooterHoodConstants.kPeakForwardVoltage)
+                        .withPeakReverseVoltage(ShooterHoodConstants.kPeakReverseVoltage));
         configureMotors();
         Robot.add(this);
-        motor.setPosition(kZeroPosition);
+        motor.setPosition(ShooterHoodConstants.kZeroPosition);
         shooterAngle = new LoggedTunableNumber("Shot Tuning/Angle (Deg)");
         shooterAngle.initDefault(22);
     }
@@ -88,36 +88,36 @@ public class ShooterHood extends PositionSubsystem implements SupurdueperSubsyst
     public Slot0Configs pidGains() {
         return new Slot0Configs()
                 .withGravityType(GravityTypeValue.Arm_Cosine)
-                .withKP(Constants.ShooerHoodConstants.kp)
-                .withKI(Constants.ShooerHoodConstants.ki)
-                .withKD(Constants.ShooerHoodConstants.kd)
-                .withKS(Constants.ShooerHoodConstants.ks)
-                .withKV(Constants.ShooerHoodConstants.kv)
-                .withKA(Constants.ShooerHoodConstants.ka)
-                .withKG(Constants.ShooerHoodConstants.kg);
+                .withKP(ShooterHoodConstants.kp)
+                .withKI(ShooterHoodConstants.ki)
+                .withKD(ShooterHoodConstants.kd)
+                .withKS(ShooterHoodConstants.ks)
+                .withKV(ShooterHoodConstants.kv)
+                .withKA(ShooterHoodConstants.ka)
+                .withKG(ShooterHoodConstants.kg);
     }
 
     @Override
     public MotionMagicConfigs motionMagicConfig() {
         return new MotionMagicConfigs()
-                .withMotionMagicExpo_kV(Constants.ShooerHoodConstants.profileKv)
-                .withMotionMagicExpo_kA(Constants.ShooerHoodConstants.profileKa)
-                .withMotionMagicCruiseVelocity(Constants.ShooerHoodConstants.profileV)
-                .withMotionMagicAcceleration(Constants.ShooerHoodConstants.profileA);
+                .withMotionMagicExpo_kV(ShooterHoodConstants.profileKv)
+                .withMotionMagicExpo_kA(ShooterHoodConstants.profileKa)
+                .withMotionMagicCruiseVelocity(ShooterHoodConstants.profileV)
+                .withMotionMagicAcceleration(ShooterHoodConstants.profileA);
     }
 
     @Override
     public SoftwareLimitSwitchConfigs softLimitConfig() {
         return new SoftwareLimitSwitchConfigs()
-                .withForwardSoftLimitThreshold(Constants.ShooerHoodConstants.kForwardSoftLimit)
+                .withForwardSoftLimitThreshold(ShooterHoodConstants.kForwardSoftLimit)
                 .withForwardSoftLimitEnable(true)
-                .withReverseSoftLimitThreshold(Constants.ShooerHoodConstants.kReverseSoftLimit)
+                .withReverseSoftLimitThreshold(ShooterHoodConstants.kReverseSoftLimit)
                 .withReverseSoftLimitEnable(true);
     }
 
     @Override
     public Angle positionTolerance() {
-        return Constants.ShooerHoodConstants.positionTolerance;
+        return ShooterHoodConstants.positionTolerance;
     }
 
     @Override
@@ -142,7 +142,7 @@ public class ShooterHood extends PositionSubsystem implements SupurdueperSubsyst
 
     @Override
     public CurrentLimitsConfigs currentLimits() {
-        return Constants.ShooerHoodConstants.kCurrentLimit;
+        return ShooterHoodConstants.kCurrentLimit;
     }
 
     @Override

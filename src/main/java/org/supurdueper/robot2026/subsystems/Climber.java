@@ -20,7 +20,7 @@ import java.util.function.Supplier;
 import org.supurdueper.lib.subsystems.PositionSubsystem;
 import org.supurdueper.lib.subsystems.SupurdueperSubsystem;
 import org.supurdueper.robot2026.CanId;
-import org.supurdueper.robot2026.Constants;
+import org.supurdueper.robot2026.Constants.ClimberConstants;
 import org.supurdueper.robot2026.Robot;
 import org.supurdueper.robot2026.state.RobotStates;
 
@@ -43,12 +43,12 @@ public class Climber extends PositionSubsystem implements SupurdueperSubsystem {
     }
 
     public Command releaseIntake() {
-        return goToPosition(() -> Rotations.of(Constants.ClimberConstants.kDropIntakePosition))
+        return goToPosition(() -> Rotations.of(ClimberConstants.kDropIntakePosition))
                 .withName("Release Intake");
     }
 
     public Command climb() {
-        return goToPosition(() -> Rotations.of(Constants.ClimberConstants.kClimbPosition))
+        return goToPosition(() -> Rotations.of(ClimberConstants.kClimbPosition))
                 .withName("Climb");
     }
 
@@ -86,7 +86,7 @@ public class Climber extends PositionSubsystem implements SupurdueperSubsystem {
 
     @Override
     public CurrentLimitsConfigs currentLimits() {
-        return Constants.ClimberConstants.kCurrentLimit;
+        return ClimberConstants.kCurrentLimit;
     }
 
     @Override
@@ -114,37 +114,37 @@ public class Climber extends PositionSubsystem implements SupurdueperSubsystem {
     @Override
     public Slot0Configs pidGains() {
         return new Slot0Configs()
-                .withGravityType(Constants.ClimberConstants.GravityType)
-                .withKP(Constants.ClimberConstants.kp)
-                .withKI(Constants.ClimberConstants.ki)
-                .withKD(Constants.ClimberConstants.kd)
-                .withKS(Constants.ClimberConstants.ks)
-                .withKV(Constants.ClimberConstants.kv)
-                .withKA(Constants.ClimberConstants.ka)
-                .withKG(Constants.ClimberConstants.kg);
+                .withGravityType(ClimberConstants.GravityType)
+                .withKP(ClimberConstants.kp)
+                .withKI(ClimberConstants.ki)
+                .withKD(ClimberConstants.kd)
+                .withKS(ClimberConstants.ks)
+                .withKV(ClimberConstants.kv)
+                .withKA(ClimberConstants.ka)
+                .withKG(ClimberConstants.kg);
     }
 
     @Override
     public MotionMagicConfigs motionMagicConfig() {
         return new MotionMagicConfigs()
-                .withMotionMagicExpo_kV(Constants.ClimberConstants.profileKv)
-                .withMotionMagicExpo_kA(Constants.ClimberConstants.profileKa)
-                .withMotionMagicCruiseVelocity(Constants.ClimberConstants.profileV)
-                .withMotionMagicAcceleration(Constants.ClimberConstants.profileA);
+                .withMotionMagicExpo_kV(ClimberConstants.profileKv)
+                .withMotionMagicExpo_kA(ClimberConstants.profileKa)
+                .withMotionMagicCruiseVelocity(ClimberConstants.profileV)
+                .withMotionMagicAcceleration(ClimberConstants.profileA);
     }
 
     @Override
     public SoftwareLimitSwitchConfigs softLimitConfig() {
         return new SoftwareLimitSwitchConfigs()
-                .withForwardSoftLimitThreshold(Constants.ClimberConstants.kForwardSoftLimit)
-                .withReverseSoftLimitThreshold(Constants.ClimberConstants.kReverseSoftLimit)
+                .withForwardSoftLimitThreshold(ClimberConstants.kForwardSoftLimit)
+                .withReverseSoftLimitThreshold(ClimberConstants.kReverseSoftLimit)
                 .withForwardSoftLimitEnable(true)
                 .withReverseSoftLimitEnable(true);
     }
 
     @Override
     public Angle positionTolerance() {
-        return Rotations.of(Constants.ClimberConstants.positionTolerance);
+        return Rotations.of(ClimberConstants.positionTolerance);
     }
 
     @Override
