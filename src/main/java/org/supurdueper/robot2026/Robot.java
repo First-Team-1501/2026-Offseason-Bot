@@ -107,6 +107,7 @@ public class Robot extends SupurdueperRobot {
     public void autonomousInit() {
         Vision.setEnabled();
         Vision.setAprilTagFilter();
+        Vision.updateIMUMode();
         autoChooser.selectedCommandScheduler().schedule();
     }
 
@@ -121,6 +122,7 @@ public class Robot extends SupurdueperRobot {
         resetCommandsAndButtons();
         Vision.setEnabled();
         Vision.setAprilTagFilter();
+        Vision.updateIMUMode();
     }
 
     @Override
