@@ -37,9 +37,11 @@ public class Robot extends SupurdueperRobot {
         m_robotContainer = new RobotContainer();
         autoFactory = RobotContainer.getDrivetrain().createAutoFactory();
         autoRoutines = new AutoRoutines(autoFactory);
-        
-        autoChooser.addRoutine("Left_One_Run", autoRoutines::leftOneRun);
-        autoChooser.addRoutine("Right_One_Run", autoRoutines::rightOneRun);
+
+        autoChooser.addRoutine("Left 1 Run", autoRoutines::leftOneRun);
+        autoChooser.addRoutine("Right 1 Run", autoRoutines::rightOneRun);
+        autoChooser.addRoutine("Left 2 Run", autoRoutines::leftTwoRun);
+        autoChooser.addRoutine("Right 2 Run", autoRoutines::rightTwoRun);
         SmartDashboard.putData("Auto Chooser", autoChooser);
     }
 

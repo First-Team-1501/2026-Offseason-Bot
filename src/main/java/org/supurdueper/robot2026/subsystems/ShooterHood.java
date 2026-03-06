@@ -67,7 +67,8 @@ public class ShooterHood extends PositionSubsystem implements SupurdueperSubsyst
         if (Constants.tuningMode) {
             SmartDashboard.putNumber(
                     "Tuning/Shot Tuning/Distance",
-                    FieldCalculations.distanceToGoal(RobotContainer.getDrivetrain().getState().Pose)
+                    FieldCalculations.distanceToGoal(
+                                    RobotContainer.getDrivetrain().getState().Pose)
                             .in(Meters));
         }
     }

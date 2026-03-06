@@ -12,6 +12,11 @@ public class AutoRoutines {
     private final AutoFactory m_factory;
     private final Drivetrain drivetrain;
 
+    private final String leftOneRun = "Left_One_Run";
+    private final String rightOneRun = "Right_One_Run";
+    private final String leftTwoRun = "Left_Two_Run";
+    private final String rightTwoRun = "Right_Two_Run";
+
     public AutoRoutines(AutoFactory factory) {
         m_factory = factory;
         drivetrain = RobotContainer.getDrivetrain();
@@ -46,19 +51,101 @@ public class AutoRoutines {
         return routine;
     }
 
+    public AutoRoutine twoRun(
+            AutoRoutine routine,
+            AutoTrajectory overBump1,
+            AutoTrajectory intakeBalls1,
+            AutoTrajectory toHub1,
+            AutoTrajectory overBump2,
+            AutoTrajectory intakeBalls2,
+            AutoTrajectory toHub2) {
+        routine.active()
+                .onTrue(overBump1
+                        .resetOdometry()
+                        .andThen(() -> RobotStates.setAutoDropIntake(true))
+                        .andThen(overBump1.cmd())
+                        .andThen(() -> RobotStates.setAutoDropIntake(false)));
+
+        overBump1.chain(intakeBalls1);
+
+        intakeBalls1
+                .active()
+                .whileTrue(Commands.runEnd(
+                        (() -> RobotStates.setAutoIntake(true)), (() -> RobotStates.setAutoIntake(false))));
+
+        intakeBalls1.chain(toHub1);
+
+        toHub1.recentlyDone()
+                .onTrue(Commands.sequence(
+                        Commands.runOnce(() -> RobotStates.setAutoAim(true)),
+                        Commands.runOnce(() -> RobotStates.setAutoShoot(true)),
+                        Commands.waitSeconds(5),
+                        Commands.runOnce(() -> {
+                            RobotStates.setAutoAim(false);
+                            RobotStates.setAutoShoot(false);
+                        }),
+                        overBump2.cmd()));
+
+        overBump2.chain(intakeBalls2);
+
+        intakeBalls2
+                .active()
+                .whileTrue(Commands.runEnd(
+                        (() -> RobotStates.setAutoIntake(true)), (() -> RobotStates.setAutoIntake(false))));
+
+        intakeBalls2.chain(toHub2);
+
+        toHub2.recentlyDone()
+                .onTrue(Commands.sequence(
+                        Commands.runOnce(() -> RobotStates.setAutoAim(true)),
+                        Commands.runOnce(() -> RobotStates.setAutoShoot(true))));
+
+        return routine;
+    }
+
     public AutoRoutine leftOneRun() {
         AutoRoutine routine = m_factory.newRoutine("Left One Run");
-        final AutoTrajectory leftOverBump = routine.trajectory("Left_One_Run", 0);
-        final AutoTrajectory leftIntakeBalls = routine.trajectory("Left_One_Run", 1);
-        final AutoTrajectory leftToHub = routine.trajectory("Left_One_Run", 2);
+        final AutoTrajectory leftOverBump = routine.trajectory(leftOneRun, 0);
+        final AutoTrajectory leftIntakeBalls = routine.trajectory(leftOneRun, 1);
+        final AutoTrajectory leftToHub = routine.trajectory(leftOneRun, 2);
         return oneRun(routine, leftOverBump, leftIntakeBalls, leftToHub);
     }
 
     public AutoRoutine rightOneRun() {
         AutoRoutine routine = m_factory.newRoutine("Right One Run");
-        final AutoTrajectory rightOverBump = routine.trajectory("Right_One_Run", 0);
-        final AutoTrajectory rightIntakeBalls = routine.trajectory("Right_One_Run", 1);
-        final AutoTrajectory rightToHub = routine.trajectory("Right_One_Run", 2);
+        final AutoTrajectory rightOverBump = routine.trajectory(rightOneRun, 0);
+        final AutoTrajectory rightIntakeBalls = routine.trajectory(rightOneRun, 1);
+        final AutoTrajectory rightToHub = routine.trajectory(rightOneRun, 2);
         return oneRun(routine, rightOverBump, rightIntakeBalls, rightToHub);
+    }
+
+    public AutoRoutine rightTwoRun() {
+        AutoRoutine routine = m_factory.newRoutine("Right Two Run");
+        final AutoTrajectory rightOverBump1 = routine.trajectory(rightOneRun, 0);
+        final AutoTrajectory rightIntakeBalls1 = routine.trajectory(rightOneRun, 1);
+        final AutoTrajectory rightToHub1 = routine.trajectory(rightOneRun, 2);
+        final AutoTrajectory rightOverBump2 = routine.trajectory(rightTwoRun, 0);
+        final AutoTrajectory rightIntakeBalls2 = routine.trajectory(rightTwoRun, 1);
+        final AutoTrajectory rightToHub2 = routine.trajectory(rightTwoRun, 2);
+        return twoRun(
+                routine,
+                rightOverBump1,
+                rightIntakeBalls1,
+                rightToHub1,
+                rightOverBump2,
+                rightIntakeBalls2,
+                rightToHub2);
+    }
+
+    public AutoRoutine leftTwoRun() {
+        AutoRoutine routine = m_factory.newRoutine("Left Two Run");
+        final AutoTrajectory leftOverBump1 = routine.trajectory(leftOneRun, 0);
+        final AutoTrajectory leftIntakeBalls1 = routine.trajectory(leftOneRun, 1);
+        final AutoTrajectory leftToHub1 = routine.trajectory(leftOneRun, 2);
+        final AutoTrajectory leftOverBump2 = routine.trajectory(leftTwoRun, 0);
+        final AutoTrajectory leftIntakeBalls2 = routine.trajectory(leftTwoRun, 1);
+        final AutoTrajectory leftToHub2 = routine.trajectory(leftTwoRun, 2);
+        return twoRun(
+                routine, leftOverBump1, leftIntakeBalls1, leftToHub1, leftOverBump2, leftIntakeBalls2, leftToHub2);
     }
 }

@@ -7,20 +7,34 @@
    "max_Bump_Velocity":{
     "dimension":"LinVel",
     "var":{
-     "exp":"2 m / s",
-     "val":2.0
+     "exp":"3 m / s",
+     "val":3.0
     }
    },
    "max_Intake_Velocity":{
     "dimension":"LinVel",
     "var":{
-     "exp":"2 m / s",
-     "val":2.0
+     "exp":"1.7 m / s",
+     "val":1.7
     }
    }
   },
   "poses":{
-   "right_hub_shot":{
+   "Left_One_Run_End":{
+    "x":{
+     "exp":"8.038766860961914 m",
+     "val":8.038766860961914
+    },
+    "y":{
+     "exp":"7.017747402191162 m",
+     "val":7.017747402191162
+    },
+    "heading":{
+     "exp":"-1.5678375834025866 rad",
+     "val":-1.5678375834025866
+    }
+   },
+   "Right_One_Run_End":{
     "x":{
      "exp":"2.7021219730377197 m",
      "val":2.7021219730377197
@@ -32,20 +46,6 @@
     "heading":{
      "exp":"230 deg",
      "val":4.014257279586958
-    }
-   },
-   "starting_left":{
-    "x":{
-     "exp":"3.4893312454223633 m",
-     "val":3.4893312454223633
-    },
-    "y":{
-     "exp":"5.058963775634766 m",
-     "val":5.058963775634766
-    },
-    "heading":{
-     "exp":"90 deg",
-     "val":1.5707963267948966
     }
    }
   }
