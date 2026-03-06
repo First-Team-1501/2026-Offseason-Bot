@@ -4,8 +4,6 @@
 
 package org.supurdueper.robot2026;
 
-import static edu.wpi.first.units.Units.*;
-
 import edu.wpi.first.wpilibj2.command.Commands;
 import lombok.Getter;
 import org.supurdueper.robot2026.state.Driver;

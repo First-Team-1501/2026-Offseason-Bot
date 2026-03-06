@@ -64,10 +64,12 @@ public class ShooterHood extends PositionSubsystem implements SupurdueperSubsyst
         super.periodic();
         DogLog.log("ShooterHood/Position (Deg)", getPosition().in(Degrees));
         DogLog.log("ShooterHood/Target Position (Deg)", getSetpoint().in(Degrees));
-        SmartDashboard.putNumber(
-                "Tuning/Shot Tuning/Distance",
-                FieldCalculations.distanceToGoal(RobotContainer.getDrivetrain().getState().Pose)
-                        .in(Meters));
+        if (Constants.tuningMode) {
+            SmartDashboard.putNumber(
+                    "Tuning/Shot Tuning/Distance",
+                    FieldCalculations.distanceToGoal(RobotContainer.getDrivetrain().getState().Pose)
+                            .in(Meters));
+        }
     }
 
     public Angle getShotAngle() {

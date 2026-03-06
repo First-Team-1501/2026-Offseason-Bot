@@ -17,14 +17,6 @@ public class AutoRoutines {
         drivetrain = RobotContainer.getDrivetrain();
     }
 
-    public AutoRoutine simplePathAuto() {
-        final AutoRoutine routine = m_factory.newRoutine("SimplePath Auto");
-        final AutoTrajectory simplePath = routine.trajectory("NewPath");
-
-        routine.active().onTrue(simplePath.resetOdometry().andThen(simplePath.cmd()));
-        return routine;
-    }
-
     public AutoRoutine oneRun(
             AutoRoutine routine, AutoTrajectory overBump, AutoTrajectory intakeBalls, AutoTrajectory toHub) {
 

@@ -10,10 +10,10 @@ import com.ctre.phoenix6.HootAutoReplay;
 import dev.doglog.DogLog;
 import dev.doglog.DogLogOptions;
 import edu.wpi.first.net.PortForwarder;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Threads;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import org.supurdueper.BuildConstants;
 import org.supurdueper.lib.subsystems.SupurdueperRobot;
@@ -21,8 +21,7 @@ import org.supurdueper.robot2026.autos.AutoRoutines;
 import org.supurdueper.robot2026.subsystems.Vision;
 
 public class Robot extends SupurdueperRobot {
-    private Command m_autonomousCommand;
-
+    @SuppressWarnings("unused")
     private final RobotContainer m_robotContainer;
 
     /* Path follower */
@@ -38,8 +37,7 @@ public class Robot extends SupurdueperRobot {
         m_robotContainer = new RobotContainer();
         autoFactory = RobotContainer.getDrivetrain().createAutoFactory();
         autoRoutines = new AutoRoutines(autoFactory);
-
-        autoChooser.addRoutine("SimplePath", autoRoutines::simplePathAuto);
+        
         autoChooser.addRoutine("Left_One_Run", autoRoutines::leftOneRun);
         autoChooser.addRoutine("Right_One_Run", autoRoutines::rightOneRun);
         SmartDashboard.putData("Auto Chooser", autoChooser);
@@ -89,7 +87,9 @@ public class Robot extends SupurdueperRobot {
         Threads.setCurrentThreadPriority(false, 0);
         DogLog.log("Loop Time", endTime - startTime);
         // for bunker hub lights to get match time from network tables
-        SmartDashboard.putNumber("Match Time", Timer.getMatchTime());
+        if (!DriverStation.isFMSAttached()) {
+            SmartDashboard.putNumber("Match Time", Timer.getMatchTime());
+        }
     }
 
     @Override

@@ -62,15 +62,18 @@ public class Vision extends SubsystemBase implements SupurdueperSubsystem {
     }
 
     public static void updateIMUMode() {
-        LimelightHelpers.SetIMUMode(rightLimelightName, 3);
+        LimelightHelpers.SetIMUMode(rightLimelightName, 0);
+        LimelightHelpers.SetIMUMode(rightLimelightName, 0);
     }
 
     public static void setDisabled() {
         LimelightHelpers.SetThrottle(rightLimelightName, 150);
+        LimelightHelpers.SetThrottle(backLimelightName, 150);
     }
 
     public static void setEnabled() {
         LimelightHelpers.SetThrottle(rightLimelightName, 0);
+        LimelightHelpers.SetThrottle(backLimelightName, 0);
     }
 
     public static void setAprilTagFilter() {
