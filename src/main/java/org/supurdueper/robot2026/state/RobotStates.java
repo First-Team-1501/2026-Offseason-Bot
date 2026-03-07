@@ -1,5 +1,6 @@
 package org.supurdueper.robot2026.state;
 
+import dev.doglog.DogLog;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -8,8 +9,6 @@ import lombok.Setter;
 import org.supurdueper.robot2026.RobotContainer;
 import org.supurdueper.robot2026.subsystems.Shooter;
 import org.supurdueper.robot2026.subsystems.ShooterHood;
-
-import dev.doglog.DogLog;
 
 public final class RobotStates {
 
