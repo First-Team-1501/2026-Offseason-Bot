@@ -25,8 +25,7 @@ public class Hopper extends VelocitySubsystem implements SupurdueperSubsystem {
     public Hopper() {
         config.TorqueCurrent.PeakForwardTorqueCurrent = HopperConstants.kMaxAmps;
         config.TorqueCurrent.PeakReverseTorqueCurrent = HopperConstants.kMaxAmps;
-        config = config.withFeedback(
-                new FeedbackConfigs().withSensorToMechanismRatio(HopperConstants.gearRatio));
+        config = config.withFeedback(new FeedbackConfigs().withSensorToMechanismRatio(HopperConstants.gearRatio));
         configureMotors();
         Robot.add(this);
     }

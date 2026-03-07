@@ -11,6 +11,7 @@ import dev.doglog.DogLog;
 import dev.doglog.DogLogOptions;
 import edu.wpi.first.net.PortForwarder;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.RobotState;
 import edu.wpi.first.wpilibj.Threads;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -18,6 +19,7 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import org.supurdueper.BuildConstants;
 import org.supurdueper.lib.subsystems.SupurdueperRobot;
 import org.supurdueper.robot2026.autos.AutoRoutines;
+import org.supurdueper.robot2026.state.RobotStates;
 import org.supurdueper.robot2026.subsystems.Vision;
 
 public class Robot extends SupurdueperRobot {
@@ -89,8 +91,11 @@ public class Robot extends SupurdueperRobot {
         Threads.setCurrentThreadPriority(false, 0);
         DogLog.log("Loop Time", endTime - startTime);
         // for bunker hub lights to get match time from network tables
+        RobotStates.log();
         if (!DriverStation.isFMSAttached()) {
             SmartDashboard.putNumber("Match Time", Timer.getMatchTime());
+        } else {
+            DogLog.log("Match Time", Timer.getMatchTime());
         }
     }
 

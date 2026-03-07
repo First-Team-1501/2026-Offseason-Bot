@@ -48,8 +48,7 @@ public class Climber extends PositionSubsystem implements SupurdueperSubsystem {
     }
 
     public Command climb() {
-        return goToPosition(() -> Rotations.of(ClimberConstants.kClimbPosition))
-                .withName("Climb");
+        return goToPosition(() -> Rotations.of(ClimberConstants.kClimbPosition)).withName("Climb");
     }
 
     public Command home() {

@@ -4,6 +4,7 @@ import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.swerve.SwerveDrivetrain.SwerveControlParameters;
 import com.ctre.phoenix6.swerve.SwerveModule;
 import com.ctre.phoenix6.swerve.SwerveRequest.FieldCentricFacingAngle;
+import dev.doglog.DogLog;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
@@ -31,7 +32,11 @@ public class AimAtHub extends FieldCentricFacingAngle {
     public StatusCode apply(SwerveControlParameters parameters, SwerveModule<?, ?, ?>... modulesToApply) {
         this.pointToFace = AllianceFlip.apply(FieldConstants.Hub.topCenterPoint.toTranslation2d());
         Pose2d shooterPose = parameters.currentPose.transformBy(robotToShooterTransform);
+        DogLog.log("Shooter Pose", shooterPose);
         this.TargetDirection = pointToFace.minus(shooterPose.getTranslation()).getAngle();
+        if (!AllianceFlip.shouldFlip()) {
+            this.TargetDirection = this.TargetDirection.rotateBy(Rotation2d.k180deg);
+        }
         return super.apply(parameters, modulesToApply);
     }
 }

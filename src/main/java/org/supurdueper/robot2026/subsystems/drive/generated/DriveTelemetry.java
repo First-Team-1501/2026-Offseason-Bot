@@ -1,7 +1,10 @@
 package org.supurdueper.robot2026.subsystems.drive.generated;
 
+import static edu.wpi.first.units.Units.Meters;
+
 import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.swerve.SwerveDrivetrain.SwerveDriveState;
+import dev.doglog.DogLog;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
@@ -19,6 +22,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj.util.Color8Bit;
 import org.supurdueper.robot2026.subsystems.Vision;
+import org.supurdueper.robot2026.utils.FieldCalculations;
 
 public class DriveTelemetry {
     private final double MaxSpeed;
@@ -131,10 +135,12 @@ public class DriveTelemetry {
 
         /* Telemeterize the pose to a Field2d */
         fieldTypePub.set("Field2d");
-
         m_poseArray[0] = state.Pose.getX();
         m_poseArray[1] = state.Pose.getY();
         m_poseArray[2] = state.Pose.getRotation().getDegrees();
+        DogLog.log("Pose", m_poseArray);
+        DogLog.log(
+                "Distance To Goal", FieldCalculations.distanceToGoal(state.Pose).in(Meters));
         fieldPub.set(m_poseArray);
 
         /* Telemeterize each module state to a Mechanism2d */

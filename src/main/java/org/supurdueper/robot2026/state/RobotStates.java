@@ -9,6 +9,8 @@ import org.supurdueper.robot2026.RobotContainer;
 import org.supurdueper.robot2026.subsystems.Shooter;
 import org.supurdueper.robot2026.subsystems.ShooterHood;
 
+import dev.doglog.DogLog;
+
 public final class RobotStates {
 
     public static final Trigger sim = new Trigger(RobotBase::isSimulation);
@@ -65,5 +67,23 @@ public final class RobotStates {
 
     private RobotStates() {
         throw new IllegalStateException("Utility class");
+    }
+
+    public static void log() {
+        DogLog.log("States/AutoIntake", auto_intake.getAsBoolean());
+        DogLog.log("States/AutoAim", auto_aim.getAsBoolean());
+        DogLog.log("States/AutoShoot", auto_shoot.getAsBoolean());
+        DogLog.log("States/AutoDropIntake", auto_drop_intake.getAsBoolean());
+        DogLog.log("States/InfoShooterAtSpeed", infoShooterAtSpeed.getAsBoolean());
+        DogLog.log("States/InfoHoodAtAngle", infoHoodAtAngle.getAsBoolean());
+        DogLog.log("States/InfoReadyToShoot", infoReadyToShoot.getAsBoolean());
+        DogLog.log("States/ActionAim", actionAim.getAsBoolean());
+        DogLog.log("States/ActionClimb", actionClimb.getAsBoolean());
+        DogLog.log("States/ActionClimbUp", actionClimb.getAsBoolean());
+        DogLog.log("States/ActionClimbHome", actionClimberHome.getAsBoolean());
+        DogLog.log("States/ActionShoot", actionShoot.getAsBoolean());
+        DogLog.log("States/ActionPurge", actionPurge.getAsBoolean());
+        DogLog.log("States/ActionIntake", actionIntake.getAsBoolean());
+        DogLog.log("States/ActionRezeroFieldHeading", rezeroFieldHeading.getAsBoolean());
     }
 }
