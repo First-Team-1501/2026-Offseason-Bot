@@ -17,6 +17,7 @@ public class AutoRoutines {
     private final String leftTwoRun = "Left_Two_Run";
     private final String rightTwoRun = "Right_Two_Run";
     private final String rightFullRun = "Right_Full_Run";
+    private final String leftFullRun = "Left_Full_Run";
 
     public AutoRoutines(AutoFactory factory) {
         m_factory = factory;
@@ -213,5 +214,23 @@ public class AutoRoutines {
                 rightOverBumpTwo,
                 rightIntakeBallsTwo,
                 rightToHubTwo);
+    }
+
+    public AutoRoutine leftFullRun() {
+        AutoRoutine routine = m_factory.newRoutine("Left Full Run");
+        final AutoTrajectory leftOverBumpOne = routine.trajectory(leftFullRun, 0);
+        final AutoTrajectory leftIntakeBallsOne = routine.trajectory(leftFullRun, 1);
+        final AutoTrajectory leftToHubOne = routine.trajectory(leftFullRun, 2);
+        final AutoTrajectory leftOverBumpTwo = routine.trajectory(leftFullRun, 3);
+        final AutoTrajectory leftIntakeBallsTwo = routine.trajectory(leftFullRun, 4);
+        final AutoTrajectory leftToHubTwo = routine.trajectory(leftFullRun, 5);
+        return fullRun(
+                routine,
+                leftOverBumpOne,
+                leftIntakeBallsOne,
+                leftToHubOne,
+                leftOverBumpTwo,
+                leftIntakeBallsTwo,
+                leftToHubTwo);
     }
 }
