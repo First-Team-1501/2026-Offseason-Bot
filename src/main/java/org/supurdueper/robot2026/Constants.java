@@ -95,7 +95,7 @@ public final class Constants {
         public static final double shooterGearRatio = 30.0 / 24.0;
         public static final AngularVelocity kVelocityTolerance = RPM.of(50);
         public static final AngularVelocity kShootRPM = RPM.of(1600);
-        public static final AngularVelocity kIdleRPM = RPM.of(1000);
+        public static final AngularVelocity kIdleRPM = RPM.of(500);
     }
 
     public class HopperConstants {
@@ -123,7 +123,7 @@ public final class Constants {
                 new CurrentLimitsConfigs().withStatorCurrentLimit(kMaxAmps).withStatorCurrentLimitEnable(true);
         public static final AngularVelocity feedVelocity = RPM.of(2000);
         public static final AngularVelocity purgeVelocity = RPM.of(-500);
-        public static final AngularVelocity idleVelocity = RPM.of(1000);
+        public static final AngularVelocity idleVelocity = RPM.of(500);
     }
 
     public class IntakeConstants {
