@@ -44,10 +44,6 @@ public class AutoRoutines {
                 .onTrue(Commands.sequence(
                         (Commands.runOnce(() -> RobotStates.setAutoAim(true))),
                         (Commands.runOnce(() -> RobotStates.setAutoShoot(true)))));
-        // .withTimeout(5),
-        // Commands.runOnce(() -> RobotStates.setAutoAim(false)),
-        // Commands.runOnce(() -> RobotStates.setAutoShoot(false)),
-        // Commands.runOnce(() -> RobotStates.setAutoDropIntake(false))));
 
         return routine;
     }
@@ -137,7 +133,7 @@ public class AutoRoutines {
                             RobotStates.setAutoAim(false);
                             RobotStates.setAutoShoot(false);
                         }),
-                        overBumpTwo.cmd()));
+                        overBumpTwo.cmd().asProxy()));
         overBumpTwo.chain(intakeBallsTwo);
 
         intakeBallsTwo
