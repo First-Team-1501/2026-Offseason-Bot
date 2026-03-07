@@ -129,7 +129,7 @@ public class AutoRoutines {
                         Commands.runOnce(() -> RobotStates.setAutoAim(true)),
                         Commands.waitSeconds(0.5),
                         Commands.runOnce(() -> RobotStates.setAutoShoot(true)),
-                        Commands.waitSeconds(5),
+                        Commands.waitSeconds(3),
                         Commands.runOnce(() -> {
                             RobotStates.setAutoAim(false);
                             RobotStates.setAutoShoot(false);
