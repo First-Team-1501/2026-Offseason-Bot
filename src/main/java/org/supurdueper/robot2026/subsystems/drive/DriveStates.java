@@ -44,8 +44,8 @@ public class DriveStates {
         drivetrain.setDefaultCommand(normalTeleopDrive());
         rezeroFieldHeading.onTrue(
                 Commands.runOnce(() -> drivetrain.resetRotation(AllianceFlip.apply(Rotation2d.kZero))));
-        actionAim.or(actionShoot).whileTrue(driveFacingHub());
-        auto_aim.or(auto_shoot).whileTrue(driveFacingHub());
+        actionAim.whileTrue(driveFacingHub());
+        auto_aim.whileTrue(driveFacingHub());
     }
 
     private Command normalTeleopDrive() {
