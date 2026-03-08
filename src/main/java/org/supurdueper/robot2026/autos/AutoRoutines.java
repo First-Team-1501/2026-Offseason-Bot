@@ -18,6 +18,8 @@ public class AutoRoutines {
     private final String rightTwoRun = "Right_Two_Run";
     private final String rightFullRun = "Right_Full_Run";
     private final String leftFullRun = "Left_Full_Run";
+    private final String leftWallRun = "Left_Wall_Run";
+    private final String rightWallRun = "Right_Wall_Run";
 
     public AutoRoutines(AutoFactory factory) {
         m_factory = factory;
@@ -232,5 +234,41 @@ public class AutoRoutines {
                 leftOverBumpTwo,
                 leftIntakeBallsTwo,
                 leftToHubTwo);
+    }
+
+    public AutoRoutine leftWallRun() {
+        AutoRoutine routine = m_factory.newRoutine("Left Wall Run");
+        final AutoTrajectory leftOverBumpOne = routine.trajectory(leftWallRun, 0);
+        final AutoTrajectory leftIntakeBallsOne = routine.trajectory(leftWallRun, 1);
+        final AutoTrajectory leftToHubOne = routine.trajectory(leftWallRun, 2);
+        final AutoTrajectory leftOverBumpTwo = routine.trajectory(leftWallRun, 3);
+        final AutoTrajectory leftIntakeBallsTwo = routine.trajectory(leftWallRun, 4);
+        final AutoTrajectory leftToHubTwo = routine.trajectory(leftWallRun, 5);
+        return fullRun(
+                routine,
+                leftOverBumpOne,
+                leftIntakeBallsOne,
+                leftToHubOne,
+                leftOverBumpTwo,
+                leftIntakeBallsTwo,
+                leftToHubTwo);
+    }
+
+    public AutoRoutine rightWallRun() {
+        AutoRoutine routine = m_factory.newRoutine("Right Wall Run");
+        final AutoTrajectory rightOverBumpOne = routine.trajectory(rightWallRun, 0);
+        final AutoTrajectory rightIntakeBallsOne = routine.trajectory(rightWallRun, 1);
+        final AutoTrajectory rightToHubOne = routine.trajectory(rightWallRun, 2);
+        final AutoTrajectory rightOverBumpTwo = routine.trajectory(rightWallRun, 3);
+        final AutoTrajectory rightIntakeBallsTwo = routine.trajectory(rightWallRun, 4);
+        final AutoTrajectory rightToHubTwo = routine.trajectory(rightWallRun, 5);
+        return fullRun(
+                routine,
+                rightOverBumpOne,
+                rightIntakeBallsOne,
+                rightToHubOne,
+                rightOverBumpTwo,
+                rightIntakeBallsTwo,
+                rightToHubTwo);
     }
 }
