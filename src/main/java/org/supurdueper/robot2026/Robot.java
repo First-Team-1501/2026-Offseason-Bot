@@ -41,8 +41,6 @@ public class Robot extends SupurdueperRobot {
 
         autoChooser.addRoutine("Left 1 Run", autoRoutines::leftOneRun);
         autoChooser.addRoutine("Right 1 Run", autoRoutines::rightOneRun);
-        autoChooser.addRoutine("Left 2 Run", autoRoutines::leftTwoRun);
-        autoChooser.addRoutine("Right 2 Run", autoRoutines::rightTwoRun);
         autoChooser.addRoutine("Right Full Run", autoRoutines::rightFullRun);
         autoChooser.addRoutine("Left Full Run", autoRoutines::leftFullRun);
         autoChooser.addRoutine("Left Wall Run", autoRoutines::leftWallRun);
