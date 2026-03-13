@@ -134,7 +134,7 @@ public final class Constants {
         public static final Voltage kPurgeVoltage = Volts.of(-8);
         public static final Voltage kShootVoltage = Volts.of(6);
         public static final AngularVelocity kVelocityTolerance = RPM.of(50);
-        public static final AngularVelocity kIntakeVelocity = RPM.of(2250);
+        public static final AngularVelocity kIntakeVelocity = RPM.of(4000);
         public static final AngularVelocity kPurgeVelocity = RPM.of(-4);
         public static final AngularVelocity kShootVelocity = RPM.of(1700);
         public static final double kGearRatio = 18.0 / 12.0;

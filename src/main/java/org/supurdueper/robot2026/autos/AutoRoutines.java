@@ -166,7 +166,6 @@ public class AutoRoutines {
         return oneRun(routine, rightOverBump, rightIntakeBalls, rightToHub);
     }
 
-    
     public AutoRoutine rightFullRun() {
         AutoRoutine routine = m_factory.newRoutine("Right Full Run");
         final AutoTrajectory rightOverBumpOne = routine.trajectory("Right_Full_Run", 0);

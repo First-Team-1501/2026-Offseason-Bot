@@ -61,7 +61,7 @@ public class RobotContainer {
         shooter = new Shooter();
         shooterHood = new ShooterHood();
         vision = new Vision();
-        climber = new Climber();
+        // climber = new Climber();
         configureBindings();
     }
 
