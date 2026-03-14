@@ -116,6 +116,10 @@ public class Shooter extends VelocitySubsystem implements SupurdueperSubsystem {
         RobotStates.actionAim.or(RobotStates.actionShoot).onTrue(goToVelocity(this::getShotVelocity));
         RobotStates.auto_aim.or(RobotStates.auto_shoot).onTrue(goToVelocity(this::getShotVelocity));
         RobotStates.actionAim.or(RobotStates.actionShoot).onFalse(goToVelocity(() -> ShooterConstants.kIdleRPM));
+        // RobotStates.testController.B.onTrue(goToVelocity(() -> RPM.of(500)));
+        // RobotStates.testController.X.onTrue(goToVelocity(() -> RPM.of(1000)));
+        // RobotStates.testController.Y.onTrue(goToVelocity(() -> RPM.of(2000)));
+        // RobotStates.testController.A.onTrue(run(this::stop));
     }
 
     // Manually creating followers in constructor
