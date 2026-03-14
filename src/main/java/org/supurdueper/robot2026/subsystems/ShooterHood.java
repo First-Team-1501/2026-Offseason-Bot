@@ -18,6 +18,7 @@ import com.ctre.phoenix6.signals.GravityTypeValue;
 import dev.doglog.DogLog;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import org.supurdueper.lib.LoggedTunableNumber;
 import org.supurdueper.lib.subsystems.PositionSubsystem;
@@ -57,6 +58,14 @@ public class ShooterHood extends PositionSubsystem implements SupurdueperSubsyst
     @Override
     protected void setPosition(double position) {
         motor.setControl(noMagicMotion.withPosition(position));
+    }
+
+    public Command zero() {
+        return run(() -> motor.setControl(voltageRequest.withOutput(-3).withIgnoreSoftwareLimits(true)))
+                .until(() -> motor.getTorqueCurrent().getValueAsDouble() < -65.0)
+                .andThen(runOnce(
+                        () -> motor.setControl(voltageRequest.withOutput(0).withIgnoreSoftwareLimits(false))))
+                .andThen(runOnce(() -> motor.setPosition(ShooterHoodConstants.kZeroPosition)));
     }
 
     @Override
@@ -159,6 +168,7 @@ public class ShooterHood extends PositionSubsystem implements SupurdueperSubsyst
     public void bindCommands() {
         this.setDefaultCommand(goToPosition(this::getShotAngle));
         RobotStates.actionAim.or(RobotStates.actionShoot).onTrue(goToPosition(this::getShotAngle));
+        RobotStates.testController.downDpad.onTrue(zero());
         // RobotStates.actionTestA.onTrue(run(() -> stop()).withName("stop"));
         // RobotStates.actionTestB.onTrue(goToPosition(() -> Degrees.of(22)).withName("22"));
         // RobotStates.actionTestX.onTrue(goToPosition(() -> Degrees.of(28)).withName("28"));

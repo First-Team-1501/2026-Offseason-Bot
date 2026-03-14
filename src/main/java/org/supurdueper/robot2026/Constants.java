@@ -89,9 +89,9 @@ public final class Constants {
         public static final double kMaxAmps = 60.0;
         public static final CurrentLimitsConfigs kCurrentLimit =
                 new CurrentLimitsConfigs().withStatorCurrentLimit(kMaxAmps).withStatorCurrentLimitEnable(true);
-        public static final double kP = 11.0;
-        public static final double kS = 14.0;
-        public static final double kV = 0.1;
+        public static final double kP = 8.0;
+        public static final double kS = 6.0;
+        public static final double kV = 0.08;
         public static final double shooterGearRatio = 30.0 / 24.0;
         public static final AngularVelocity kVelocityTolerance = RPM.of(50);
         public static final AngularVelocity kShootRPM = RPM.of(1600);
@@ -186,25 +186,35 @@ public final class Constants {
         }
 
         static {
-            addPointToDistanceToShooterAngle(1.6, 19.0);
+            addPointToDistanceToShooterAngle(1.75, 19.0);
             addPointToDistanceToShooterAngle(2.0, 19.0);
-            addPointToDistanceToShooterAngle(2.25, 20.0);
-            addPointToDistanceToShooterAngle(2.5, 22.0);
-            addPointToDistanceToShooterAngle(2.75, 24.0);
-            addPointToDistanceToShooterAngle(3.0, 26.5);
-            addPointToDistanceToShooterAngle(3.25, 28.0);
-            addPointToDistanceToShooterAngle(3.5, 29.0);
-            addPointToDistanceToShooterAngle(5.3, 32.0);
+            addPointToDistanceToShooterAngle(2.25, 19.0);
+            addPointToDistanceToShooterAngle(2.5, 19.0);
+            addPointToDistanceToShooterAngle(2.75, 19.0);
+            addPointToDistanceToShooterAngle(3.0, 19.0);
+            addPointToDistanceToShooterAngle(3.25, 19.0);
+            addPointToDistanceToShooterAngle(3.5, 19.0);
+            addPointToDistanceToShooterAngle(3.75, 20.5);
+            addPointToDistanceToShooterAngle(4.0, 22.0);
+            addPointToDistanceToShooterAngle(4.25, 22.0);
+            addPointToDistanceToShooterAngle(4.5, 22.0);
+            addPointToDistanceToShooterAngle(4.75, 22.0);
+            addPointToDistanceToShooterAngle(5, 24.0);
 
-            addPointToDistanceToShooterRPM(1.6, 1550);
-            addPointToDistanceToShooterRPM(2.0, 1625);
-            addPointToDistanceToShooterRPM(2.25, 1650);
-            addPointToDistanceToShooterRPM(2.5, 1700);
-            addPointToDistanceToShooterRPM(2.75, 1700);
-            addPointToDistanceToShooterRPM(3.0, 1700);
-            addPointToDistanceToShooterRPM(3.25, 1750);
-            addPointToDistanceToShooterRPM(3.5, 1800);
-            addPointToDistanceToShooterRPM(5.3, 2000);
+            addPointToDistanceToShooterRPM(1.75, 1800);
+            addPointToDistanceToShooterRPM(2.0, 1900);
+            addPointToDistanceToShooterRPM(2.25, 1975);
+            addPointToDistanceToShooterRPM(2.5, 2025);
+            addPointToDistanceToShooterRPM(2.75, 2100);
+            addPointToDistanceToShooterRPM(3.0, 2170);
+            addPointToDistanceToShooterRPM(3.25, 2250);
+            addPointToDistanceToShooterRPM(3.5, 2320);
+            addPointToDistanceToShooterRPM(3.75, 2380);
+            addPointToDistanceToShooterRPM(4, 2460);
+            addPointToDistanceToShooterRPM(4.25, 2600);
+            addPointToDistanceToShooterRPM(4.5, 2650);
+            addPointToDistanceToShooterRPM(4.75, 2730);
+            addPointToDistanceToShooterRPM(5, 2870);
         }
     }
 }

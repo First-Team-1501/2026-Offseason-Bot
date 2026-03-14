@@ -107,7 +107,7 @@ public class Climber extends PositionSubsystem implements SupurdueperSubsystem {
         RobotStates.testController.leftStickY.whileTrue(
                 runEnd(() -> runVoltage(Volts.of(12 * RobotStates.testController.getDriveFwdPositive())), this::stop));
         RobotStates.testController.start.onTrue(runOnce(() -> motor.setPosition(0)));
-        RobotStates.testController.downDpad.onTrue(zero());
+        //  RobotStates.testController.downDpad.onTrue(zero());
     }
 
     @Override
