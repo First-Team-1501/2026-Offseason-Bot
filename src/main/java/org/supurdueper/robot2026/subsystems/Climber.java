@@ -5,7 +5,6 @@
 package org.supurdueper.robot2026.subsystems;
 
 import static edu.wpi.first.units.Units.Rotations;
-import static edu.wpi.first.units.Units.Volts;
 
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
@@ -104,8 +103,8 @@ public class Climber extends PositionSubsystem implements SupurdueperSubsystem {
         RobotStates.actionClimberUp.onTrue(releaseIntake());
         RobotStates.actionClimberHome.onTrue(home());
         RobotStates.auto_drop_intake.onTrue(releaseIntake());
-        RobotStates.testController.leftStickY.whileTrue(
-                runEnd(() -> runVoltage(Volts.of(12 * RobotStates.testController.getDriveFwdPositive())), this::stop));
+        // RobotStates.testController.leftStickY.whileTrue(
+        //       runEnd(() -> runVoltage(Volts.of(12 * RobotStates.testController.getDriveFwdPositive())), this::stop));
         RobotStates.testController.start.onTrue(runOnce(() -> motor.setPosition(0)));
         //  RobotStates.testController.downDpad.onTrue(zero());
     }

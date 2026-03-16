@@ -28,7 +28,7 @@ public class Driver extends Gamepad {
 
     @Getter
     @Setter
-    private boolean isSlowMode = false;
+    private boolean isSlowMode = true;
 
     @Getter
     @Setter

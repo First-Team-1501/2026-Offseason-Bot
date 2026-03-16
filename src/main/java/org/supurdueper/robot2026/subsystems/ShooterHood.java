@@ -6,6 +6,7 @@ package org.supurdueper.robot2026.subsystems;
 
 import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.Meters;
+import static edu.wpi.first.units.Units.Volts;
 
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.FeedbackConfigs;
@@ -62,7 +63,7 @@ public class ShooterHood extends PositionSubsystem implements SupurdueperSubsyst
 
     public Command zero() {
         return run(() -> motor.setControl(voltageRequest.withOutput(-3).withIgnoreSoftwareLimits(true)))
-                .until(() -> motor.getTorqueCurrent().getValueAsDouble() < -65.0)
+                .until(() -> motor.getStatorCurrent().getValueAsDouble() > 20.0)
                 .andThen(runOnce(
                         () -> motor.setControl(voltageRequest.withOutput(0).withIgnoreSoftwareLimits(false))))
                 .andThen(runOnce(() -> motor.setPosition(ShooterHoodConstants.kZeroPosition)));
@@ -166,9 +167,14 @@ public class ShooterHood extends PositionSubsystem implements SupurdueperSubsyst
 
     @Override
     public void bindCommands() {
-        this.setDefaultCommand(goToPosition(this::getShotAngle));
-        RobotStates.actionAim.or(RobotStates.actionShoot).onTrue(goToPosition(this::getShotAngle));
+        RobotStates.actionAim
+                .or(RobotStates.actionShoot)
+                .or(RobotStates.auto_aim)
+                .or(RobotStates.auto_shoot)
+                .onTrue(goToPosition(this::getShotAngle));
         RobotStates.testController.downDpad.onTrue(zero());
+        RobotStates.testController.leftStickY.whileTrue(
+                runEnd(() -> runVoltage(Volts.of(3 * RobotStates.testController.getDriveFwdPositive())), this::stop));
         // RobotStates.actionTestA.onTrue(run(() -> stop()).withName("stop"));
         // RobotStates.actionTestB.onTrue(goToPosition(() -> Degrees.of(22)).withName("22"));
         // RobotStates.actionTestX.onTrue(goToPosition(() -> Degrees.of(28)).withName("28"));
