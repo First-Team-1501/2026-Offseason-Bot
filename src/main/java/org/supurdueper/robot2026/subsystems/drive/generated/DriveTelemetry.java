@@ -141,6 +141,7 @@ public class DriveTelemetry {
         DogLog.log("Pose", m_poseArray);
         DogLog.log(
                 "Distance To Goal", FieldCalculations.distanceToGoal(state.Pose).in(Meters));
+        DogLog.log("Our Zone", FieldCalculations.ourZone(state.Pose));
         fieldPub.set(m_poseArray);
 
         /* Telemeterize each module state to a Mechanism2d */

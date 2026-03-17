@@ -13,4 +13,9 @@ public class FieldCalculations {
         Translation2d hubCenter = AllianceFlip.apply(FieldConstants.Hub.topCenterPoint.toTranslation2d());
         return Meters.of(robotPose.getTranslation().getDistance(hubCenter));
     }
+
+    public static Boolean ourZone(Pose2d robotPose) {
+        double notOurZone = (FieldConstants.LinesHorizontal.leftBumpMiddle);
+        return (AllianceFlip.applyX(robotPose.getX()) < notOurZone);
+    }
 }

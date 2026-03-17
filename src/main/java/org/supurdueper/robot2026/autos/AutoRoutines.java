@@ -28,73 +28,18 @@ public class AutoRoutines {
         routine.active()
                 .onTrue(overBump.resetOdometry()
                         .andThen(() -> RobotStates.setAutoDropIntake(true))
+                        .andThen(() -> RobotStates.setAutoIntake(true))
                         .andThen(overBump.cmd()));
 
         overBump.chain(intakeBalls);
-
-        intakeBalls
-                .active()
-                .whileTrue(Commands.runEnd(
-                        (() -> RobotStates.setAutoIntake(true)), (() -> RobotStates.setAutoIntake(false))));
 
         intakeBalls.chain(toHub);
 
         toHub.recentlyDone()
                 .onTrue(Commands.sequence(
                         (Commands.runOnce(() -> RobotStates.setAutoAim(true))),
-                        (Commands.runOnce(() -> RobotStates.setAutoShoot(true)))));
-
-        return routine;
-    }
-
-    public AutoRoutine twoRun(
-            AutoRoutine routine,
-            AutoTrajectory overBump1,
-            AutoTrajectory intakeBalls1,
-            AutoTrajectory toHub1,
-            AutoTrajectory overBump2,
-            AutoTrajectory intakeBalls2,
-            AutoTrajectory toHub2) {
-        routine.active()
-                .onTrue(overBump1
-                        .resetOdometry()
-                        .andThen(() -> RobotStates.setAutoDropIntake(true))
-                        .andThen(overBump1.cmd())
-                        .andThen(() -> RobotStates.setAutoDropIntake(false)));
-
-        overBump1.chain(intakeBalls1);
-
-        intakeBalls1
-                .active()
-                .whileTrue(Commands.runEnd(
-                        (() -> RobotStates.setAutoIntake(true)), (() -> RobotStates.setAutoIntake(false))));
-
-        intakeBalls1.chain(toHub1);
-
-        toHub1.recentlyDone()
-                .onTrue(Commands.sequence(
-                        Commands.runOnce(() -> RobotStates.setAutoAim(true)),
-                        Commands.runOnce(() -> RobotStates.setAutoShoot(true)),
-                        Commands.waitSeconds(5),
-                        Commands.runOnce(() -> {
-                            RobotStates.setAutoAim(false);
-                            RobotStates.setAutoShoot(false);
-                        }),
-                        overBump2.cmd()));
-
-        overBump2.chain(intakeBalls2);
-
-        intakeBalls2
-                .active()
-                .whileTrue(Commands.runEnd(
-                        (() -> RobotStates.setAutoIntake(true)), (() -> RobotStates.setAutoIntake(false))));
-
-        intakeBalls2.chain(toHub2);
-
-        toHub2.recentlyDone()
-                .onTrue(Commands.sequence(
-                        Commands.runOnce(() -> RobotStates.setAutoAim(true)),
-                        Commands.runOnce(() -> RobotStates.setAutoShoot(true))));
+                        (Commands.runOnce(() -> RobotStates.setAutoShoot(true))),
+                        (Commands.runOnce(() -> RobotStates.setAutoIntake(false)))));
 
         return routine;
     }
@@ -111,14 +56,10 @@ public class AutoRoutines {
                 .onTrue(overBumpOne
                         .resetOdometry()
                         .andThen(() -> RobotStates.setAutoDropIntake(true))
+                        .andThen(() -> RobotStates.setAutoIntake(true))
                         .andThen(overBumpOne.cmd()));
 
         overBumpOne.chain(intakeBallsOne);
-
-        intakeBallsOne
-                .active()
-                .whileTrue(Commands.runEnd(
-                        (() -> RobotStates.setAutoIntake(true)), (() -> RobotStates.setAutoIntake(false))));
 
         intakeBallsOne.chain(toHubOne);
 
@@ -135,17 +76,13 @@ public class AutoRoutines {
                         overBumpTwo.cmd().asProxy()));
         overBumpTwo.chain(intakeBallsTwo);
 
-        intakeBallsTwo
-                .active()
-                .whileTrue(Commands.runEnd(
-                        (() -> RobotStates.setAutoIntake(true)), (() -> RobotStates.setAutoIntake(false))));
-
         intakeBallsTwo.chain(toHubTwo);
 
         toHubTwo.recentlyDone()
                 .onTrue(Commands.sequence(
                         (Commands.runOnce(() -> RobotStates.setAutoAim(true))),
-                        (Commands.runOnce(() -> RobotStates.setAutoShoot(true)))));
+                        (Commands.runOnce(() -> RobotStates.setAutoShoot(true))),
+                        (Commands.runOnce(() -> RobotStates.setAutoIntake(true)))));
 
         return routine;
     }
