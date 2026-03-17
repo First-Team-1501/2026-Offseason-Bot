@@ -81,6 +81,10 @@ public class Robot extends SupurdueperRobot {
         }
 
         resetCommandsAndButtons();
+
+        if (!DriverStation.isFMSAttached()) {
+            SmartDashboard.putBoolean("Won Auto", true);
+        }
     }
 
     @Override
