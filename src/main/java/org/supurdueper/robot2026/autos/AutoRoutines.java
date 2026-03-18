@@ -65,6 +65,7 @@ public class AutoRoutines {
 
         toHubOne.recentlyDone()
                 .onTrue(Commands.sequence(
+                        Commands.runOnce(() -> RobotStates.setAutoIntake(false)),
                         Commands.runOnce(() -> RobotStates.setAutoAim(true)),
                         Commands.waitSeconds(0.5),
                         Commands.runOnce(() -> RobotStates.setAutoShoot(true)),
@@ -73,6 +74,7 @@ public class AutoRoutines {
                             RobotStates.setAutoAim(false);
                             RobotStates.setAutoShoot(false);
                         }),
+                        Commands.runOnce(() -> RobotStates.setAutoIntake(true)),
                         overBumpTwo.cmd().asProxy()));
         overBumpTwo.chain(intakeBallsTwo);
 
@@ -80,6 +82,7 @@ public class AutoRoutines {
 
         toHubTwo.recentlyDone()
                 .onTrue(Commands.sequence(
+                        (Commands.runOnce(() -> RobotStates.setAutoIntake(false))),
                         (Commands.runOnce(() -> RobotStates.setAutoAim(true))),
                         (Commands.runOnce(() -> RobotStates.setAutoShoot(true))),
                         (Commands.runOnce(() -> RobotStates.setAutoIntake(true)))));
