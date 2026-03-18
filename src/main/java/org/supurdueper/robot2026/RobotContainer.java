@@ -51,10 +51,10 @@ public class RobotContainer {
 
     @Getter
     private static Vision vision;
-    
+
     @Getter
     private Uptake uptake;
-    
+
     public RobotContainer() {
         driver = new Driver(0);
         testController = new Driver(2);

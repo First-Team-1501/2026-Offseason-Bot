@@ -15,11 +15,10 @@ public class FieldCalculations {
     }
 
     public static Boolean ourZone(Pose2d robotPose) {
-        double notOurZone = (FieldConstants.LinesHorizontal.leftBumpMiddle);
-        return (AllianceFlip.applyX(robotPose.getX()) < notOurZone);
+        return AllianceFlip.applyX(robotPose.getX()) < FieldConstants.LinesVertical.neutralZoneNear;
     }
 
-    public static Boolean rightHalf(Pose2d robotPose) {
-        return (AllianceFlip.applyY(robotPose.getY()) < FieldConstants.LinesVertical.center);
+    public static Boolean bottomHalf(Pose2d robotPose) {
+        return (AllianceFlip.applyY(robotPose.getY()) < FieldConstants.LinesHorizontal.center);
     }
 }

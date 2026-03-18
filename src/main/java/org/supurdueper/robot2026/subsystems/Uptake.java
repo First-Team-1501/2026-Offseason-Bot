@@ -11,9 +11,7 @@ import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import dev.doglog.DogLog;
 import edu.wpi.first.units.measure.AngularVelocity;
-import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
-import lombok.Getter;
 import org.supurdueper.lib.subsystems.SupurdueperSubsystem;
 import org.supurdueper.lib.subsystems.VelocitySubsystem;
 import org.supurdueper.robot2026.CanId;
@@ -24,40 +22,19 @@ import org.supurdueper.robot2026.state.RobotStates;
 public class Uptake extends VelocitySubsystem implements SupurdueperSubsystem {
 
     /** Creates a new Uptake. */
-    public enum FeedState {
-        feed(UptakeConstants.feedVelocity),
-        purge(UptakeConstants.purgeVelocity),
-        stop(RPM.of(0));
-
-        public AngularVelocity velocity;
-
-        FeedState(AngularVelocity velocity) {
-            this.velocity = velocity;
-        }
-    }
-
-    @Getter
-    private FeedState feedState;
-
     public Uptake() {
         config.TorqueCurrent.PeakForwardTorqueCurrent = UptakeConstants.kMaxAmps;
         config.TorqueCurrent.PeakReverseTorqueCurrent = -1 * UptakeConstants.kMaxAmps;
+        config.Feedback.SensorToMechanismRatio = 27 / 14.0;
         configureMotors();
         Robot.add(this);
-        feedState = FeedState.stop;
     }
 
     @Override
     public void periodic() {
         super.periodic();
-        if (feedState.equals(FeedState.stop)) {
-            run(() -> stop());
-        } else {
-            setVelocity(feedState.velocity);
-        }
         DogLog.log("Uptake/RPM", getVelocity().in(RPM));
         DogLog.log("Uptake/Target RPM", getSetpoint().in(RPM));
-        DogLog.log("Uptake/State", feedState.name());
         DogLog.log("Uptake/At Velocity", isAtVelocityTrigger().getAsBoolean());
     }
 
@@ -67,29 +44,15 @@ public class Uptake extends VelocitySubsystem implements SupurdueperSubsystem {
 
     @Override
     public void bindCommands() {
-                RobotStates.actionShoot
-                .or(RobotStates.auto_shoot)
-                .onTrue(setState(FeedState.feed));
+        RobotStates.actionShoot.or(RobotStates.auto_shoot).whileTrue(startEnd(() -> setVoltage(() -> 10), this::stop));
+        ;
+        RobotStates.actionIntake
+                .and(RobotStates.actionShoot.negate())
+                .whileTrue(startEnd(() -> setVoltage(() -> -6), this::stop));
         // RobotStates.testController.B.onTrue(goToVelocity(() -> RPM.of(500)));
         // RobotStates.testController.X.onTrue(goToVelocity(() -> RPM.of(1000)));
         // RobotStates.testController.Y.onTrue(goToVelocity(() -> RPM.of(2000)));
         // RobotStates.testController.A.onTrue(run(this::stop));
-    }
-
-    public Command setState(FeedState velocity) {
-        return runOnce(() -> feedState = velocity);
-    }
-
-    public boolean atFeed() {
-        return feedState.equals(FeedState.feed);
-    }
-
-    public boolean atPurge() {
-        return feedState.equals(FeedState.purge);
-    }
-
-    public boolean atStop() {
-        return feedState.equals(FeedState.stop);
     }
 
     @Override
@@ -125,7 +88,7 @@ public class Uptake extends VelocitySubsystem implements SupurdueperSubsystem {
 
     @Override
     public boolean followerInverted() {
-        return true;
+        return false;
     }
 
     @Override
@@ -135,7 +98,7 @@ public class Uptake extends VelocitySubsystem implements SupurdueperSubsystem {
 
     @Override
     public boolean inverted() {
-        return false;
+        return true;
     }
 
     @Override

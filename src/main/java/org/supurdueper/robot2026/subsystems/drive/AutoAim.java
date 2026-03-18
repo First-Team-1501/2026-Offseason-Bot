@@ -5,7 +5,7 @@ import com.ctre.phoenix6.swerve.SwerveDrivetrain.SwerveControlParameters;
 import com.ctre.phoenix6.swerve.SwerveModule;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.ctre.phoenix6.swerve.SwerveRequest.FieldCentricFacingAngle;
-
+import dev.doglog.DogLog;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -25,8 +25,9 @@ public class AutoAim extends FieldCentricFacingAngle {
     SwerveRequest xMode = new SwerveDriveBrake();
     Translation2d pointToFace;
     Translation2d hub = FieldConstants.Hub.topCenterPoint.toTranslation2d();
-    Translation2d leftHalfFieldFeed;
-    Translation2d rightHalfFieldFeed;
+    double feedShotX = FieldConstants.LinesVertical.starting;
+    Translation2d bottomHalfFieldFeed = new Translation2d(feedShotX, FieldConstants.LinesHorizontal.center / 2);
+    Translation2d topHalfFieldFeed = new Translation2d(feedShotX, FieldConstants.LinesHorizontal.center * 1.5);
 
     public AutoAim() {}
 
@@ -36,19 +37,19 @@ public class AutoAim extends FieldCentricFacingAngle {
 
         if (FieldCalculations.ourZone(currentPose)) {
             this.pointToFace = AllianceFlip.apply(FieldConstants.Hub.topCenterPoint.toTranslation2d());
-        } else if (FieldCalculations.rightHalf(currentPose)) {
-            this.pointToFace = rightHalfFieldFeed;
+        } else if (FieldCalculations.bottomHalf(currentPose)) {
+            this.pointToFace = AllianceFlip.apply(bottomHalfFieldFeed);
         } else {
-            this.pointToFace = leftHalfFieldFeed;
+            this.pointToFace = AllianceFlip.apply(topHalfFieldFeed);
         }
 
-        this.TargetDirection =
-                pointToFace.minus(currentPose.getTranslation()).getAngle();
+        DogLog.log("AutoAim/PointToFace", pointToFace);
+
+        this.TargetDirection = pointToFace.minus(currentPose.getTranslation()).getAngle();
         if (!AllianceFlip.shouldFlip()) {
             this.TargetDirection = this.TargetDirection.rotateBy(Rotation2d.k180deg);
         }
-        if (Math.abs(this.TargetDirection.minus(currentPose.getRotation())
-                        .getDegrees())
+        if (Math.abs(this.TargetDirection.minus(currentPose.getRotation()).getDegrees())
                 < aimedTolerance.getDegrees()) {
             if (Math.abs(this.VelocityX) < 0.2 && Math.abs(this.VelocityY) < 0.2) {
                 return xMode.apply(parameters, modulesToApply);

@@ -74,7 +74,7 @@ public class Hopper extends VelocitySubsystem implements SupurdueperSubsystem {
     }
 
     public void agitate() {
-        runVoltage(Volts.of(-2));
+        runVoltage(Volts.of(2));
     }
 
     public void purge() {
@@ -88,6 +88,7 @@ public class Hopper extends VelocitySubsystem implements SupurdueperSubsystem {
     @Override
     public void bindCommands() {
         RobotStates.actionShoot.whileTrue(runEnd(this::run, this::stop));
+        RobotStates.actionIntake.whileTrue(runEnd(this::agitate, this::stop));
         RobotStates.auto_shoot.whileTrue(runEnd(this::run, this::stop));
     }
 
