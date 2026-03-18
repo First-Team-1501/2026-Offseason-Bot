@@ -61,6 +61,10 @@ public class ShooterHood extends PositionSubsystem implements SupurdueperSubsyst
         motor.setControl(noMagicMotion.withPosition(position));
     }
 
+    public Command releaseIntake() {
+        return goToPosition(() -> ShooterHoodConstants.kForwardSoftLimit);
+    }
+
     public Command zero() {
         return run(() -> motor.setControl(voltageRequest.withOutput(-3).withIgnoreSoftwareLimits(true)))
                 .until(() -> motor.getStatorCurrent().getValueAsDouble() > 20.0)
@@ -171,7 +175,8 @@ public class ShooterHood extends PositionSubsystem implements SupurdueperSubsyst
                 .or(RobotStates.actionShoot)
                 .or(RobotStates.auto_aim)
                 .or(RobotStates.auto_shoot)
-                .onTrue(goToPosition(this::getShotAngle));
+                .whileTrue(goToPosition(this::getShotAngle));
+        RobotStates.auto_drop_intake.onTrue(releaseIntake());
         RobotStates.testController.downDpad.onTrue(zero());
         RobotStates.testController.leftStickY.whileTrue(
                 runEnd(() -> runVoltage(Volts.of(3 * RobotStates.testController.getDriveFwdPositive())), this::stop));

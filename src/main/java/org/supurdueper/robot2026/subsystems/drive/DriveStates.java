@@ -29,7 +29,7 @@ public class DriveStates {
     private final SwerveRequest.FieldCentric driveFieldCentric = new SwerveRequest.FieldCentric();
     private final SysIdSwerveTranslationCurrent driveCurrentTuning = new SysIdSwerveTranslationCurrent();
     private final FieldCentricFacingAngle fieldCentricFacingAngle = new FieldCentricFacingAngle();
-    private final AimAtHub driveFacingHub = new AimAtHub();
+    private final AutoAim driveFacingHub = new AutoAim();
 
     public DriveStates(Drivetrain drivetrain) {
         this.drivetrain = drivetrain;

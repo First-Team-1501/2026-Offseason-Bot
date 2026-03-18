@@ -14,6 +14,7 @@ import org.supurdueper.robot2026.subsystems.Hopper;
 import org.supurdueper.robot2026.subsystems.Intake;
 import org.supurdueper.robot2026.subsystems.Shooter;
 import org.supurdueper.robot2026.subsystems.ShooterHood;
+import org.supurdueper.robot2026.subsystems.Uptake;
 import org.supurdueper.robot2026.subsystems.Vision;
 import org.supurdueper.robot2026.subsystems.drive.Drivetrain;
 import org.supurdueper.robot2026.subsystems.drive.generated.TunerConstants;
@@ -50,7 +51,10 @@ public class RobotContainer {
 
     @Getter
     private static Vision vision;
-
+    
+    @Getter
+    private Uptake uptake;
+    
     public RobotContainer() {
         driver = new Driver(0);
         testController = new Driver(2);
@@ -61,6 +65,7 @@ public class RobotContainer {
         shooter = new Shooter();
         shooterHood = new ShooterHood();
         vision = new Vision();
+        uptake = new Uptake();
         // climber = new Climber();
         configureBindings();
     }

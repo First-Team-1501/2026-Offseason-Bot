@@ -24,7 +24,7 @@ public class Hopper extends VelocitySubsystem implements SupurdueperSubsystem {
     /** Creates a new Hopper. */
     public Hopper() {
         config.TorqueCurrent.PeakForwardTorqueCurrent = HopperConstants.kMaxAmps;
-        config.TorqueCurrent.PeakReverseTorqueCurrent = HopperConstants.kMaxAmps;
+        config.TorqueCurrent.PeakReverseTorqueCurrent = -1 * HopperConstants.kMaxAmps;
         config = config.withFeedback(new FeedbackConfigs().withSensorToMechanismRatio(HopperConstants.gearRatio));
         configureMotors();
         Robot.add(this);
@@ -41,12 +41,12 @@ public class Hopper extends VelocitySubsystem implements SupurdueperSubsystem {
 
     @Override
     public CanId canIdLeader() {
-        return CanId.INDEXER_ONE;
+        return CanId.INDEXER;
     }
 
     @Override
     public CanId canIdFollower() {
-        return CanId.INDEXER_TWO;
+        return null;
     }
 
     @Override
