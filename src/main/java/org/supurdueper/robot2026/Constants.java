@@ -111,6 +111,7 @@ public final class Constants {
         public static final double kP = 8.0;
         public static final AngularVelocity velocityTolerance = RPM.of(50);
         public static final AngularVelocity kAgitateSpeed = RPM.of(-300);
+        public static final Voltage kAgitateVoltage = Volts.of(1);
     }
 
     public class FeederConstants {

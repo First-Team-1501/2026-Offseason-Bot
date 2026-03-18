@@ -74,7 +74,7 @@ public class Hopper extends VelocitySubsystem implements SupurdueperSubsystem {
     }
 
     public void agitate() {
-        runVoltage(Volts.of(2));
+        runVoltage(HopperConstants.kAgitateVoltage);
     }
 
     public void purge() {
