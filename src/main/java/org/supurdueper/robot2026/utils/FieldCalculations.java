@@ -18,4 +18,8 @@ public class FieldCalculations {
         double notOurZone = (FieldConstants.LinesHorizontal.leftBumpMiddle);
         return (AllianceFlip.applyX(robotPose.getX()) < notOurZone);
     }
+
+    public static Boolean rightHalf(Pose2d robotPose) {
+        return (AllianceFlip.applyY(robotPose.getY()) < FieldConstants.LinesVertical.center);
+    }
 }

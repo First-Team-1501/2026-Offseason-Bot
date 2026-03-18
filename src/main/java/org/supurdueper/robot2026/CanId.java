@@ -25,8 +25,8 @@ public enum CanId {
     INTAKE_TWO(10, Constants.canivoreBus),
 
     // Hopper
-    INDEXER_ONE(11, Constants.canivoreBus),
-    INDEXER_TWO(12, Constants.canivoreBus),
+    INDEXER(11, Constants.canivoreBus),
+    UPTAKE(12, Constants.canivoreBus),
 
     // Feeder
     FEEDER_ONE(13, Constants.canivoreBus),

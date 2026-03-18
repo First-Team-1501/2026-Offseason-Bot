@@ -126,6 +126,19 @@ public final class Constants {
         public static final AngularVelocity idleVelocity = RPM.of(500);
     }
 
+    public class UptakeConstants {
+        public static final double kP = 5.0;
+        public static final double kS = 3.5;
+        public static final double kV = 0;
+        public static final AngularVelocity velocityTolerance = RPM.of(60);
+        public static final double kMaxAmps = 60.0;
+        public static final CurrentLimitsConfigs kCurrentLimit =
+                new CurrentLimitsConfigs().withStatorCurrentLimit(kMaxAmps).withStatorCurrentLimitEnable(true);
+        public static final AngularVelocity feedVelocity = RPM.of(2000);
+        public static final AngularVelocity purgeVelocity = RPM.of(-500);
+        public static final AngularVelocity idleVelocity = RPM.of(500);
+    }
+
     public class IntakeConstants {
         public static final double kMaxAmps = 60;
         public static final CurrentLimitsConfigs kCurrentLimit =
