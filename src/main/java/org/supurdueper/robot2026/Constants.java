@@ -228,7 +228,7 @@ public final class Constants {
             addPointToDistanceToShooterRPM(4.25, 2600);
             addPointToDistanceToShooterRPM(4.5, 2650);
             addPointToDistanceToShooterRPM(4.75, 2730);
-            addPointToDistanceToShooterRPM(5, 2870);
+            addPointToDistanceToShooterRPM(5, 2930);
         }
     }
 }

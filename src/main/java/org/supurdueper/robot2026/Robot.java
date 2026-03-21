@@ -75,10 +75,10 @@ public class Robot extends SupurdueperRobot {
         }
 
         // Limelight port fowarding
-        for (int port = 5800; port <= 5809; port++) {
-            PortForwarder.add(port, "10.74.57.200", port);
-            PortForwarder.add(port + 100, "10.74.57.201", port);
-        }
+        // for (int port = 5800; port <= 5809; port++) {
+        //     PortForwarder.add(port, "10.74.57.200", port);
+        //     PortForwarder.add(port + 100, "10.74.57.201", port);
+        // }
 
         resetCommandsAndButtons();
 
@@ -106,7 +106,10 @@ public class Robot extends SupurdueperRobot {
     }
 
     @Override
-    public void disabledInit() {}
+    public void disabledInit() {
+        Vision.setDisabled();
+      
+    }
 
     @Override
     public void disabledPeriodic() {}
