@@ -1,5 +1,5 @@
 {
- "name":"Right_Wall_Run",
+ "name":"Only_Right_Wall",
  "version":3,
  "snapshot":{
   "waypoints":[
@@ -100,7 +100,7 @@
    "radius":0.0508,
    "vmax":502.6548245743669,
    "tmax":0.8,
-   "cof":1.0,
+   "cof":1.5,
    "bumper":{
     "front":0.4191,
     "side":0.4953,

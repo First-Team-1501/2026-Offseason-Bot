@@ -9,7 +9,6 @@ import choreo.auto.AutoFactory;
 import com.ctre.phoenix6.HootAutoReplay;
 import dev.doglog.DogLog;
 import dev.doglog.DogLogOptions;
-import edu.wpi.first.net.PortForwarder;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Threads;
 import edu.wpi.first.wpilibj.Timer;
@@ -108,7 +107,6 @@ public class Robot extends SupurdueperRobot {
     @Override
     public void disabledInit() {
         Vision.setDisabled();
-      
     }
 
     @Override
