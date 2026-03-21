@@ -56,6 +56,7 @@ public class AutoRoutines {
                 .onTrue(overBumpOne
                         .resetOdometry()
                         .andThen(() -> RobotStates.setAutoDropIntake(true))
+                        .andThen(Commands.waitSeconds(1))
                         .andThen(() -> RobotStates.setAutoIntake(true))
                         .andThen(overBumpOne.cmd()));
 
