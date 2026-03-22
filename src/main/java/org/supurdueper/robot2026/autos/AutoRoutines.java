@@ -16,6 +16,8 @@ public class AutoRoutines {
     private final String leftFullRun = "Left_Full_Run";
     private final String leftWallRun = "Left_Wall_Run";
     private final String rightWallRun = "Right_Wall_Run";
+    private final String rightOnlyWall = "Right_Only_Wall";
+    private final String leftOnlyWall = "Left_Only_Wall";
 
     public AutoRoutines(AutoFactory factory) {
         m_factory = factory;
@@ -177,5 +179,41 @@ public class AutoRoutines {
                 rightOverBumpTwo,
                 rightIntakeBallsTwo,
                 rightToHubTwo);
+    }
+
+    public AutoRoutine rightOnlyWall() {
+        AutoRoutine routine = m_factory.newRoutine("Right_Only_Wall");
+        final AutoTrajectory rightOnlyOverBumpOne = routine.trajectory(rightOnlyWall, 0);
+        final AutoTrajectory rightOnlyIntakeBallsOne = routine.trajectory(rightOnlyWall, 1);
+        final AutoTrajectory rightOnlyToHubOne = routine.trajectory(rightOnlyWall, 2);
+        final AutoTrajectory rightOnlyOverBumpTwo = routine.trajectory(rightOnlyWall, 3);
+        final AutoTrajectory rightOnlyIntakeBallsTwo = routine.trajectory(rightOnlyWall, 4);
+        final AutoTrajectory rightOnlyToHubTwo = routine.trajectory(rightOnlyWall, 5);
+        return fullRun(
+                routine,
+                rightOnlyOverBumpOne,
+                rightOnlyIntakeBallsOne,
+                rightOnlyToHubOne,
+                rightOnlyOverBumpTwo,
+                rightOnlyIntakeBallsTwo,
+                rightOnlyToHubTwo);
+    }
+
+    public AutoRoutine leftOnlyWall() {
+         AutoRoutine routine = m_factory.newRoutine("Left_Only_Wall");
+        final AutoTrajectory leftOnlyOverBumpOne = routine.trajectory(leftOnlyWall, 0);
+        final AutoTrajectory leftOnlyIntakeBallsOne = routine.trajectory(leftOnlyWall, 1);
+        final AutoTrajectory leftOnlyToHubOne = routine.trajectory(leftOnlyWall, 2);
+        final AutoTrajectory leftOnlyOverBumpTwo = routine.trajectory(leftOnlyWall, 3);
+        final AutoTrajectory leftOnlyIntakeBallsTwo = routine.trajectory(leftOnlyWall, 4);
+        final AutoTrajectory leftOnlyToHubTwo = routine.trajectory(leftOnlyWall, 5);
+        return fullRun(
+                routine,
+                leftOnlyOverBumpOne,
+                leftOnlyIntakeBallsOne,
+                leftOnlyToHubOne,
+                leftOnlyOverBumpTwo,
+                leftOnlyIntakeBallsTwo,
+                leftOnlyToHubTwo);
     }
 }
