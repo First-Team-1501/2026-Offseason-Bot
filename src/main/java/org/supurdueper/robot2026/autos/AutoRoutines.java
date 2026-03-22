@@ -200,7 +200,7 @@ public class AutoRoutines {
     }
 
     public AutoRoutine leftOnlyWall() {
-         AutoRoutine routine = m_factory.newRoutine("Left_Only_Wall");
+        AutoRoutine routine = m_factory.newRoutine("Left_Only_Wall");
         final AutoTrajectory leftOnlyOverBumpOne = routine.trajectory(leftOnlyWall, 0);
         final AutoTrajectory leftOnlyIntakeBallsOne = routine.trajectory(leftOnlyWall, 1);
         final AutoTrajectory leftOnlyToHubOne = routine.trajectory(leftOnlyWall, 2);
