@@ -28,6 +28,7 @@ import edu.wpi.first.units.measure.Voltage;
 import org.supurdueper.lib.utils.ExpCurve;
 
 public final class Constants {
+    public static final double loopPeriodSecs = 0.02;
     public static boolean tuningMode = false;
     public static boolean publishToNT = true;
     public static CANBus canivoreBus = new CANBus("canivore");
