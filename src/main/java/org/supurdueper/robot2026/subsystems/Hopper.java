@@ -12,6 +12,7 @@ import com.ctre.phoenix6.configs.FeedbackConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import dev.doglog.DogLog;
 import edu.wpi.first.units.measure.AngularVelocity;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import org.supurdueper.lib.subsystems.SupurdueperSubsystem;
 import org.supurdueper.lib.subsystems.VelocitySubsystem;
@@ -87,7 +88,8 @@ public class Hopper extends VelocitySubsystem implements SupurdueperSubsystem {
 
     @Override
     public void bindCommands() {
-        RobotStates.actionShoot.whileTrue(runEnd(this::run, this::stop));
+        RobotStates.actionShoot.whileTrue(
+                Commands.waitUntil(RobotStates.infoShooterAtSpeed).andThen(runEnd(this::run, this::stop)));
         RobotStates.actionIntake.whileTrue(runEnd(this::agitate, this::stop));
         RobotStates.auto_shoot.whileTrue(runEnd(this::run, this::stop));
     }

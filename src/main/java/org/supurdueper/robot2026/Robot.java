@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import org.supurdueper.BuildConstants;
+import org.supurdueper.lib.LoggedTunableNumber;
 import org.supurdueper.lib.subsystems.SupurdueperRobot;
 import org.supurdueper.robot2026.autos.AutoRoutines;
 import org.supurdueper.robot2026.state.RobotStates;
@@ -28,6 +29,7 @@ public class Robot extends SupurdueperRobot {
     private final AutoFactory autoFactory;
     private final AutoRoutines autoRoutines;
     private final AutoChooser autoChooser = new AutoChooser();
+    private final LoggedTunableNumber autoTimeout;
 
     /* log and replay timestamp and joystick data */
     private final HootAutoReplay m_timeAndJoystickReplay =
@@ -37,6 +39,7 @@ public class Robot extends SupurdueperRobot {
         m_robotContainer = new RobotContainer();
         autoFactory = RobotContainer.getDrivetrain().createAutoFactory();
         autoRoutines = new AutoRoutines(autoFactory);
+        autoTimeout = new LoggedTunableNumber("Auto Timeout", 1.0);
 
         autoChooser.addRoutine("Left 1 Run", autoRoutines::leftOneRun);
         autoChooser.addRoutine("Right 1 Run", autoRoutines::rightOneRun);
@@ -48,6 +51,7 @@ public class Robot extends SupurdueperRobot {
         autoChooser.addRoutine("Left ONLY Wall Run", autoRoutines::leftOnlyWall);
 
         SmartDashboard.putData("Auto Chooser", autoChooser);
+        SmartDashboard.putNumber("Auto Timeout", autoTimeout.get());
     }
 
     @Override

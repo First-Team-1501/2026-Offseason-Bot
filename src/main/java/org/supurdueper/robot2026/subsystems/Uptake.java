@@ -11,6 +11,7 @@ import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import dev.doglog.DogLog;
 import edu.wpi.first.units.measure.AngularVelocity;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import org.supurdueper.lib.subsystems.SupurdueperSubsystem;
 import org.supurdueper.lib.subsystems.VelocitySubsystem;
@@ -46,7 +47,8 @@ public class Uptake extends VelocitySubsystem implements SupurdueperSubsystem {
     public void bindCommands() {
         RobotStates.actionShoot
                 .or(RobotStates.auto_shoot)
-                .whileTrue(startEnd(() -> setVelocity(UptakeConstants.feedVelocity), this::stop));
+                .whileTrue(Commands.waitUntil(RobotStates.infoShooterAtSpeed)
+                        .andThen(startEnd(() -> setVelocity(UptakeConstants.feedVelocity), this::stop)));
         ;
         RobotStates.actionIntake
                 .and(RobotStates.actionShoot.negate())

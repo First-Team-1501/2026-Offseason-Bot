@@ -12,6 +12,7 @@ import org.supurdueper.robot2026.subsystems.Climber;
 import org.supurdueper.robot2026.subsystems.Feeder;
 import org.supurdueper.robot2026.subsystems.Hopper;
 import org.supurdueper.robot2026.subsystems.Intake;
+import org.supurdueper.robot2026.subsystems.Lights;
 import org.supurdueper.robot2026.subsystems.Shooter;
 import org.supurdueper.robot2026.subsystems.ShooterHood;
 import org.supurdueper.robot2026.subsystems.Uptake;
@@ -53,6 +54,9 @@ public class RobotContainer {
     private static Vision vision;
 
     @Getter
+    private static Lights lights;
+
+    @Getter
     private Uptake uptake;
 
     public RobotContainer() {
@@ -66,6 +70,7 @@ public class RobotContainer {
         shooterHood = new ShooterHood();
         vision = new Vision();
         uptake = new Uptake();
+        lights = new Lights();
         // climber = new Climber();
         configureBindings();
     }

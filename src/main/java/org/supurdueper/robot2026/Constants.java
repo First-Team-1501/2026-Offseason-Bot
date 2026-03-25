@@ -90,7 +90,7 @@ public final class Constants {
         public static final double kMaxAmps = 60.0;
         public static final CurrentLimitsConfigs kCurrentLimit =
                 new CurrentLimitsConfigs().withStatorCurrentLimit(kMaxAmps).withStatorCurrentLimitEnable(true);
-        public static final double kP = 8.0;
+        public static final double kP = 99999.0; // 8.0;
         public static final double kS = 6.0;
         public static final double kV = 0.08;
         public static final double shooterGearRatio = 30.0 / 24.0;

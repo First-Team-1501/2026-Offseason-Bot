@@ -18,7 +18,7 @@ public enum CanId {
     CANCODER_STEER_BL(23, Constants.canivoreBus),
     CANCODER_STEER_BR(24, Constants.canivoreBus),
     PIGEON(25, Constants.canivoreBus),
-    CANDLE(29, Constants.rioBus),
+    CANDLE(29, Constants.canivoreBus),
 
     // Intake
     INTAKE_ONE(9, Constants.canivoreBus),

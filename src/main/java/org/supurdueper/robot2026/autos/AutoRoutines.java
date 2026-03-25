@@ -3,6 +3,7 @@ package org.supurdueper.robot2026.autos;
 import choreo.auto.AutoFactory;
 import choreo.auto.AutoRoutine;
 import choreo.auto.AutoTrajectory;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Commands;
 import org.supurdueper.robot2026.RobotContainer;
 import org.supurdueper.robot2026.state.RobotStates;
@@ -30,6 +31,7 @@ public class AutoRoutines {
         routine.active()
                 .onTrue(overBump.resetOdometry()
                         .andThen(() -> RobotStates.setAutoDropIntake(true))
+                        .andThen(Commands.waitSeconds(SmartDashboard.getNumber("Auto Timeout", 0)))
                         .andThen(() -> RobotStates.setAutoIntake(true))
                         .andThen(overBump.cmd()));
 
@@ -58,7 +60,7 @@ public class AutoRoutines {
                 .onTrue(overBumpOne
                         .resetOdometry()
                         .andThen(() -> RobotStates.setAutoDropIntake(true))
-                        .andThen(Commands.waitSeconds(1))
+                        .andThen(Commands.waitSeconds(SmartDashboard.getNumber("Auto Timeout", 0)))
                         .andThen(() -> RobotStates.setAutoIntake(true))
                         .andThen(overBumpOne.cmd()));
 

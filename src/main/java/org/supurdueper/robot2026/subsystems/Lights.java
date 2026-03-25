@@ -16,6 +16,7 @@ import org.supurdueper.lib.subsystems.SupurdueperSubsystem;
 import org.supurdueper.robot2026.CanId;
 import org.supurdueper.robot2026.Constants;
 import org.supurdueper.robot2026.Robot;
+import org.supurdueper.robot2026.state.RobotStates;
 
 public class Lights extends SubsystemBase implements SupurdueperSubsystem {
     /** Creates a new Lights. */
@@ -25,7 +26,7 @@ public class Lights extends SubsystemBase implements SupurdueperSubsystem {
 
     public Lights() {
         super();
-        candle = new CANdle(CanId.CANDLE.getDeviceNumber());
+        candle = new CANdle(CanId.CANDLE.getDeviceNumber(), CanId.CANDLE.getBus());
         candleConfig = new CANdleConfiguration();
         candleConfig.LED.StripType = StripTypeValue.GRB;
         candleConfig.LED.BrightnessScalar = Constants.LightsConstants.brightness;
@@ -99,13 +100,14 @@ public class Lights extends SubsystemBase implements SupurdueperSubsystem {
     }
 
     @Override
-    public void periodic() {
-        // This method will be called once per scheduler run
-    }
+    public void periodic() {}
 
     @Override
     public void bindCommands() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'bindCommands'");
+        setDefaultCommand(setBlue());
+        RobotStates.infoShooterAtSpeed.whileTrue(setGreen());
+        RobotStates.infoShooterAtSpeed.whileFalse(setRed());
+        RobotStates.actionShoot.whileTrue(setWhite());
+        RobotStates.actionAim.whileFalse(turnOff());
     }
 }
