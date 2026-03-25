@@ -48,6 +48,12 @@ public class Shooter extends VelocitySubsystem implements SupurdueperSubsystem {
     }
 
     @Override
+    protected boolean isAtVelocity() {
+        if (getVelocity().lt(RPM.of(1600))) return false;
+        return super.isAtVelocity();
+    }
+
+    @Override
     public void periodic() {
         super.periodic();
         DogLog.log("Shooter/Current RPM", getVelocity().in(RPM));
