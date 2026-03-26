@@ -184,7 +184,7 @@ public final class Constants {
 
     public class LightsConstants {
         public static double brightness = 0.5;
-        public static int LEDCount = 7;
+        public static int LEDCount = 21;
     }
 
     public class LookupTables {

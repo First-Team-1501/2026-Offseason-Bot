@@ -68,7 +68,7 @@ public class Lights extends SubsystemBase implements SupurdueperSubsystem {
     }
 
     private void goldTwinkle() {
-        twinkleLED(217, 160, 15);
+        twinkleLED(217, 100, 15);
     }
 
     public Command setRed() {
@@ -104,7 +104,7 @@ public class Lights extends SubsystemBase implements SupurdueperSubsystem {
 
     @Override
     public void bindCommands() {
-        setDefaultCommand(setBlue());
+        setDefaultCommand(setGoldTwinkle());
         RobotStates.infoShooterAtSpeed.whileTrue(setGreen());
         RobotStates.infoShooterAtSpeed.whileFalse(setRed());
         RobotStates.actionShoot.whileTrue(setWhite());
