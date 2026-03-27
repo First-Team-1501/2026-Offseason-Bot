@@ -4,6 +4,7 @@
 
 package org.supurdueper.robot2026.subsystems;
 
+import static edu.wpi.first.units.Units.Amps;
 import static edu.wpi.first.units.Units.RPM;
 import static edu.wpi.first.units.Units.Volts;
 
@@ -62,6 +63,7 @@ public class Feeder extends VelocitySubsystem implements SupurdueperSubsystem {
         DogLog.log("Feeder/Target RPM", getSetpoint().in(RPM));
         DogLog.log("Feeder/State", feedState.name());
         DogLog.log("Feeder/At Velocity", isAtVelocityTrigger().getAsBoolean());
+        DogLog.log("Feeder/Current", motor.getTorqueCurrent().getValue().in(Amps));
     }
 
     public void test() {

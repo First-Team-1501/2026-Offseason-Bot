@@ -4,6 +4,7 @@
 
 package org.supurdueper.robot2026.subsystems;
 
+import static edu.wpi.first.units.Units.Amps;
 import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.RPM;
 import static edu.wpi.first.units.Units.Volts;
@@ -59,6 +60,7 @@ public class Shooter extends VelocitySubsystem implements SupurdueperSubsystem {
         DogLog.log("Shooter/Current RPM", getVelocity().in(RPM));
         DogLog.log("Shooter/Target RPM", getSetpoint().in(RPM));
         DogLog.log("Shooter/At Velocity", isAtVelocity());
+        DogLog.log("Shooter/Current", motor.getTorqueCurrent().getValue().in(Amps));
     }
 
     @Override

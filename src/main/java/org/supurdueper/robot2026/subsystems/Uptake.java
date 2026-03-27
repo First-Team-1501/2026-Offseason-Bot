@@ -4,6 +4,7 @@
 
 package org.supurdueper.robot2026.subsystems;
 
+import static edu.wpi.first.units.Units.Amps;
 import static edu.wpi.first.units.Units.RPM;
 import static edu.wpi.first.units.Units.Volts;
 
@@ -37,6 +38,7 @@ public class Uptake extends VelocitySubsystem implements SupurdueperSubsystem {
         DogLog.log("Uptake/RPM", getVelocity().in(RPM));
         DogLog.log("Uptake/Target RPM", getSetpoint().in(RPM));
         DogLog.log("Uptake/At Velocity", isAtVelocityTrigger().getAsBoolean());
+        DogLog.log("Uptake/Current", motor.getTorqueCurrent().getValue().in(Amps));
     }
 
     public void test() {

@@ -4,6 +4,7 @@
 
 package org.supurdueper.robot2026.subsystems;
 
+import static edu.wpi.first.units.Units.Amps;
 import static edu.wpi.first.units.Units.RPM;
 
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
@@ -95,6 +96,7 @@ public class Intake extends VelocitySubsystem implements SupurdueperSubsystem {
         super.periodic();
         DogLog.log("Intake/Target RPM", getSetpoint().in(RPM));
         DogLog.log("Intake/Current RPM", getVelocity().in(RPM));
+        DogLog.log("Intake/Current", motor.getTorqueCurrent().getValue().in(Amps));
     }
 
     @Override

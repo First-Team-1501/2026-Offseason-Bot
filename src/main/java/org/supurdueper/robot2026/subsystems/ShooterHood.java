@@ -4,6 +4,7 @@
 
 package org.supurdueper.robot2026.subsystems;
 
+import static edu.wpi.first.units.Units.Amps;
 import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.Volts;
@@ -78,6 +79,7 @@ public class ShooterHood extends PositionSubsystem implements SupurdueperSubsyst
         super.periodic();
         DogLog.log("ShooterHood/Position (Deg)", getPosition().in(Degrees));
         DogLog.log("ShooterHood/Target Position (Deg)", getSetpoint().in(Degrees));
+        DogLog.log("ShooterHood/Current", motor.getTorqueCurrent().getValue().in(Amps));
         if (Constants.tuningMode) {
             SmartDashboard.putNumber(
                     "Tuning/Shot Tuning/Distance",
