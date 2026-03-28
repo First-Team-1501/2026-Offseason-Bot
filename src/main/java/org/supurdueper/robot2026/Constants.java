@@ -40,7 +40,7 @@ public final class Constants {
         public static final ExpCurve kLeftStickCurve = new ExpCurve(2.0, 0, 1, kDeadzone);
         public static final ExpCurve kRightStickCurve = new ExpCurve(2.0, 0, 1, kDeadzone);
         public static final ExpCurve kTriggerCurve = new ExpCurve(1, 0, 1, kDeadzone);
-        public static final double kSlowModeScalor = 0.75;
+        public static final double kSlowModeScalor = 0.80;
         public static final double kDefaultTurnScalor = 0.75;
         public static final double kTurboModeScalor = 1;
     }
@@ -142,7 +142,7 @@ public final class Constants {
     }
 
     public class IntakeConstants {
-        public static final double kMaxAmps = 60;
+        public static final double kMaxAmps = 80;
         public static final CurrentLimitsConfigs kCurrentLimit =
                 new CurrentLimitsConfigs().withStatorCurrentLimit(kMaxAmps).withStatorCurrentLimitEnable(true);
         public static final Voltage kIntakeVoltage = Volts.of(6);
