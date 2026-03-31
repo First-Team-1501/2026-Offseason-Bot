@@ -20,6 +20,7 @@ import org.supurdueper.lib.subsystems.SupurdueperRobot;
 import org.supurdueper.robot2026.autos.AutoRoutines;
 import org.supurdueper.robot2026.state.RobotStates;
 import org.supurdueper.robot2026.subsystems.Vision;
+import org.supurdueper.robot2026.utils.FieldConstants;
 
 public class Robot extends SupurdueperRobot {
     @SuppressWarnings("unused")
@@ -85,12 +86,13 @@ public class Robot extends SupurdueperRobot {
         //     PortForwarder.add(port + 100, "10.74.57.201", port);
         // }
 
+        FieldConstants.AprilTagLayoutType.OFFICIAL.getLayout().getTagPose(31);
         resetCommandsAndButtons();
 
-        if (!DriverStation.isFMSAttached()) {
+        if (!DriverStation.isFMSAttached()) 
             SmartDashboard.putBoolean("Won Auto", true);
         }
-    }
+    
 
     @Override
     public void robotPeriodic() {
