@@ -7,7 +7,10 @@ package org.supurdueper.robot2026.subsystems;
 import static edu.wpi.first.units.Units.Amps;
 import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.Meters;
+import static edu.wpi.first.units.Units.Rotations;
 import static edu.wpi.first.units.Units.Volts;
+
+import java.util.function.Supplier;
 
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.FeedbackConfigs;
@@ -21,6 +24,7 @@ import dev.doglog.DogLog;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import org.supurdueper.lib.LoggedTunableNumber;
 import org.supurdueper.lib.subsystems.PositionSubsystem;
@@ -178,6 +182,7 @@ public class ShooterHood extends PositionSubsystem implements SupurdueperSubsyst
                 .or(RobotStates.auto_aim)
                 .or(RobotStates.auto_shoot)
                 .whileTrue(goToPosition(this::getShotAngle));
+                RobotStates.actionAim.or(RobotStates.actionShoot).or(RobotStates.auto_aim).onFalse(goToPosition(() -> Degrees.of(0)));
         RobotStates.auto_drop_intake.onTrue(releaseIntake());
         RobotStates.testController.downDpad.onTrue(zero());
         RobotStates.testController.leftStickY.whileTrue(
