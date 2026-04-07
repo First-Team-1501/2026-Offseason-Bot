@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import org.supurdueper.lib.subsystems.SupurdueperSubsystem;
 import org.supurdueper.lib.subsystems.VelocitySubsystem;
 import org.supurdueper.robot2026.CanId;
+import org.supurdueper.robot2026.Constants;
 import org.supurdueper.robot2026.Constants.UptakeConstants;
 import org.supurdueper.robot2026.Robot;
 import org.supurdueper.robot2026.state.RobotStates;
@@ -27,7 +28,7 @@ public class Uptake extends VelocitySubsystem implements SupurdueperSubsystem {
     public Uptake() {
         config.TorqueCurrent.PeakForwardTorqueCurrent = UptakeConstants.kMaxAmps;
         config.TorqueCurrent.PeakReverseTorqueCurrent = -1 * UptakeConstants.kMaxAmps;
-        config.Feedback.SensorToMechanismRatio = 27 / 14.0;
+        config.Feedback.SensorToMechanismRatio = Constants.UptakeConstants.kGearRatio;
         configureMotors();
         Robot.add(this);
     }
@@ -55,10 +56,10 @@ public class Uptake extends VelocitySubsystem implements SupurdueperSubsystem {
         RobotStates.actionIntake
                 .and(RobotStates.actionShoot.negate())
                 .whileTrue(startEnd(() -> setVoltage(() -> -6), this::stop));
-        // RobotStates.testController.B.onTrue(goToVelocity(() -> RPM.of(500)));
-        // RobotStates.testController.X.onTrue(goToVelocity(() -> RPM.of(1000)));
-        // RobotStates.testController.Y.onTrue(goToVelocity(() -> RPM.of(2000)));
-        // RobotStates.testController.A.onTrue(run(this::stop));
+        RobotStates.testController.B.onTrue(goToVelocity(() -> RPM.of(500)));
+        RobotStates.testController.X.onTrue(goToVelocity(() -> RPM.of(1000)));
+        RobotStates.testController.Y.onTrue(goToVelocity(() -> RPM.of(2000)));
+        RobotStates.testController.A.onTrue(run(this::stop));
     }
 
     @Override

@@ -29,7 +29,7 @@ import org.supurdueper.lib.utils.ExpCurve;
 
 public final class Constants {
     public static final double loopPeriodSecs = 0.02;
-    public static boolean tuningMode = false;
+    public static boolean tuningMode = true;
     public static boolean publishToNT = true;
     public static CANBus canivoreBus = new CANBus("canivore");
     public static CANBus rioBus = new CANBus("rio");
@@ -64,25 +64,25 @@ public final class Constants {
     }
 
     public class ShooterHoodConstants {
-        public static final double kp = 1000.0;
-        public static final double ki = 2000.0;
-        public static final double kd = 8.0;
+        public static final double kp = 800.0;
+        public static final double ki = 0;
+        public static final double kd = 0;
         public static final double ks = 0;
         public static final double kv = 0;
         public static final double ka = 0;
         public static final double kg = 0;
         public static final double profileKa = 0;
         public static final double profileKv = 0;
-        public static final Angle kForwardSoftLimit = Degrees.of(37);
-        public static final Angle kReverseSoftLimit = Degrees.of(19);
-        public static final Voltage kPeakForwardVoltage = Volts.of(3);
-        public static final Voltage kPeakReverseVoltage = Volts.of(-3);
-        public static final Angle kZeroPosition = Degrees.of(19);
+        public static final Angle kForwardSoftLimit = Degrees.of(30);
+        public static final Angle kReverseSoftLimit = Degrees.of(7);
+        public static final Voltage kPeakForwardVoltage = Volts.of(12);
+        public static final Voltage kPeakReverseVoltage = Volts.of(-12);
+        public static final Angle kZeroPosition = Degrees.of(6.837);
         public static final CurrentLimitsConfigs kCurrentLimit =
-                new CurrentLimitsConfigs().withStatorCurrentLimit(20).withStatorCurrentLimitEnable(true);
+                new CurrentLimitsConfigs().withStatorCurrentLimit(30).withStatorCurrentLimitEnable(true);
         public static final AngularVelocity profileV = RotationsPerSecond.of(0);
         public static final AngularAcceleration profileA = RotationsPerSecondPerSecond.of(0);
-        public static final double gearRatio = 300.0 / 20.0 * 53.0 / 10.0;
+        public static final double gearRatio = 15.0 / 1.0 * 34.0 / 18.0 * 140.0 / 12.0;
         public static Angle positionTolerance = Degrees.of(0.3);
     }
 
@@ -90,10 +90,10 @@ public final class Constants {
         public static final double kMaxAmps = 60.0;
         public static final CurrentLimitsConfigs kCurrentLimit =
                 new CurrentLimitsConfigs().withStatorCurrentLimit(kMaxAmps).withStatorCurrentLimitEnable(true);
-        public static final double kP = 8.0;
-        public static final double kS = 6.0;
-        public static final double kV = 0.08;
-        public static final double shooterGearRatio = 30.0 / 24.0;
+        public static final double kP = 25.0;
+        public static final double kS = 9.0;
+        public static final double kV = 0.15;
+        public static final double shooterGearRatio = 36.0 / 24.0;
         public static final AngularVelocity kVelocityTolerance = RPM.of(100);
         public static final AngularVelocity kShootRPM = RPM.of(1600);
         public static final AngularVelocity kIdleRPM = RPM.of(500);
@@ -117,15 +117,17 @@ public final class Constants {
 
     public class FeederConstants {
         public static final double kP = 5.0;
-        public static final double kS = 3.5;
-        public static final double kV = 0;
+        public static final double kS = 3.7;
+        public static final double kV = 0.07;
         public static final AngularVelocity velocityTolerance = RPM.of(60);
         public static final double kMaxAmps = 60.0;
+        public static final double kGearRatio = 24.0 / 18.0;
         public static final CurrentLimitsConfigs kCurrentLimit =
                 new CurrentLimitsConfigs().withStatorCurrentLimit(kMaxAmps).withStatorCurrentLimitEnable(true);
         public static final AngularVelocity feedVelocity = RPM.of(2000);
         public static final AngularVelocity purgeVelocity = RPM.of(-500);
         public static final AngularVelocity idleVelocity = RPM.of(500);
+        public static final int kHasBallsCurrent = 0;
     }
 
     public class UptakeConstants {
@@ -134,6 +136,7 @@ public final class Constants {
         public static final double kV = 0;
         public static final AngularVelocity velocityTolerance = RPM.of(60);
         public static final double kMaxAmps = 60.0;
+        public static final double kGearRatio = 34.0 / 18.0;
         public static final CurrentLimitsConfigs kCurrentLimit =
                 new CurrentLimitsConfigs().withStatorCurrentLimit(kMaxAmps).withStatorCurrentLimitEnable(true);
         public static final AngularVelocity feedVelocity = RPM.of(2000);
@@ -152,7 +155,7 @@ public final class Constants {
         public static final AngularVelocity kIntakeVelocity = RPM.of(4000);
         public static final AngularVelocity kPurgeVelocity = RPM.of(-4);
         public static final AngularVelocity kShootVelocity = RPM.of(1700);
-        public static final double kGearRatio = 18.0 / 12.0;
+        public static final double kGearRatio = 12.0 / 24.0 * 36.0 / 44.0;
         public static final double kp = 10.0;
         public static final double ks = 8.0;
         public static final double kv = 0.12;

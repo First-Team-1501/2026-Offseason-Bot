@@ -18,7 +18,7 @@
     {"x":7.055649280548096, "y":5.2299017906188965, "heading":-2.8630018743253065, "intervals":27, "split":false, "fixTranslation":true, "fixHeading":true, "overrideIntervals":false},
     {"x":6.292897701263428, "y":4.546840667724609, "heading":-1.9100891345656104, "intervals":23, "split":false, "fixTranslation":true, "fixHeading":true, "overrideIntervals":false},
     {"x":6.281513690948486, "y":3.0213375091552734, "heading":-1.9100891345656104, "intervals":26, "split":false, "fixTranslation":true, "fixHeading":true, "overrideIntervals":false},
-    {"x":5.626971244812012, "y":2.4625885486602783, "heading":3.141592653589793, "intervals":27, "split":false, "fixTranslation":true, "fixHeading":true, "overrideIntervals":false},
+    {"x":5.626971244812012, "y":2.4625885486602783, "heading":3.141592653589793, "intervals":27, "split":true, "fixTranslation":true, "fixHeading":true, "overrideIntervals":false},
     {"x":3.4312496185302734, "y":2.4269866943359375, "heading":3.141592653589793, "intervals":30, "split":false, "fixTranslation":true, "fixHeading":true, "overrideIntervals":false},
     {"x":2.886087417602539, "y":0.9455667734146118, "heading":-2.044152769176646, "intervals":40, "split":false, "fixTranslation":true, "fixHeading":true, "overrideIntervals":false}],
   "constraints":[
@@ -637,7 +637,7 @@
     {"t":15.62654, "x":2.88581, "y":0.95535, "heading":-2.06123, "vx":0.0094, "vy":-0.3504, "omega":0.40712, "ax":-0.14898, "ay":6.2735, "alpha":-7.26999, "fx":[-60.50154,30.19105,42.34636,-21.75303], "fy":[92.50941,106.14977,102.11626,108.42365]},
     {"t":15.65447, "x":2.88601, "y":0.94801, "heading":-2.04985, "vx":0.00523, "vy":-0.17515, "omega":0.20403, "ax":-0.18737, "ay":6.27008, "alpha":-7.30385, "fx":[-61.19797,29.9868,41.61301,-22.62327], "fy":[92.06275,106.23147,102.42854,108.2534]},
     {"t":15.68241, "x":2.88609, "y":0.94557, "heading":-2.04415, "vx":0.0, "vy":0.0, "omega":0.0, "ax":0.0, "ay":0.0, "alpha":0.0, "fx":[0.0,0.0,0.0,0.0], "fy":[0.0,0.0,0.0,0.0]}],
-  "splits":[0,65,165,216,307]
+  "splits":[0,65,165,216,307,458]
  },
  "events":[]
 }

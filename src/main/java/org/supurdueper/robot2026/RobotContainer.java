@@ -67,6 +67,7 @@ public class RobotContainer {
         hopper = new Hopper();
         feeder = new Feeder();
         shooter = new Shooter();
+        uptake = new Uptake();
         shooterHood = new ShooterHood();
         vision = new Vision();
         uptake = new Uptake();

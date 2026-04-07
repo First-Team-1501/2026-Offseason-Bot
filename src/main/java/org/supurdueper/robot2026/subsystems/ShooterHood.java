@@ -7,10 +7,6 @@ package org.supurdueper.robot2026.subsystems;
 import static edu.wpi.first.units.Units.Amps;
 import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.Meters;
-import static edu.wpi.first.units.Units.Rotations;
-import static edu.wpi.first.units.Units.Volts;
-
-import java.util.function.Supplier;
 
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.FeedbackConfigs;
@@ -24,7 +20,6 @@ import dev.doglog.DogLog;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import org.supurdueper.lib.LoggedTunableNumber;
 import org.supurdueper.lib.subsystems.PositionSubsystem;
@@ -167,7 +162,7 @@ public class ShooterHood extends PositionSubsystem implements SupurdueperSubsyst
 
     @Override
     public boolean inverted() {
-        return false;
+        return true;
     }
 
     @Override
@@ -182,14 +177,18 @@ public class ShooterHood extends PositionSubsystem implements SupurdueperSubsyst
                 .or(RobotStates.auto_aim)
                 .or(RobotStates.auto_shoot)
                 .whileTrue(goToPosition(this::getShotAngle));
-                RobotStates.actionAim.or(RobotStates.actionShoot).or(RobotStates.auto_aim).onFalse(goToPosition(() -> Degrees.of(0)));
+        RobotStates.actionAim
+                .or(RobotStates.actionShoot)
+                .or(RobotStates.auto_aim)
+                .onFalse(goToPosition(() -> Degrees.of(0)));
         RobotStates.auto_drop_intake.onTrue(releaseIntake());
         RobotStates.testController.downDpad.onTrue(zero());
-        RobotStates.testController.leftStickY.whileTrue(
-                runEnd(() -> runVoltage(Volts.of(3 * RobotStates.testController.getDriveFwdPositive())), this::stop));
+        // RobotStates.testController.leftStickY.whileTrue(
+        //        runEnd(() -> runVoltage(Volts.of(12 * RobotStates.testController.getDriveFwdPositive())),
+        // this::stop));
         // RobotStates.actionTestA.onTrue(run(() -> stop()).withName("stop"));
-        // RobotStates.actionTestB.onTrue(goToPosition(() -> Degrees.of(22)).withName("22"));
-        // RobotStates.actionTestX.onTrue(goToPosition(() -> Degrees.of(28)).withName("28"));
-        // RobotStates.actionTestY.onTrue(goToPosition(() -> Degrees.of(35)).withName("35"));
+        // RobotStates.actionTestB.onTrue(goToPosition(() -> Degrees.of(10)).withName("10"));
+        // RobotStates.actionTestX.onTrue(goToPosition(() -> Degrees.of(17)).withName("17"));
+        // RobotStates.actionTestY.onTrue(goToPosition(() -> Degrees.of(25)).withName("25"));
     }
 }

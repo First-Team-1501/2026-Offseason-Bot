@@ -18,6 +18,7 @@ import lombok.Getter;
 import org.supurdueper.lib.subsystems.SupurdueperSubsystem;
 import org.supurdueper.lib.subsystems.VelocitySubsystem;
 import org.supurdueper.robot2026.CanId;
+import org.supurdueper.robot2026.Constants;
 import org.supurdueper.robot2026.Constants.FeederConstants;
 import org.supurdueper.robot2026.Robot;
 import org.supurdueper.robot2026.state.RobotStates;
@@ -46,6 +47,7 @@ public class Feeder extends VelocitySubsystem implements SupurdueperSubsystem {
         config.TorqueCurrent.PeakReverseTorqueCurrent = 0;
         config.MotorOutput.PeakForwardDutyCycle = 1.0;
         config.MotorOutput.PeakForwardDutyCycle = 0.0;
+        config.Feedback.SensorToMechanismRatio = FeederConstants.kGearRatio;
         configureMotors();
         Robot.add(this);
         feedState = FeedState.stop;
@@ -88,6 +90,10 @@ public class Feeder extends VelocitySubsystem implements SupurdueperSubsystem {
 
     public Command setState(FeedState velocity) {
         return runOnce(() -> feedState = velocity);
+    }
+
+    public boolean noFuel() {
+        return motor.getTorqueCurrent().getValueAsDouble() < Constants.FeederConstants.kHasBallsCurrent;
     }
 
     public boolean atFeed() {

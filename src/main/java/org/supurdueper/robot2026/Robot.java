@@ -89,10 +89,8 @@ public class Robot extends SupurdueperRobot {
         FieldConstants.AprilTagLayoutType.OFFICIAL.getLayout().getTagPose(31);
         resetCommandsAndButtons();
 
-        if (!DriverStation.isFMSAttached()) 
-            SmartDashboard.putBoolean("Won Auto", true);
-        }
-    
+        if (!DriverStation.isFMSAttached()) SmartDashboard.putBoolean("Won Auto", true);
+    }
 
     @Override
     public void robotPeriodic() {
