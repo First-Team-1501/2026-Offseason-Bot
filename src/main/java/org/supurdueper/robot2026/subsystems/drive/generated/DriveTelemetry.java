@@ -47,11 +47,14 @@ public class DriveTelemetry {
 
     private final NetworkTable rightLimelightTable = inst.getTable(Vision.rightLimelightName);
     private final NetworkTable backLimelightTable = inst.getTable(Vision.backLimelightName);
+    private final NetworkTable leftLimelightTable = inst.getTable(Vision.leftLimelightName);
 
-    private final DoubleArrayPublisher leftLimelightRobotOrientationPublisher =
+    private final DoubleArrayPublisher rightLimelightRobotOrientationPublisher =
             rightLimelightTable.getDoubleArrayTopic("robot_orientation_set").publish();
-    private final DoubleArrayPublisher frontLimelightRobotOrientationPublisher =
+    private final DoubleArrayPublisher backLimelightRobotOrientationPublisher =
             backLimelightTable.getDoubleArrayTopic("robot_orientation_set").publish();
+    private final DoubleArrayPublisher leftLimelightRobotOrientationPublisher =
+            leftLimelightTable.getDoubleArrayTopic("robot_orientation_set").publish();
     private double[] robotOrientation = {0, 0, 0, 0, 0, 0};
 
     /* Robot swerve drive state */
@@ -113,8 +116,9 @@ public class DriveTelemetry {
     public void telemeterize(SwerveDriveState state) {
 
         robotOrientation[0] = state.Pose.getRotation().getDegrees();
+        rightLimelightRobotOrientationPublisher.set(robotOrientation);
+        backLimelightRobotOrientationPublisher.set(robotOrientation);
         leftLimelightRobotOrientationPublisher.set(robotOrientation);
-        frontLimelightRobotOrientationPublisher.set(robotOrientation);
 
         /* Telemeterize the swerve drive state */
         drivePose.set(state.Pose);

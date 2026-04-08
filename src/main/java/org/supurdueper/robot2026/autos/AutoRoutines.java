@@ -22,7 +22,6 @@ public class AutoRoutines {
     private final String rightTrenchStart = "Trench_Right_Start";
     private final String rightTrenchTwo = "Trench_Right_Second";
 
-
     public AutoRoutines(AutoFactory factory) {
         m_factory = factory;
         drivetrain = RobotContainer.getDrivetrain();
@@ -129,7 +128,8 @@ public class AutoRoutines {
                         Commands.runOnce(() -> RobotStates.setAutoAim(true)),
                         Commands.waitSeconds(0.5),
                         Commands.runOnce(() -> RobotStates.setAutoShoot(true)),
-                        Commands.waitUntil(()-> RobotContainer.getFeeder().noFuel()).withDeadline(Commands.waitSeconds(3)),
+                        Commands.waitUntil(() -> RobotContainer.getFeeder().noFuel())
+                                .withDeadline(Commands.waitSeconds(3)),
                         Commands.runOnce(() -> {
                             RobotStates.setAutoAim(false);
                             RobotStates.setAutoShoot(false);
@@ -149,7 +149,8 @@ public class AutoRoutines {
                         Commands.runOnce(() -> RobotStates.setAutoAim(true)),
                         Commands.waitSeconds(0.5),
                         Commands.runOnce(() -> RobotStates.setAutoShoot(true)),
-                        Commands.waitUntil(()-> RobotContainer.getFeeder().noFuel()).withDeadline(Commands.waitSeconds(3)),
+                        Commands.waitUntil(() -> RobotContainer.getFeeder().noFuel())
+                                .withDeadline(Commands.waitSeconds(3)),
                         Commands.runOnce(() -> {
                             RobotStates.setAutoAim(false);
                             RobotStates.setAutoShoot(false);
@@ -281,6 +282,7 @@ public class AutoRoutines {
                 leftOnlyIntakeBallsTwo,
                 leftOnlyToHubTwo);
     }
+
     public AutoRoutine rightTrench() {
         AutoRoutine routine = m_factory.newRoutine("Right_Trench");
         final AutoTrajectory rightUnderTrenchOne = routine.trajectory(rightTrenchStart, 0);

@@ -101,7 +101,7 @@ public final class Constants {
 
     public class HopperConstants {
         public static final double kMaxAmps = 80;
-        public static final double gearRatio = 30.0 / 14.0;
+        public static final double gearRatio = 40.0 / 18.0;
         public static final CurrentLimitsConfigs kCurrentLimit =
                 new CurrentLimitsConfigs().withStatorCurrentLimit(80).withStatorCurrentLimitEnable(true);
         public static final Voltage kIntakeVoltage = Volts.of(10);
@@ -131,9 +131,9 @@ public final class Constants {
     }
 
     public class UptakeConstants {
-        public static final double kP = 5.0;
-        public static final double kS = 3.5;
-        public static final double kV = 0;
+        public static final double kP = 12.0;
+        public static final double kS = 3.0;
+        public static final double kV = 0.1;
         public static final AngularVelocity velocityTolerance = RPM.of(60);
         public static final double kMaxAmps = 60.0;
         public static final double kGearRatio = 34.0 / 18.0;
@@ -155,7 +155,7 @@ public final class Constants {
         public static final AngularVelocity kIntakeVelocity = RPM.of(4000);
         public static final AngularVelocity kPurgeVelocity = RPM.of(-4);
         public static final AngularVelocity kShootVelocity = RPM.of(1700);
-        public static final double kGearRatio = 12.0 / 24.0 * 36.0 / 44.0;
+        public static final double kGearRatio = 24.0 / 12.0;
         public static final double kp = 10.0;
         public static final double ks = 8.0;
         public static final double kv = 0.12;

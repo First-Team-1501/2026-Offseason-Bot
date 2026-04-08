@@ -64,7 +64,7 @@ public class Hopper extends VelocitySubsystem implements SupurdueperSubsystem {
 
     @Override
     public boolean inverted() {
-        return true;
+        return false;
     }
 
     @Override
