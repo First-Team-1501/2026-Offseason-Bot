@@ -56,10 +56,10 @@ public class Uptake extends VelocitySubsystem implements SupurdueperSubsystem {
         RobotStates.actionIntake
                 .and(RobotStates.actionShoot.negate())
                 .whileTrue(startEnd(() -> setVoltage(() -> -6), this::stop));
-        RobotStates.testController.B.onTrue(goToVelocity(() -> RPM.of(500)));
-        RobotStates.testController.X.onTrue(goToVelocity(() -> RPM.of(1000)));
-        RobotStates.testController.Y.onTrue(goToVelocity(() -> RPM.of(2000)));
-        RobotStates.testController.A.onTrue(run(this::stop));
+        // RobotStates.testController.B.onTrue(goToVelocity(() -> RPM.of(500)));
+        // RobotStates.testController.X.onTrue(goToVelocity(() -> RPM.of(1000)));
+        // RobotStates.testController.Y.onTrue(goToVelocity(() -> RPM.of(2000)));
+        // RobotStates.testController.A.onTrue(run(this::stop));
     }
 
     @Override

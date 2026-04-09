@@ -157,8 +157,8 @@ public final class Constants {
         public static final AngularVelocity kShootVelocity = RPM.of(1700);
         public static final double kGearRatio = 24.0 / 12.0;
         public static final double kp = 10.0;
-        public static final double ks = 8.0;
-        public static final double kv = 0.12;
+        public static final double ks = 7.5;
+        public static final double kv = 0.1;
     }
 
     public class ClimberConstants {
