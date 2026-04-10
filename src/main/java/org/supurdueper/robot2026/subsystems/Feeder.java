@@ -18,7 +18,6 @@ import lombok.Getter;
 import org.supurdueper.lib.subsystems.SupurdueperSubsystem;
 import org.supurdueper.lib.subsystems.VelocitySubsystem;
 import org.supurdueper.robot2026.CanId;
-import org.supurdueper.robot2026.Constants;
 import org.supurdueper.robot2026.Constants.FeederConstants;
 import org.supurdueper.robot2026.Robot;
 import org.supurdueper.robot2026.state.RobotStates;
@@ -82,18 +81,14 @@ public class Feeder extends VelocitySubsystem implements SupurdueperSubsystem {
                 .or(RobotStates.auto_shoot)
                 .or(RobotStates.actionShoot)
                 .onFalse(setState(FeedState.idle));
-        // RobotStates.testController.B.onTrue(goToVelocity(() -> RPM.of(500)));
-        // RobotStates.testController.X.onTrue(goToVelocity(() -> RPM.of(1000)));
-        // RobotStates.testController.Y.onTrue(goToVelocity(() -> RPM.of(2000)));
-        // RobotStates.testController.A.onTrue(run(this::stop));
+        RobotStates.testController.B.onTrue(goToVelocity(() -> RPM.of(500)));
+        RobotStates.testController.X.onTrue(goToVelocity(() -> RPM.of(1000)));
+        RobotStates.testController.Y.onTrue(goToVelocity(() -> RPM.of(2000)));
+        RobotStates.testController.A.onTrue(run(this::stop));
     }
 
     public Command setState(FeedState velocity) {
         return runOnce(() -> feedState = velocity);
-    }
-
-    public boolean noFuel() {
-        return motor.getTorqueCurrent().getValueAsDouble() < Constants.FeederConstants.kHasBallsCurrent;
     }
 
     public boolean atFeed() {

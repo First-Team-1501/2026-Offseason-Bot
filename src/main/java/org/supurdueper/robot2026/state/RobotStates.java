@@ -37,11 +37,16 @@ public final class RobotStates {
     @Setter
     private static boolean autoDropIntake = false;
 
+    @Getter
+    @Setter
+    private static boolean autoRev = false;
+
     // auto
     public static final Trigger auto_intake = new Trigger(RobotStates::isAutoIntake).and(auto);
     public static final Trigger auto_aim = new Trigger(RobotStates::isAutoAim).and(auto);
     public static final Trigger auto_shoot = new Trigger(RobotStates::isAutoShoot).and(auto);
     public static final Trigger auto_drop_intake = new Trigger(RobotStates::isAutoDropIntake).and(auto);
+    public static final Trigger auto_rev = new Trigger(RobotStates::isAutoRev).and(auto);
 
     // information
     public static final Trigger infoShooterAtSpeed = shooter.isAtVelocityTrigger();
@@ -70,6 +75,7 @@ public final class RobotStates {
 
     public static void log() {
         DogLog.log("States/AutoIntake", auto_intake.getAsBoolean());
+        DogLog.log("States/AutoRev", auto_rev.getAsBoolean());
         DogLog.log("States/AutoAim", auto_aim.getAsBoolean());
         DogLog.log("States/AutoShoot", auto_shoot.getAsBoolean());
         DogLog.log("States/AutoDropIntake", auto_drop_intake.getAsBoolean());

@@ -71,6 +71,10 @@ public class Intake extends VelocitySubsystem implements SupurdueperSubsystem {
         setVelocity(IntakeConstants.kShootVelocity);
     }
 
+    public void stopIn() {
+        setVelocity(0);
+    }
+
     public void purge() {
         runVoltage(IntakeConstants.kPurgeVoltage);
     }
@@ -91,6 +95,10 @@ public class Intake extends VelocitySubsystem implements SupurdueperSubsystem {
         return runEnd(this::purge, this::stop).withName("Intake/runPurge");
     }
 
+    public Command stopIntake() {
+        return run(this::stopIn).withName("Intake/runStop");
+    }
+
     @Override
     public void periodic() {
         super.periodic();
@@ -101,13 +109,13 @@ public class Intake extends VelocitySubsystem implements SupurdueperSubsystem {
 
     @Override
     public void bindCommands() {
-        RobotStates.actionIntake.or(RobotStates.auto_intake).onTrue(runEnd(this::intake, this::stop));
+        RobotStates.actionIntake.or(RobotStates.auto_intake).onTrue(runEnd(this::intake, this::stopIntake));
         RobotStates.actionShoot.or(RobotStates.auto_shoot).onTrue(runEnd(this::intake, this::stop));
         RobotStates.actionPurge.whileTrue(runEnd(this::purge, this::stop));
-        RobotStates.testController.B.onTrue(goToVelocity(() -> RPM.of(500)));
-        RobotStates.testController.X.onTrue(goToVelocity(() -> RPM.of(1000)));
-        RobotStates.testController.Y.onTrue(goToVelocity(() -> RPM.of(2000)));
-        RobotStates.testController.A.onTrue(run(this::stop));
+        // RobotStates.testController.B.onTrue(goToVelocity(() -> RPM.of(500)));
+        // RobotStates.testController.X.onTrue(goToVelocity(() -> RPM.of(1000)));
+        // RobotStates.testController.Y.onTrue(goToVelocity(() -> RPM.of(2000)));
+        // RobotStates.testController.A.onTrue(run(this::stop));
     }
 
     @Override

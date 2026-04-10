@@ -40,16 +40,20 @@ public class Robot extends SupurdueperRobot {
         m_robotContainer = new RobotContainer();
         autoFactory = RobotContainer.getDrivetrain().createAutoFactory();
         autoRoutines = new AutoRoutines(autoFactory);
-        autoTimeout = new LoggedTunableNumber("Auto Timeout", 1.0);
+        autoTimeout = new LoggedTunableNumber("Auto Timeout", 0.0);
 
-        autoChooser.addRoutine("Left 1 Run", autoRoutines::leftOneRun);
-        autoChooser.addRoutine("Right 1 Run", autoRoutines::rightOneRun);
+        // autoChooser.addRoutine("Left 1 Run", autoRoutines::leftOneRun);
+        // autoChooser.addRoutine("Right 1 Run", autoRoutines::rightOneRun);
         autoChooser.addRoutine("Right Full Run", autoRoutines::rightFullRun);
         autoChooser.addRoutine("Left Full Run", autoRoutines::leftFullRun);
         autoChooser.addRoutine("Left Wall Run", autoRoutines::leftWallRun);
         autoChooser.addRoutine("Right Wall Run", autoRoutines::rightWallRun);
-        autoChooser.addRoutine("Right ONLY Wall Run", autoRoutines::rightOnlyWall);
-        autoChooser.addRoutine("Left ONLY Wall Run", autoRoutines::leftOnlyWall);
+        // autoChooser.addRoutine("Right ONLY Wall Run", autoRoutines::rightOnlyWall);
+        // autoChooser.addRoutine("Left ONLY Wall Run", autoRoutines::leftOnlyWall);
+        autoChooser.addRoutine("Trench Right Run", autoRoutines::rightTrench);
+        autoChooser.addRoutine("Trench Left Run", autoRoutines::leftTrench);
+        autoChooser.addRoutine("Trench Left Short", autoRoutines::leftShortTrench);
+        autoChooser.addRoutine("Trench Right Short", autoRoutines::rightTrenchShort);
 
         SmartDashboard.putData("Auto Chooser", autoChooser);
         SmartDashboard.putNumber("Auto Timeout", autoTimeout.get());

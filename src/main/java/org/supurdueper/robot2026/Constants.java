@@ -29,7 +29,7 @@ import org.supurdueper.lib.utils.ExpCurve;
 
 public final class Constants {
     public static final double loopPeriodSecs = 0.02;
-    public static boolean tuningMode = true;
+    public static boolean tuningMode = false;
     public static boolean publishToNT = true;
     public static CANBus canivoreBus = new CANBus("canivore");
     public static CANBus rioBus = new CANBus("rio");
@@ -40,7 +40,7 @@ public final class Constants {
         public static final ExpCurve kLeftStickCurve = new ExpCurve(2.0, 0, 1, kDeadzone);
         public static final ExpCurve kRightStickCurve = new ExpCurve(2.0, 0, 1, kDeadzone);
         public static final ExpCurve kTriggerCurve = new ExpCurve(1, 0, 1, kDeadzone);
-        public static final double kSlowModeScalor = 0.80;
+        public static final double kSlowModeScalor = 0.85;
         public static final double kDefaultTurnScalor = 0.75;
         public static final double kTurboModeScalor = 1;
     }
@@ -97,6 +97,7 @@ public final class Constants {
         public static final AngularVelocity kVelocityTolerance = RPM.of(100);
         public static final AngularVelocity kShootRPM = RPM.of(1600);
         public static final AngularVelocity kIdleRPM = RPM.of(500);
+        public static final AngularVelocity kRevRpm = RPM.of(1500);
     }
 
     public class HopperConstants {
@@ -113,6 +114,7 @@ public final class Constants {
         public static final AngularVelocity velocityTolerance = RPM.of(50);
         public static final AngularVelocity kAgitateSpeed = RPM.of(-300);
         public static final Voltage kAgitateVoltage = Volts.of(0.5);
+        public static final double kHasBallsCurrent = 0;
     }
 
     public class FeederConstants {
@@ -127,7 +129,6 @@ public final class Constants {
         public static final AngularVelocity feedVelocity = RPM.of(2000);
         public static final AngularVelocity purgeVelocity = RPM.of(-500);
         public static final AngularVelocity idleVelocity = RPM.of(500);
-        public static final int kHasBallsCurrent = 0;
     }
 
     public class UptakeConstants {
@@ -219,20 +220,20 @@ public final class Constants {
             addPointToDistanceToShooterAngle(4.75, 22.0);
             addPointToDistanceToShooterAngle(5, 24.0);
 
-            addPointToDistanceToShooterRPM(1.75, 1825);
-            addPointToDistanceToShooterRPM(2.0, 1925);
-            addPointToDistanceToShooterRPM(2.25, 2000);
-            addPointToDistanceToShooterRPM(2.5, 2050);
-            addPointToDistanceToShooterRPM(2.75, 2125);
-            addPointToDistanceToShooterRPM(3.0, 2195);
-            addPointToDistanceToShooterRPM(3.25, 2275);
-            addPointToDistanceToShooterRPM(3.5, 2345);
-            addPointToDistanceToShooterRPM(3.75, 2405);
-            addPointToDistanceToShooterRPM(4, 2485);
-            addPointToDistanceToShooterRPM(4.25, 2625);
-            addPointToDistanceToShooterRPM(4.5, 2675);
-            addPointToDistanceToShooterRPM(4.75, 2755);
-            addPointToDistanceToShooterRPM(5, 2980);
+            addPointToDistanceToShooterRPM(1.75, 1625);
+            addPointToDistanceToShooterRPM(2.0, 1725);
+            addPointToDistanceToShooterRPM(2.25, 1800);
+            addPointToDistanceToShooterRPM(2.5, 1850);
+            addPointToDistanceToShooterRPM(2.75, 1925);
+            addPointToDistanceToShooterRPM(3.0, 1995);
+            addPointToDistanceToShooterRPM(3.25, 2075);
+            addPointToDistanceToShooterRPM(3.5, 2145);
+            addPointToDistanceToShooterRPM(3.75, 2205);
+            addPointToDistanceToShooterRPM(4, 2285);
+            addPointToDistanceToShooterRPM(4.25, 2325);
+            addPointToDistanceToShooterRPM(4.5, 2375);
+            addPointToDistanceToShooterRPM(4.75, 2455);
+            addPointToDistanceToShooterRPM(5, 2780);
         }
     }
 }

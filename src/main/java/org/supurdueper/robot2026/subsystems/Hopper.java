@@ -18,6 +18,7 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import org.supurdueper.lib.subsystems.SupurdueperSubsystem;
 import org.supurdueper.lib.subsystems.VelocitySubsystem;
 import org.supurdueper.robot2026.CanId;
+import org.supurdueper.robot2026.Constants;
 import org.supurdueper.robot2026.Constants.HopperConstants;
 import org.supurdueper.robot2026.Robot;
 import org.supurdueper.robot2026.state.RobotStates;
@@ -70,6 +71,10 @@ public class Hopper extends VelocitySubsystem implements SupurdueperSubsystem {
     @Override
     public boolean brakeMode() {
         return false;
+    }
+
+    public boolean noFuel() {
+        return motor.getTorqueCurrent().getValueAsDouble() < Constants.HopperConstants.kHasBallsCurrent;
     }
 
     public void run() {

@@ -62,7 +62,7 @@ public class ShooterHood extends PositionSubsystem implements SupurdueperSubsyst
     }
 
     public Command releaseIntake() {
-        return goToPosition(() -> ShooterHoodConstants.kForwardSoftLimit);
+        return goToPosition(() -> Degrees.of(20));
     }
 
     public Command zero() {
@@ -180,7 +180,7 @@ public class ShooterHood extends PositionSubsystem implements SupurdueperSubsyst
         RobotStates.actionAim
                 .or(RobotStates.actionShoot)
                 .or(RobotStates.auto_aim)
-                .onFalse(goToPosition(() -> Degrees.of(0)));
+                .onFalse(goToPosition(() -> (Constants.ShooterHoodConstants.kReverseSoftLimit)));
         RobotStates.auto_drop_intake.onTrue(releaseIntake());
         RobotStates.testController.downDpad.onTrue(zero());
         // RobotStates.testController.leftStickY.whileTrue(
