@@ -25,6 +25,8 @@ public class AutoRoutines {
     private final String leftTrenchTwo = "Trench_Left_Second";
     private final String leftTrenchShort = "Trench_Left_Second_Short";
     private final String rightTrenchShort = "Trench_Right_Short";
+    private final String leftTrenchThird = "Trench_Left_Third";
+    private final String rightTrenchThird = "Trench_Right_Third";
 
     public AutoRoutines(AutoFactory factory) {
         m_factory = factory;
@@ -109,7 +111,8 @@ public class AutoRoutines {
             AutoTrajectory toScoreOne,
             AutoTrajectory underTrenchTwo,
             AutoTrajectory toCenterTwo,
-            AutoTrajectory toScoreTwo) {
+            AutoTrajectory toScoreTwo,
+            AutoTrajectory toCenterThree) {
         routine.active()
                 .onTrue(underTrenchOne
                         .resetOdometry()
@@ -155,7 +158,6 @@ public class AutoRoutines {
                 .recentlyDone()
                 .onTrue(Commands.sequence(
                         Commands.runOnce(() -> RobotStates.setAutoIntake(false)),
-                        Commands.runOnce(() -> RobotStates.setAutoIntake(false)),
                         Commands.runOnce(() -> RobotStates.setAutoRev(false)),
                         Commands.waitSeconds(0.5),
                         Commands.runOnce(() -> RobotStates.setAutoShoot(true)),
@@ -164,7 +166,9 @@ public class AutoRoutines {
                         Commands.runOnce(() -> {
                             RobotStates.setAutoAim(false);
                             RobotStates.setAutoShoot(false);
-                        })));
+                        }),
+                        Commands.runOnce(() -> RobotStates.setAutoIntake(true)),
+                        toCenterThree.cmd().asProxy()));
 
         return routine;
     }
@@ -301,6 +305,7 @@ public class AutoRoutines {
         final AutoTrajectory rightUnderTrenchTwo = routine.trajectory(rightTrenchTwo, 0);
         final AutoTrajectory rightToCenterTwo = routine.trajectory(rightTrenchTwo, 1);
         final AutoTrajectory rightToScoreTwo = routine.trajectory(rightTrenchTwo, 2);
+        final AutoTrajectory rightToCenterThree = routine.trajectory(rightTrenchThird, 0);
         return trenchRun(
                 routine,
                 rightUnderTrenchOne,
@@ -308,7 +313,8 @@ public class AutoRoutines {
                 rightToScoreOne,
                 rightUnderTrenchTwo,
                 rightToCenterTwo,
-                rightToScoreTwo);
+                rightToScoreTwo,
+                rightToCenterThree);
     }
 
     public AutoRoutine leftTrench() {
@@ -319,6 +325,7 @@ public class AutoRoutines {
         final AutoTrajectory leftUnderTrenchTwo = routine.trajectory(leftTrenchTwo, 0);
         final AutoTrajectory leftToCenterTwo = routine.trajectory(leftTrenchTwo, 1);
         final AutoTrajectory leftToScoreTwo = routine.trajectory(leftTrenchTwo, 2);
+        final AutoTrajectory leftToCenterThree = routine.trajectory(leftTrenchThird, 0);
         return trenchRun(
                 routine,
                 leftUnderTrenchOne,
@@ -326,7 +333,8 @@ public class AutoRoutines {
                 leftToScoreOne,
                 leftUnderTrenchTwo,
                 leftToCenterTwo,
-                leftToScoreTwo);
+                leftToScoreTwo,
+                leftToCenterThree);
     }
 
     public AutoRoutine leftShortTrench() {
@@ -337,6 +345,7 @@ public class AutoRoutines {
         final AutoTrajectory leftUnderTrenchTwo = routine.trajectory(leftTrenchShort, 0);
         final AutoTrajectory leftToCenterTwo = routine.trajectory(leftTrenchShort, 1);
         final AutoTrajectory leftToScoreTwo = routine.trajectory(leftTrenchShort, 2);
+        final AutoTrajectory leftToCenterThree = routine.trajectory(leftTrenchThird, 0);
         return trenchRun(
                 routine,
                 leftUnderTrenchOne,
@@ -344,7 +353,8 @@ public class AutoRoutines {
                 leftToScoreOne,
                 leftUnderTrenchTwo,
                 leftToCenterTwo,
-                leftToScoreTwo);
+                leftToScoreTwo,
+                leftToCenterThree);
     }
 
     public AutoRoutine rightTrenchShort() {
@@ -355,6 +365,7 @@ public class AutoRoutines {
         final AutoTrajectory rightUnderTrenchTwo = routine.trajectory(rightTrenchShort, 0);
         final AutoTrajectory rightToCenterTwo = routine.trajectory(rightTrenchShort, 1);
         final AutoTrajectory rightToScoreTwo = routine.trajectory(rightTrenchShort, 2);
+        final AutoTrajectory rightToCenterThree = routine.trajectory(rightTrenchThird, 0);
         return trenchRun(
                 routine,
                 rightUnderTrenchOne,
@@ -362,6 +373,7 @@ public class AutoRoutines {
                 rightToScoreOne,
                 rightUnderTrenchTwo,
                 rightToCenterTwo,
-                rightToScoreTwo);
+                rightToScoreTwo,
+                rightToCenterThree);
     }
 }

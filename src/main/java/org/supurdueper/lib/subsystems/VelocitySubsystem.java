@@ -77,7 +77,7 @@ public abstract class VelocitySubsystem extends TalonFXSubsystem {
         return Units.RotationsPerSecond.of(motorVelocitySignal.getValueAsDouble());
     }
 
-    protected AngularVelocity getSetpoint() {
+    public AngularVelocity getSetpoint() {
         return Units.RotationsPerSecond.of(motorSetpointSignal.getValueAsDouble());
     }
 

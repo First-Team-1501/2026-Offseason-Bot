@@ -29,7 +29,7 @@ import org.supurdueper.lib.utils.ExpCurve;
 
 public final class Constants {
     public static final double loopPeriodSecs = 0.02;
-    public static boolean tuningMode = false;
+    public static boolean tuningMode = true;
     public static boolean publishToNT = true;
     public static CANBus canivoreBus = new CANBus("canivore");
     public static CANBus rioBus = new CANBus("rio");
@@ -79,7 +79,7 @@ public final class Constants {
         public static final Voltage kPeakReverseVoltage = Volts.of(-12);
         public static final Angle kZeroPosition = Degrees.of(6.837);
         public static final CurrentLimitsConfigs kCurrentLimit =
-                new CurrentLimitsConfigs().withStatorCurrentLimit(30).withStatorCurrentLimitEnable(true);
+                new CurrentLimitsConfigs().withStatorCurrentLimit(50).withStatorCurrentLimitEnable(true);
         public static final AngularVelocity profileV = RotationsPerSecond.of(0);
         public static final AngularAcceleration profileA = RotationsPerSecondPerSecond.of(0);
         public static final double gearRatio = 15.0 / 1.0 * 34.0 / 18.0 * 140.0 / 12.0;
@@ -118,7 +118,7 @@ public final class Constants {
     }
 
     public class FeederConstants {
-        public static final double kP = 5.0;
+        public static final double kP = 6.5;
         public static final double kS = 3.7;
         public static final double kV = 0.07;
         public static final AngularVelocity velocityTolerance = RPM.of(60);
@@ -140,7 +140,7 @@ public final class Constants {
         public static final double kGearRatio = 34.0 / 18.0;
         public static final CurrentLimitsConfigs kCurrentLimit =
                 new CurrentLimitsConfigs().withStatorCurrentLimit(kMaxAmps).withStatorCurrentLimitEnable(true);
-        public static final AngularVelocity feedVelocity = RPM.of(2000);
+        public static final AngularVelocity feedVelocity = RPM.of(1500);
         public static final AngularVelocity purgeVelocity = RPM.of(-500);
         public static final AngularVelocity idleVelocity = RPM.of(500);
     }
@@ -205,14 +205,14 @@ public final class Constants {
         }
 
         static {
-            addPointToDistanceToShooterAngle(1.75, 19.0);
-            addPointToDistanceToShooterAngle(2.0, 19.0);
-            addPointToDistanceToShooterAngle(2.25, 19.0);
-            addPointToDistanceToShooterAngle(2.5, 19.0);
+            addPointToDistanceToShooterAngle(1.75, 14.5);
+            addPointToDistanceToShooterAngle(2.0, 16.0);
+            addPointToDistanceToShooterAngle(2.25, 18.0);
+            addPointToDistanceToShooterAngle(2.5, 18.5);
             addPointToDistanceToShooterAngle(2.75, 19.0);
-            addPointToDistanceToShooterAngle(3.0, 19.0);
-            addPointToDistanceToShooterAngle(3.25, 19.0);
-            addPointToDistanceToShooterAngle(3.5, 19.0);
+            addPointToDistanceToShooterAngle(3.0, 21.0);
+            addPointToDistanceToShooterAngle(3.25, 23.0);
+            addPointToDistanceToShooterAngle(3.5, 25.0);
             addPointToDistanceToShooterAngle(3.75, 20.5);
             addPointToDistanceToShooterAngle(4.0, 22.0);
             addPointToDistanceToShooterAngle(4.25, 22.0);
@@ -220,14 +220,14 @@ public final class Constants {
             addPointToDistanceToShooterAngle(4.75, 22.0);
             addPointToDistanceToShooterAngle(5, 24.0);
 
-            addPointToDistanceToShooterRPM(1.75, 1625);
-            addPointToDistanceToShooterRPM(2.0, 1725);
-            addPointToDistanceToShooterRPM(2.25, 1800);
-            addPointToDistanceToShooterRPM(2.5, 1850);
-            addPointToDistanceToShooterRPM(2.75, 1925);
-            addPointToDistanceToShooterRPM(3.0, 1995);
-            addPointToDistanceToShooterRPM(3.25, 2075);
-            addPointToDistanceToShooterRPM(3.5, 2145);
+            addPointToDistanceToShooterRPM(1.75, 1325);
+            addPointToDistanceToShooterRPM(2.0, 1300);
+            addPointToDistanceToShooterRPM(2.25, 1370);
+            addPointToDistanceToShooterRPM(2.5, 1425);
+            addPointToDistanceToShooterRPM(2.75, 1440);
+            addPointToDistanceToShooterRPM(3.0, 1475);
+            addPointToDistanceToShooterRPM(3.25, 1500);
+            addPointToDistanceToShooterRPM(3.5, 1550);
             addPointToDistanceToShooterRPM(3.75, 2205);
             addPointToDistanceToShooterRPM(4, 2285);
             addPointToDistanceToShooterRPM(4.25, 2325);

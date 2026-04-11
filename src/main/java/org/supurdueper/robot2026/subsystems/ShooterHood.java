@@ -184,7 +184,7 @@ public class ShooterHood extends PositionSubsystem implements SupurdueperSubsyst
         RobotStates.auto_drop_intake.onTrue(releaseIntake());
         RobotStates.testController.downDpad.onTrue(zero());
         // RobotStates.testController.leftStickY.whileTrue(
-        //        runEnd(() -> runVoltage(Volts.of(12 * RobotStates.testController.getDriveFwdPositive())),
+        //         runEnd(() -> runVoltage(Volts.of(6 * RobotStates.testController.getDriveFwdPositive())),
         // this::stop));
         // RobotStates.actionTestA.onTrue(run(() -> stop()).withName("stop"));
         // RobotStates.actionTestB.onTrue(goToPosition(() -> Degrees.of(10)).withName("10"));

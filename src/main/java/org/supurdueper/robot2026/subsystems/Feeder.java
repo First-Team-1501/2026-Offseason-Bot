@@ -20,6 +20,7 @@ import org.supurdueper.lib.subsystems.VelocitySubsystem;
 import org.supurdueper.robot2026.CanId;
 import org.supurdueper.robot2026.Constants.FeederConstants;
 import org.supurdueper.robot2026.Robot;
+import org.supurdueper.robot2026.RobotContainer;
 import org.supurdueper.robot2026.state.RobotStates;
 
 public class Feeder extends VelocitySubsystem implements SupurdueperSubsystem {
@@ -57,6 +58,8 @@ public class Feeder extends VelocitySubsystem implements SupurdueperSubsystem {
         super.periodic();
         if (feedState.equals(FeedState.stop)) {
             run(() -> stop());
+        } else if (feedState.equals(FeedState.feed)) {
+            setVelocity(RobotContainer.getShooter().getSetpoint());
         } else {
             setVelocity(feedState.velocity);
         }

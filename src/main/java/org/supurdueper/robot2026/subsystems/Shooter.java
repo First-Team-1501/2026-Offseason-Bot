@@ -50,7 +50,7 @@ public class Shooter extends VelocitySubsystem implements SupurdueperSubsystem {
 
     @Override
     protected boolean isAtVelocity() {
-        if (getVelocity().lt(RPM.of(1400))) return false;
+        if (getVelocity().lt(RPM.of(1000))) return false;
         return super.isAtVelocity();
     }
 
