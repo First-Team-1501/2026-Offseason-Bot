@@ -29,7 +29,7 @@ import org.supurdueper.lib.utils.ExpCurve;
 
 public final class Constants {
     public static final double loopPeriodSecs = 0.02;
-    public static boolean tuningMode = true;
+    public static boolean tuningMode = false;
     public static boolean publishToNT = true;
     public static CANBus canivoreBus = new CANBus("canivore");
     public static CANBus rioBus = new CANBus("rio");
@@ -40,7 +40,7 @@ public final class Constants {
         public static final ExpCurve kLeftStickCurve = new ExpCurve(2.0, 0, 1, kDeadzone);
         public static final ExpCurve kRightStickCurve = new ExpCurve(2.0, 0, 1, kDeadzone);
         public static final ExpCurve kTriggerCurve = new ExpCurve(1, 0, 1, kDeadzone);
-        public static final double kSlowModeScalor = 0.85;
+        public static final double kSlowModeScalor = 0.90;
         public static final double kDefaultTurnScalor = 0.75;
         public static final double kTurboModeScalor = 1;
     }
