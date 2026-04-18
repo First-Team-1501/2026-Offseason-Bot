@@ -159,6 +159,7 @@ public class AutoRoutines {
                 .onTrue(Commands.sequence(
                         Commands.runOnce(() -> RobotStates.setAutoIntake(false)),
                         Commands.runOnce(() -> RobotStates.setAutoRev(false)),
+                        Commands.runOnce(() -> RobotStates.setAutoAim(true)),
                         Commands.waitSeconds(0.5),
                         Commands.runOnce(() -> RobotStates.setAutoShoot(true)),
                         Commands.waitUntil(() -> RobotContainer.getHopper().noFuel())

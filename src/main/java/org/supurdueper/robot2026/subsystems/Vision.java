@@ -31,7 +31,7 @@ public class Vision extends SubsystemBase implements SupurdueperSubsystem {
         SwerveDriveState state = drivetrain.getState();
         updatePose3dAprilTag(backLimelightName, drivetrain, state);
         updatePose3dAprilTag(rightLimelightName, drivetrain, state);
-        updatePose3dAprilTag(leftLimelightName, drivetrain, state);
+        // updatePose3dAprilTag(leftLimelightName, drivetrain, state);
     }
 
     private void updatePose3dAprilTag(String limelightName, Drivetrain drivetrain, SwerveDriveState state) {

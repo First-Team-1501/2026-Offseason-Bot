@@ -206,34 +206,38 @@ public final class Constants {
 
         static {
             addPointToDistanceToShooterAngle(1.75, 14.5);
-            addPointToDistanceToShooterAngle(2.0, 16.0);
+            addPointToDistanceToShooterAngle(2.0, 15.5);
             addPointToDistanceToShooterAngle(2.25, 18.0);
             addPointToDistanceToShooterAngle(2.5, 18.5);
             addPointToDistanceToShooterAngle(2.75, 19.0);
             addPointToDistanceToShooterAngle(3.0, 21.0);
-            addPointToDistanceToShooterAngle(3.25, 23.0);
-            addPointToDistanceToShooterAngle(3.5, 25.0);
-            addPointToDistanceToShooterAngle(3.75, 20.5);
-            addPointToDistanceToShooterAngle(4.0, 22.0);
-            addPointToDistanceToShooterAngle(4.25, 22.0);
-            addPointToDistanceToShooterAngle(4.5, 22.0);
-            addPointToDistanceToShooterAngle(4.75, 22.0);
-            addPointToDistanceToShooterAngle(5, 24.0);
+            addPointToDistanceToShooterAngle(3.25, 22.0);
+            addPointToDistanceToShooterAngle(3.5, 22.5);
+            addPointToDistanceToShooterAngle(3.75, 23.5);
+            addPointToDistanceToShooterAngle(4.0, 24.0);
+            addPointToDistanceToShooterAngle(4.25, 25.0);
+            addPointToDistanceToShooterAngle(4.5, 25.5);
+            addPointToDistanceToShooterAngle(4.75, 25.5);
+            addPointToDistanceToShooterAngle(5, 25.5);
+            addPointToDistanceToShooterAngle(5.25, 25.5);
+            addPointToDistanceToShooterAngle(6, 30.0);
 
             addPointToDistanceToShooterRPM(1.75, 1325);
-            addPointToDistanceToShooterRPM(2.0, 1300);
+            addPointToDistanceToShooterRPM(2.0, 1350);
             addPointToDistanceToShooterRPM(2.25, 1370);
             addPointToDistanceToShooterRPM(2.5, 1425);
-            addPointToDistanceToShooterRPM(2.75, 1440);
+            addPointToDistanceToShooterRPM(2.75, 1465);
             addPointToDistanceToShooterRPM(3.0, 1475);
-            addPointToDistanceToShooterRPM(3.25, 1500);
-            addPointToDistanceToShooterRPM(3.5, 1550);
-            addPointToDistanceToShooterRPM(3.75, 2205);
-            addPointToDistanceToShooterRPM(4, 2285);
-            addPointToDistanceToShooterRPM(4.25, 2325);
-            addPointToDistanceToShooterRPM(4.5, 2375);
-            addPointToDistanceToShooterRPM(4.75, 2455);
-            addPointToDistanceToShooterRPM(5, 2780);
+            addPointToDistanceToShooterRPM(3.25, 1550);
+            addPointToDistanceToShooterRPM(3.5, 1650);
+            addPointToDistanceToShooterRPM(3.75, 1675);
+            addPointToDistanceToShooterRPM(4, 1725);
+            addPointToDistanceToShooterRPM(4.25, 1750);
+            addPointToDistanceToShooterRPM(4.5, 1825);
+            addPointToDistanceToShooterRPM(4.75, 1875);
+            addPointToDistanceToShooterRPM(5, 1950);
+            addPointToDistanceToShooterRPM(5.25, 2000);
+            addPointToDistanceToShooterRPM(6, 2100);
         }
     }
 }

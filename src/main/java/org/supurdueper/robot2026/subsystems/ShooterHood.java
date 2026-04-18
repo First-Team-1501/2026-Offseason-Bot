@@ -7,6 +7,7 @@ package org.supurdueper.robot2026.subsystems;
 import static edu.wpi.first.units.Units.Amps;
 import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.Meters;
+import static edu.wpi.first.units.Units.Volts;
 
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.FeedbackConfigs;
@@ -180,12 +181,12 @@ public class ShooterHood extends PositionSubsystem implements SupurdueperSubsyst
         RobotStates.actionAim
                 .or(RobotStates.actionShoot)
                 .or(RobotStates.auto_aim)
+                .or(RobotStates.auto_shoot)
                 .onFalse(goToPosition(() -> (Constants.ShooterHoodConstants.kReverseSoftLimit)));
         RobotStates.auto_drop_intake.onTrue(releaseIntake());
         RobotStates.testController.downDpad.onTrue(zero());
-        // RobotStates.testController.leftStickY.whileTrue(
-        //         runEnd(() -> runVoltage(Volts.of(6 * RobotStates.testController.getDriveFwdPositive())),
-        // this::stop));
+        RobotStates.testController.leftStickY.whileTrue(
+                runEnd(() -> runVoltage(Volts.of(6 * RobotStates.testController.getDriveFwdPositive())), this::stop));
         // RobotStates.actionTestA.onTrue(run(() -> stop()).withName("stop"));
         // RobotStates.actionTestB.onTrue(goToPosition(() -> Degrees.of(10)).withName("10"));
         // RobotStates.actionTestX.onTrue(goToPosition(() -> Degrees.of(17)).withName("17"));

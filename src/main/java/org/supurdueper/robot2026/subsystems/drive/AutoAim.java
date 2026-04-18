@@ -21,7 +21,7 @@ import org.supurdueper.robot2026.utils.FieldConstants;
  */
 public class AutoAim extends FieldCentricFacingAngle {
 
-    Rotation2d aimedTolerance = Rotation2d.fromDegrees(1.5);
+    Rotation2d aimedTolerance = Rotation2d.fromDegrees(0.25);
     SwerveRequest xMode = new SwerveDriveBrake();
     Translation2d pointToFace;
     Translation2d hub = FieldConstants.Hub.topCenterPoint.toTranslation2d();
