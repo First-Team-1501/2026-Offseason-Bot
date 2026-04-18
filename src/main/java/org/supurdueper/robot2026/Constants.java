@@ -96,8 +96,8 @@ public final class Constants {
         public static final double shooterGearRatio = 36.0 / 24.0;
         public static final AngularVelocity kVelocityTolerance = RPM.of(100);
         public static final AngularVelocity kShootRPM = RPM.of(1600);
-        public static final AngularVelocity kIdleRPM = RPM.of(500);
-        public static final AngularVelocity kRevRpm = RPM.of(1500);
+        public static final AngularVelocity kIdleRPM = RPM.of(900);
+        public static final AngularVelocity kRevRpm = RPM.of(1200);
     }
 
     public class HopperConstants {

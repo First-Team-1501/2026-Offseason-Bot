@@ -82,7 +82,7 @@ public class AutoRoutines {
                         Commands.runOnce(() -> RobotStates.setAutoAim(true)),
                         Commands.waitSeconds(0.5),
                         Commands.runOnce(() -> RobotStates.setAutoShoot(true)),
-                        Commands.waitSeconds(3),
+                        Commands.waitSeconds(2.5),
                         Commands.runOnce(() -> {
                             RobotStates.setAutoAim(false);
                             RobotStates.setAutoShoot(false);
@@ -117,6 +117,7 @@ public class AutoRoutines {
                 .onTrue(underTrenchOne
                         .resetOdometry()
                         .andThen(Commands.waitSeconds(SmartDashboard.getNumber("Auto Timeout", 0)))
+                        .andThen(Commands.runOnce(() -> RobotStates.setAutoRev(true)))
                         .andThen(underTrenchOne.cmd()));
 
         underTrenchOne
@@ -128,7 +129,7 @@ public class AutoRoutines {
 
         toCenterOne.chain(toScoreOne);
 
-        toCenterOne.recentlyDone().onTrue(Commands.runOnce(() -> RobotStates.setAutoRev(true)));
+        // toCenterOne.recentlyDone().onTrue(Commands.runOnce(() -> RobotStates.setAutoRev(true)));
 
         toScoreOne
                 .recentlyDone()
@@ -139,7 +140,7 @@ public class AutoRoutines {
                         Commands.waitSeconds(0.5),
                         Commands.runOnce(() -> RobotStates.setAutoShoot(true)),
                         Commands.waitUntil(() -> RobotContainer.getHopper().noFuel())
-                                .withDeadline(Commands.waitSeconds(3)),
+                                .withDeadline(Commands.waitSeconds(2.5)),
                         Commands.runOnce(() -> {
                             RobotStates.setAutoAim(false);
                             RobotStates.setAutoShoot(false);
@@ -163,7 +164,7 @@ public class AutoRoutines {
                         Commands.waitSeconds(0.5),
                         Commands.runOnce(() -> RobotStates.setAutoShoot(true)),
                         Commands.waitUntil(() -> RobotContainer.getHopper().noFuel())
-                                .withDeadline(Commands.waitSeconds(3)),
+                                .withDeadline(Commands.waitSeconds(2.5)),
                         Commands.runOnce(() -> {
                             RobotStates.setAutoAim(false);
                             RobotStates.setAutoShoot(false);

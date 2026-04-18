@@ -13,6 +13,7 @@ import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import dev.doglog.DogLog;
 import edu.wpi.first.units.measure.AngularVelocity;
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import org.supurdueper.lib.LoggedTunableNumber;
 import org.supurdueper.lib.TalonFXFactory;
@@ -61,6 +62,7 @@ public class Shooter extends VelocitySubsystem implements SupurdueperSubsystem {
         DogLog.log("Shooter/Target RPM", getSetpoint().in(RPM));
         DogLog.log("Shooter/At Velocity", isAtVelocity());
         DogLog.log("Shooter/Current", motor.getTorqueCurrent().getValue().in(Amps));
+        DogLog.log("Battery Voltage", RobotController.getBatteryVoltage());
     }
 
     @Override

@@ -10,6 +10,7 @@ import com.ctre.phoenix6.HootAutoReplay;
 import dev.doglog.DogLog;
 import dev.doglog.DogLogOptions;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.Threads;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -94,6 +95,7 @@ public class Robot extends SupurdueperRobot {
         resetCommandsAndButtons();
 
         if (!DriverStation.isFMSAttached()) SmartDashboard.putBoolean("Won Auto", true);
+        RobotController.setBrownoutVoltage(6.3);
     }
 
     @Override
