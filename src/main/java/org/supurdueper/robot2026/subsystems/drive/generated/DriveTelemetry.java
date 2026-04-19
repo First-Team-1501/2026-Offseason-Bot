@@ -137,6 +137,13 @@ public class DriveTelemetry {
         SignalLogger.writeStructArray("DriveState/ModulePositions", SwerveModulePosition.struct, state.ModulePositions);
         SignalLogger.writeDouble("DriveState/OdometryPeriod", state.OdometryPeriod, "seconds");
 
+        /* Log to DogLog */
+        DogLog.log("DriveState/Speeds", state.Speeds);
+        DogLog.log("DriveState/ModuleStates", state.ModuleStates);
+        DogLog.log("DriveState/ModuleTargets", state.ModuleTargets);
+        DogLog.log("DriveState/ModulePositions", state.ModulePositions);
+        DogLog.log("DriveState/OdometryPeriod", state.OdometryPeriod, "seconds");
+
         /* Telemeterize the pose to a Field2d */
         fieldTypePub.set("Field2d");
         m_poseArray[0] = state.Pose.getX();

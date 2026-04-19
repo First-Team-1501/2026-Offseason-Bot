@@ -6,9 +6,13 @@ import choreo.Choreo.TrajectoryLogger;
 import choreo.auto.AutoFactory;
 import choreo.trajectory.SwerveSample;
 import com.ctre.phoenix6.Utils;
+import com.ctre.phoenix6.hardware.CANcoder;
+import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.swerve.SwerveDrivetrainConstants;
+import com.ctre.phoenix6.swerve.SwerveModule;
 import com.ctre.phoenix6.swerve.SwerveModuleConstants;
 import com.ctre.phoenix6.swerve.SwerveRequest;
+import dev.doglog.DogLog;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -197,6 +201,16 @@ public class Drivetrain extends TunerSwerveDrivetrain implements SupurdueperSubs
                                 : kBlueAlliancePerspectiveRotation);
                 m_hasAppliedOperatorPerspective = true;
             });
+        }
+        for (SwerveModule<TalonFX, TalonFX, CANcoder> module : getModules()) {
+            TalonFX driveMotor = module.getDriveMotor();
+            TalonFX steerMotor = module.getSteerMotor();
+            DogLog.log(
+                    "Drive/ThrottleCurrent(" + driveMotor.getDeviceID() + ")",
+                    driveMotor.getTorqueCurrent().getValue());
+            DogLog.log(
+                    "Drive/SteerCurrent(" + steerMotor.getDeviceID() + ")",
+                    steerMotor.getTorqueCurrent().getValue());
         }
     }
 

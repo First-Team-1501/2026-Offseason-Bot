@@ -99,7 +99,9 @@ public class AutoRoutines {
                         (Commands.runOnce(() -> RobotStates.setAutoAim(true))),
                         (Commands.waitSeconds(0.5)),
                         (Commands.runOnce(() -> RobotStates.setAutoShoot(true))),
-                        (Commands.runOnce(() -> RobotStates.setAutoIntake(true)))));
+                        (Commands.waitSeconds(2.5)),
+                        (Commands.runOnce(() -> RobotStates.setAutoAim(false))),
+                        (Commands.runOnce(() -> RobotStates.setAutoShoot(false)))));
 
         return routine;
     }

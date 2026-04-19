@@ -40,7 +40,7 @@ public final class Constants {
         public static final ExpCurve kLeftStickCurve = new ExpCurve(2.0, 0, 1, kDeadzone);
         public static final ExpCurve kRightStickCurve = new ExpCurve(2.0, 0, 1, kDeadzone);
         public static final ExpCurve kTriggerCurve = new ExpCurve(1, 0, 1, kDeadzone);
-        public static final double kSlowModeScalor = 0.90;
+        public static final double kSlowModeScalor = 0.85;
         public static final double kDefaultTurnScalor = 0.75;
         public static final double kTurboModeScalor = 1;
     }
@@ -87,7 +87,7 @@ public final class Constants {
     }
 
     public class ShooterConstants {
-        public static final double kMaxAmps = 60.0;
+        public static final double kMaxAmps = 55.0;
         public static final CurrentLimitsConfigs kCurrentLimit =
                 new CurrentLimitsConfigs().withStatorCurrentLimit(kMaxAmps).withStatorCurrentLimitEnable(true);
         public static final double kP = 25.0;
@@ -101,7 +101,7 @@ public final class Constants {
     }
 
     public class HopperConstants {
-        public static final double kMaxAmps = 80;
+        public static final double kMaxAmps = 70;
         public static final double gearRatio = 40.0 / 18.0;
         public static final CurrentLimitsConfigs kCurrentLimit =
                 new CurrentLimitsConfigs().withStatorCurrentLimit(80).withStatorCurrentLimitEnable(true);
@@ -146,7 +146,7 @@ public final class Constants {
     }
 
     public class IntakeConstants {
-        public static final double kMaxAmps = 80;
+        public static final double kMaxAmps = 70;
         public static final CurrentLimitsConfigs kCurrentLimit =
                 new CurrentLimitsConfigs().withStatorCurrentLimit(kMaxAmps).withStatorCurrentLimitEnable(true);
         public static final Voltage kIntakeVoltage = Volts.of(6);
@@ -227,7 +227,7 @@ public final class Constants {
             addPointToDistanceToShooterRPM(2.25, 1395);
             addPointToDistanceToShooterRPM(2.5, 1450);
             addPointToDistanceToShooterRPM(2.75, 1490);
-            addPointToDistanceToShooterRPM(3.0, 1500);
+            addPointToDistanceToShooterRPM(3.0, 1525);
             addPointToDistanceToShooterRPM(3.25, 1575);
             addPointToDistanceToShooterRPM(3.5, 1675);
             addPointToDistanceToShooterRPM(3.75, 1700);
