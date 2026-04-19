@@ -87,24 +87,30 @@ public final class Constants {
     }
 
     public class ShooterConstants {
-        public static final double kMaxAmps = 55.0;
-        public static final CurrentLimitsConfigs kCurrentLimit =
-                new CurrentLimitsConfigs().withStatorCurrentLimit(kMaxAmps).withStatorCurrentLimitEnable(true);
+        public static final double kMaxAmps = 50.0;
+        public static final CurrentLimitsConfigs kCurrentLimit = new CurrentLimitsConfigs()
+                .withStatorCurrentLimit(kMaxAmps)
+                .withStatorCurrentLimitEnable(true)
+                .withSupplyCurrentLimit(40)
+                .withSupplyCurrentLimitEnable(true);
         public static final double kP = 25.0;
         public static final double kS = 9.0;
         public static final double kV = 0.15;
         public static final double shooterGearRatio = 36.0 / 24.0;
         public static final AngularVelocity kVelocityTolerance = RPM.of(100);
         public static final AngularVelocity kShootRPM = RPM.of(1600);
-        public static final AngularVelocity kIdleRPM = RPM.of(700);
+        public static final AngularVelocity kIdleRPM = RPM.of(900);
         public static final AngularVelocity kRevRpm = RPM.of(1200);
-    } 
+    }
 
     public class HopperConstants {
         public static final double kMaxAmps = 70;
         public static final double gearRatio = 40.0 / 18.0;
-        public static final CurrentLimitsConfigs kCurrentLimit =
-                new CurrentLimitsConfigs().withStatorCurrentLimit(80).withStatorCurrentLimitEnable(true);
+        public static final CurrentLimitsConfigs kCurrentLimit = new CurrentLimitsConfigs()
+                .withStatorCurrentLimit(kMaxAmps)
+                .withStatorCurrentLimitEnable(true)
+                .withSupplyCurrentLimit(40)
+                .withSupplyCurrentLimitEnable(true);
         public static final Voltage kIntakeVoltage = Volts.of(10);
         public static final Voltage kPurgeVoltage = Volts.of(0);
         public static final AngularVelocity kIntakeSpeed = RPM.of(1800);
@@ -124,8 +130,11 @@ public final class Constants {
         public static final AngularVelocity velocityTolerance = RPM.of(60);
         public static final double kMaxAmps = 60.0;
         public static final double kGearRatio = 24.0 / 18.0;
-        public static final CurrentLimitsConfigs kCurrentLimit =
-                new CurrentLimitsConfigs().withStatorCurrentLimit(kMaxAmps).withStatorCurrentLimitEnable(true);
+        public static final CurrentLimitsConfigs kCurrentLimit = new CurrentLimitsConfigs()
+                .withStatorCurrentLimit(kMaxAmps)
+                .withStatorCurrentLimitEnable(true)
+                .withSupplyCurrentLimit(Amps.of(40))
+                .withSupplyCurrentLimitEnable(true);
         public static final AngularVelocity feedVelocity = RPM.of(2000);
         public static final AngularVelocity purgeVelocity = RPM.of(-500);
         public static final AngularVelocity idleVelocity = RPM.of(500);

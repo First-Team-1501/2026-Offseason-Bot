@@ -212,6 +212,9 @@ public class Drivetrain extends TunerSwerveDrivetrain implements SupurdueperSubs
                     "Drive/SteerCurrent(" + steerMotor.getDeviceID() + ")",
                     steerMotor.getTorqueCurrent().getValue());
         }
+        DogLog.log(
+                "Drive/Pigeon_BootDuringEnable",
+                getPigeon2().getFault_BootDuringEnable().getValue());
     }
 
     private void startSimThread() {
