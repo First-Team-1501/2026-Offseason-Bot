@@ -90,6 +90,7 @@ public final class RobotStates {
         DogLog.log("States/ActionShoot", actionShoot.getAsBoolean());
         DogLog.log("States/ActionPurge", actionPurge.getAsBoolean());
         DogLog.log("States/ActionIntake", actionIntake.getAsBoolean());
+        DogLog.log("States/ActionSetShot", actionSetShot.getAsBoolean());
         DogLog.log("States/ActionRezeroFieldHeading", rezeroFieldHeading.getAsBoolean());
     }
 }

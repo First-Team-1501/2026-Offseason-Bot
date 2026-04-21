@@ -27,6 +27,10 @@ public class AutoRoutines {
     private final String rightTrenchShort = "Trench_Right_Short";
     private final String leftTrenchThird = "Trench_Left_Third";
     private final String rightTrenchThird = "Trench_Right_Third";
+    private final String rightTrenchSteal = "Trench_Right_Steal";
+    private final String rightTrenchDelay = "Trench_Right_Start_Delay";
+    private final String leftTrenchDelay = "Trench_Left_Start_Delay";
+    private final String leftTrenchSteal = "Trench_Left_Steal";
 
     public AutoRoutines(AutoFactory factory) {
         m_factory = factory;
@@ -131,7 +135,81 @@ public class AutoRoutines {
 
         toCenterOne.chain(toScoreOne);
 
-        // toCenterOne.recentlyDone().onTrue(Commands.runOnce(() -> RobotStates.setAutoRev(true)));
+        // toCenterOne.recentlyDone().onTrue(Commands.runOnce(() ->
+        // RobotStates.setAutoRev(true)));
+
+        toScoreOne
+                .recentlyDone()
+                .onTrue(Commands.sequence(
+                        Commands.runOnce(() -> RobotStates.setAutoIntake(false)),
+                        Commands.runOnce(() -> RobotStates.setAutoRev(false)),
+                        Commands.runOnce(() -> RobotStates.setAutoAim(true)),
+                        Commands.waitSeconds(0.5),
+                        Commands.runOnce(() -> RobotStates.setAutoShoot(true)),
+                        Commands.waitUntil(() -> RobotContainer.getHopper().noFuel())
+                                .withDeadline(Commands.waitSeconds(2.5)),
+                        Commands.runOnce(() -> {
+                            RobotStates.setAutoAim(false);
+                            RobotStates.setAutoShoot(false);
+                        }),
+                        Commands.runOnce(() -> RobotStates.setAutoIntake(true)),
+                        underTrenchTwo.cmd().asProxy()));
+
+        toScoreOne.chain(underTrenchTwo);
+
+        underTrenchTwo.chain(toCenterTwo);
+        toCenterTwo.chain(toScoreTwo);
+
+        toCenterTwo.recentlyDone().onTrue(Commands.runOnce(() -> RobotStates.setAutoRev(true)));
+
+        toScoreTwo
+                .recentlyDone()
+                .onTrue(Commands.sequence(
+                        Commands.runOnce(() -> RobotStates.setAutoIntake(false)),
+                        Commands.runOnce(() -> RobotStates.setAutoRev(false)),
+                        Commands.runOnce(() -> RobotStates.setAutoAim(true)),
+                        Commands.waitSeconds(0.5),
+                        Commands.runOnce(() -> RobotStates.setAutoShoot(true)),
+                        Commands.waitUntil(() -> RobotContainer.getHopper().noFuel())
+                                .withDeadline(Commands.waitSeconds(2.5)),
+                        Commands.runOnce(() -> {
+                            RobotStates.setAutoAim(false);
+                            RobotStates.setAutoShoot(false);
+                        }),
+                        Commands.runOnce(() -> RobotStates.setAutoIntake(true)),
+                        toCenterThree.cmd().asProxy()));
+
+        return routine;
+    }
+
+    public AutoRoutine delayTrenchRun(
+            AutoRoutine routine,
+            AutoTrajectory underTrenchOne,
+            AutoTrajectory toCenterOne,
+            AutoTrajectory toScoreOne,
+            AutoTrajectory underTrenchTwo,
+            AutoTrajectory toCenterTwo,
+            AutoTrajectory toScoreTwo,
+            AutoTrajectory toCenterThree) {
+        routine.active()
+                .onTrue(underTrenchOne
+                        .resetOdometry()
+                        .andThen(Commands.waitSeconds(1.0))
+                        .andThen(Commands.waitSeconds(SmartDashboard.getNumber("Auto Timeout", 0)))
+                        .andThen(Commands.runOnce(() -> RobotStates.setAutoRev(true)))
+                        .andThen(underTrenchOne.cmd()));
+
+        underTrenchOne
+                .recentlyDone()
+                .onTrue(Commands.runOnce(() -> RobotStates.setAutoDropIntake(true))
+                        .andThen(Commands.runOnce(() -> RobotStates.setAutoIntake(true))));
+
+        underTrenchOne.chain(toCenterOne);
+
+        toCenterOne.chain(toScoreOne);
+
+        // toCenterOne.recentlyDone().onTrue(Commands.runOnce(() ->
+        // RobotStates.setAutoRev(true)));
 
         toScoreOne
                 .recentlyDone()
@@ -342,7 +420,7 @@ public class AutoRoutines {
     }
 
     public AutoRoutine leftShortTrench() {
-        AutoRoutine routine = m_factory.newRoutine("Left_Trench");
+        AutoRoutine routine = m_factory.newRoutine("Left_Trench_Short");
         final AutoTrajectory leftUnderTrenchOne = routine.trajectory(leftTrenchStart, 0);
         final AutoTrajectory leftToCenterOne = routine.trajectory(leftTrenchStart, 1);
         final AutoTrajectory leftToScoreOne = routine.trajectory(leftTrenchStart, 2);
@@ -362,7 +440,7 @@ public class AutoRoutines {
     }
 
     public AutoRoutine rightTrenchShort() {
-        AutoRoutine routine = m_factory.newRoutine("Right_Trench");
+        AutoRoutine routine = m_factory.newRoutine("Right_Trench_Right");
         final AutoTrajectory rightUnderTrenchOne = routine.trajectory(rightTrenchStart, 0);
         final AutoTrajectory rightToCenterOne = routine.trajectory(rightTrenchStart, 1);
         final AutoTrajectory rightToScoreOne = routine.trajectory(rightTrenchStart, 2);
@@ -379,5 +457,85 @@ public class AutoRoutines {
                 rightToCenterTwo,
                 rightToScoreTwo,
                 rightToCenterThree);
+    }
+
+    public AutoRoutine rightTrenchSteal() {
+        AutoRoutine routine = m_factory.newRoutine("Right_Trench_Steal");
+        final AutoTrajectory rightUnderTrenchOne = routine.trajectory(rightTrenchSteal, 0);
+        final AutoTrajectory rightToCenterOne = routine.trajectory(rightTrenchSteal, 1);
+        final AutoTrajectory rightToScoreOne = routine.trajectory(rightTrenchSteal, 2);
+        final AutoTrajectory rightUnderTrenchTwo = routine.trajectory(rightTrenchShort, 0);
+        final AutoTrajectory rightToCenterTwo = routine.trajectory(rightTrenchShort, 1);
+        final AutoTrajectory rightToScoreTwo = routine.trajectory(rightTrenchShort, 2);
+        final AutoTrajectory rightToCenterThree = routine.trajectory(rightTrenchThird, 0);
+        return delayTrenchRun(
+                routine,
+                rightUnderTrenchOne,
+                rightToCenterOne,
+                rightToScoreOne,
+                rightUnderTrenchTwo,
+                rightToCenterTwo,
+                rightToScoreTwo,
+                rightToCenterThree);
+    }
+
+    public AutoRoutine rightTrenchDelayShort() {
+        AutoRoutine routine = m_factory.newRoutine("Right_Trench_Right_Delay");
+        final AutoTrajectory rightUnderTrenchOne = routine.trajectory(rightTrenchDelay, 0);
+        final AutoTrajectory rightToCenterOne = routine.trajectory(rightTrenchDelay, 1);
+        final AutoTrajectory rightToScoreOne = routine.trajectory(rightTrenchDelay, 2);
+        final AutoTrajectory rightUnderTrenchTwo = routine.trajectory(rightTrenchShort, 0);
+        final AutoTrajectory rightToCenterTwo = routine.trajectory(rightTrenchShort, 1);
+        final AutoTrajectory rightToScoreTwo = routine.trajectory(rightTrenchShort, 2);
+        final AutoTrajectory rightToCenterThree = routine.trajectory(rightTrenchThird, 0);
+        return delayTrenchRun(
+                routine,
+                rightUnderTrenchOne,
+                rightToCenterOne,
+                rightToScoreOne,
+                rightUnderTrenchTwo,
+                rightToCenterTwo,
+                rightToScoreTwo,
+                rightToCenterThree);
+    }
+
+    public AutoRoutine leftTrenchDelayShort() {
+        AutoRoutine routine = m_factory.newRoutine("Left_Trench_Short_Delay");
+        final AutoTrajectory leftUnderTrenchOne = routine.trajectory(leftTrenchDelay, 0);
+        final AutoTrajectory leftToCenterOne = routine.trajectory(leftTrenchDelay, 1);
+        final AutoTrajectory leftToScoreOne = routine.trajectory(leftTrenchDelay, 2);
+        final AutoTrajectory leftUnderTrenchTwo = routine.trajectory(leftTrenchShort, 0);
+        final AutoTrajectory leftToCenterTwo = routine.trajectory(leftTrenchShort, 1);
+        final AutoTrajectory leftToScoreTwo = routine.trajectory(leftTrenchShort, 2);
+        final AutoTrajectory leftToCenterThree = routine.trajectory(leftTrenchThird, 0);
+        return delayTrenchRun(
+                routine,
+                leftUnderTrenchOne,
+                leftToCenterOne,
+                leftToScoreOne,
+                leftUnderTrenchTwo,
+                leftToCenterTwo,
+                leftToScoreTwo,
+                leftToCenterThree);
+    }
+
+    public AutoRoutine leftTrenchSteal() {
+        AutoRoutine routine = m_factory.newRoutine("Left_Trench_Steal");
+        final AutoTrajectory leftUnderTrenchOne = routine.trajectory(leftTrenchSteal, 0);
+        final AutoTrajectory leftToCenterOne = routine.trajectory(leftTrenchSteal, 1);
+        final AutoTrajectory leftToScoreOne = routine.trajectory(leftTrenchSteal, 2);
+        final AutoTrajectory leftUnderTrenchTwo = routine.trajectory(leftTrenchShort, 0);
+        final AutoTrajectory leftToCenterTwo = routine.trajectory(leftTrenchShort, 1);
+        final AutoTrajectory leftToScoreTwo = routine.trajectory(leftTrenchShort, 2);
+        final AutoTrajectory leftToCenterThree = routine.trajectory(leftTrenchThird, 0);
+        return delayTrenchRun(
+                routine,
+                leftUnderTrenchOne,
+                leftToCenterOne,
+                leftToScoreOne,
+                leftUnderTrenchTwo,
+                leftToCenterTwo,
+                leftToScoreTwo,
+                leftToCenterThree);
     }
 }

@@ -173,6 +173,7 @@ public class ShooterHood extends PositionSubsystem implements SupurdueperSubsyst
 
     @Override
     public void bindCommands() {
+        RobotStates.teleop.onTrue(goToPosition(() -> Constants.ShooterHoodConstants.kReverseSoftLimit));
         RobotStates.actionAim
                 .or(RobotStates.actionShoot)
                 .or(RobotStates.auto_aim)
