@@ -79,10 +79,12 @@ public class Feeder extends VelocitySubsystem implements SupurdueperSubsystem {
         RobotStates.actionAim
                 .or(RobotStates.actionShoot)
                 .or(RobotStates.auto_shoot)
+                .or(RobotStates.actionSetShot)
                 .onTrue(setState(FeedState.feed));
         RobotStates.actionAim
                 .or(RobotStates.auto_shoot)
                 .or(RobotStates.actionShoot)
+                .or(RobotStates.actionSetShot)
                 .onFalse(setState(FeedState.idle));
         RobotStates.testController.B.onTrue(goToVelocity(() -> RPM.of(500)));
         RobotStates.testController.X.onTrue(goToVelocity(() -> RPM.of(1000)));

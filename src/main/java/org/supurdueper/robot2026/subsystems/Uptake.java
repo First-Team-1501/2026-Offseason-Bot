@@ -53,8 +53,11 @@ public class Uptake extends VelocitySubsystem implements SupurdueperSubsystem {
                 .whileTrue(Commands.waitUntil(RobotStates.infoShooterAtSpeed)
                         .andThen(startEnd(() -> setVelocity(UptakeConstants.feedVelocity), this::stop)));
         ;
+        RobotStates.actionSetShot.whileTrue(Commands.waitUntil(RobotStates.infoShooterAtSpeed)
+                .andThen(startEnd(() -> setVelocity(UptakeConstants.feedVelocity), this::stop)));
         RobotStates.actionIntake
                 .and(RobotStates.actionShoot.negate())
+                .and(RobotStates.actionSetShot.negate())
                 .whileTrue(startEnd(() -> setVoltage(() -> -6), this::stop));
         // RobotStates.testController.B.onTrue(goToVelocity(() -> RPM.of(500)));
         // RobotStates.testController.X.onTrue(goToVelocity(() -> RPM.of(1000)));
