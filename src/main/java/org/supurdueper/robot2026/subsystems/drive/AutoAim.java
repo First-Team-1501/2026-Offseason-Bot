@@ -49,12 +49,16 @@ public class AutoAim extends FieldCentricFacingAngle {
         if (!AllianceFlip.shouldFlip()) {
             this.TargetDirection = this.TargetDirection.rotateBy(Rotation2d.k180deg);
         }
-        if (Math.abs(this.TargetDirection.minus(currentPose.getRotation()).getDegrees())
-                < aimedTolerance.getDegrees()) {
-            if (Math.abs(this.VelocityX) < 0.2 && Math.abs(this.VelocityY) < 0.2) {
-                return xMode.apply(parameters, modulesToApply);
-            }
-        }
+
+        DogLog.log(
+                "AutoAim/Error",
+                Math.abs(this.TargetDirection.minus(currentPose.getRotation()).getDegrees()));
+        // if (Math.abs(this.TargetDirection.minus(currentPose.getRotation()).getDegrees())
+        //         < aimedTolerance.getDegrees()) {
+        //     if (Math.abs(this.VelocityX) < 0.2 && Math.abs(this.VelocityY) < 0.2) {
+        //         return xMode.apply(parameters, modulesToApply);
+        //     }
+        // }
         return super.apply(parameters, modulesToApply);
     }
 }

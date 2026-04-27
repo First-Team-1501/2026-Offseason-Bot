@@ -26,7 +26,7 @@ import lombok.RequiredArgsConstructor;
  * alliance station
  */
 public class FieldConstants {
-    public static final FieldType fieldType = FieldType.ANDYMARK;
+    public static final FieldType fieldType = FieldType.WELDED;
 
     // AprilTag related constants
     public static final int aprilTagCount =
