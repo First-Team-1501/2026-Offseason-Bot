@@ -149,7 +149,7 @@ public final class Constants {
         public static final double kGearRatio = 34.0 / 18.0;
         public static final CurrentLimitsConfigs kCurrentLimit =
                 new CurrentLimitsConfigs().withStatorCurrentLimit(kMaxAmps).withStatorCurrentLimitEnable(true);
-        public static final AngularVelocity feedVelocity = RPM.of(1000);
+        public static final AngularVelocity setShotVelocity = RPM.of(1000);
         public static final AngularVelocity purgeVelocity = RPM.of(-500);
         public static final AngularVelocity idleVelocity = RPM.of(500);
     }
@@ -204,9 +204,14 @@ public final class Constants {
 
         public static final InterpolatingDoubleTreeMap distanceToShooterAngle = new InterpolatingDoubleTreeMap();
         public static final InterpolatingDoubleTreeMap distanceToShooterRPM = new InterpolatingDoubleTreeMap();
+        public static final InterpolatingDoubleTreeMap distanceToUptakeRPM = new InterpolatingDoubleTreeMap();
 
         private static void addPointToDistanceToShooterAngle(double distanceMeters, double angleDegrees) {
             distanceToShooterAngle.put(distanceMeters, angleDegrees);
+        }
+
+        private static void addPointToDistanceToUptakeRPM(double distanceMeters, double velocityRPM) {
+            distanceToUptakeRPM.put(distanceMeters, velocityRPM);
         }
 
         private static void addPointToDistanceToShooterRPM(double distanceMeters, double velocityRPM) {
@@ -247,6 +252,14 @@ public final class Constants {
             addPointToDistanceToShooterRPM(5, 1975);
             addPointToDistanceToShooterRPM(5.25, 1975);
             addPointToDistanceToShooterRPM(6, 2075);
+
+            addPointToDistanceToUptakeRPM(0, 1500);
+            addPointToDistanceToUptakeRPM(2.75, 1500);
+            addPointToDistanceToUptakeRPM(3.25, 1000);
+            addPointToDistanceToUptakeRPM(4, 1000);
+            addPointToDistanceToUptakeRPM(4.25, 800);
+            addPointToDistanceToUptakeRPM(5.25, 800);
+            addPointToDistanceToUptakeRPM(5.5, 2000);
         }
     }
 }

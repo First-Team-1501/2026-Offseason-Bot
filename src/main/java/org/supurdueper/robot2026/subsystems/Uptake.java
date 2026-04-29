@@ -5,6 +5,7 @@
 package org.supurdueper.robot2026.subsystems;
 
 import static edu.wpi.first.units.Units.Amps;
+import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.RPM;
 import static edu.wpi.first.units.Units.Volts;
 
@@ -18,9 +19,12 @@ import org.supurdueper.lib.subsystems.SupurdueperSubsystem;
 import org.supurdueper.lib.subsystems.VelocitySubsystem;
 import org.supurdueper.robot2026.CanId;
 import org.supurdueper.robot2026.Constants;
+import org.supurdueper.robot2026.Constants.LookupTables;
 import org.supurdueper.robot2026.Constants.UptakeConstants;
 import org.supurdueper.robot2026.Robot;
+import org.supurdueper.robot2026.RobotContainer;
 import org.supurdueper.robot2026.state.RobotStates;
+import org.supurdueper.robot2026.utils.FieldCalculations;
 
 public class Uptake extends VelocitySubsystem implements SupurdueperSubsystem {
 
@@ -51,10 +55,10 @@ public class Uptake extends VelocitySubsystem implements SupurdueperSubsystem {
         RobotStates.actionShoot
                 .or(RobotStates.auto_shoot)
                 .whileTrue(Commands.waitUntil(RobotStates.infoShooterAtSpeed)
-                        .andThen(startEnd(() -> setVelocity(UptakeConstants.feedVelocity), this::stop)));
+                        .andThen(startEnd(() -> setVelocity(getShotVelocity()), this::stop)));
         ;
         RobotStates.actionSetShot.whileTrue(Commands.waitUntil(RobotStates.infoShooterAtSpeed)
-                .andThen(startEnd(() -> setVelocity(UptakeConstants.feedVelocity), this::stop)));
+                .andThen(startEnd(() -> setVelocity(UptakeConstants.setShotVelocity), this::stop)));
         RobotStates.actionIntake
                 .and(RobotStates.actionShoot.negate())
                 .and(RobotStates.actionSetShot.negate())
@@ -63,6 +67,13 @@ public class Uptake extends VelocitySubsystem implements SupurdueperSubsystem {
         // RobotStates.testController.X.onTrue(goToVelocity(() -> RPM.of(1000)));
         // RobotStates.testController.Y.onTrue(goToVelocity(() -> RPM.of(2000)));
         // RobotStates.testController.A.onTrue(run(this::stop));
+    }
+
+    private AngularVelocity getShotVelocity() {
+        double distanceToGoalMeters = FieldCalculations.distanceToGoal(
+                        RobotContainer.getDrivetrain().getState().Pose)
+                .in(Meters);
+        return RPM.of(LookupTables.distanceToUptakeRPM.get(distanceToGoalMeters));
     }
 
     @Override
