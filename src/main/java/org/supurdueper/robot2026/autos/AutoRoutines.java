@@ -152,11 +152,11 @@ public class AutoRoutines {
                             RobotStates.setAutoAim(false);
                             RobotStates.setAutoShoot(false);
                         }),
-                        Commands.runOnce(() -> RobotStates.setAutoIntake(true)),
                         underTrenchTwo.cmd().asProxy()));
 
         toScoreOne.chain(underTrenchTwo);
 
+        underTrenchTwo.recentlyDone().onTrue(Commands.runOnce(() -> RobotStates.setAutoIntake(true)));
         underTrenchTwo.chain(toCenterTwo);
         toCenterTwo.chain(toScoreTwo);
 
@@ -176,7 +176,6 @@ public class AutoRoutines {
                             RobotStates.setAutoAim(false);
                             RobotStates.setAutoShoot(false);
                         }),
-                        Commands.runOnce(() -> RobotStates.setAutoIntake(true)),
                         toCenterThree.cmd().asProxy()));
 
         return routine;
@@ -228,10 +227,11 @@ public class AutoRoutines {
                             RobotStates.setAutoAim(false);
                             RobotStates.setAutoShoot(false);
                         }),
-                        Commands.runOnce(() -> RobotStates.setAutoIntake(true)),
                         underTrenchTwo.cmd().asProxy()));
 
         toScoreOne.chain(underTrenchTwo);
+
+        underTrenchTwo.recentlyDone().onTrue(Commands.runOnce(() -> RobotStates.setAutoIntake(true)));
 
         underTrenchTwo.chain(toCenterTwo);
         toCenterTwo.chain(toScoreTwo);
@@ -252,7 +252,6 @@ public class AutoRoutines {
                             RobotStates.setAutoAim(false);
                             RobotStates.setAutoShoot(false);
                         }),
-                        Commands.runOnce(() -> RobotStates.setAutoIntake(true)),
                         toCenterThree.cmd().asProxy()));
 
         return routine;
