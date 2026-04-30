@@ -185,6 +185,7 @@ public class ShooterHood extends PositionSubsystem implements SupurdueperSubsyst
                 .or(RobotStates.auto_aim)
                 .or(RobotStates.auto_shoot)
                 .or(RobotStates.actionSetShot)
+                .or(RobotStates.auto_drop_intake)
                 .onFalse(goToPosition(() -> (Constants.ShooterHoodConstants.kReverseSoftLimit)));
         RobotStates.auto_drop_intake.onTrue(releaseIntake());
         RobotStates.driver.downDpad.onTrue(zero());
