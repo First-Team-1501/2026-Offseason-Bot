@@ -236,12 +236,12 @@ public final class Constants {
             addPointToDistanceToShooterAngle(5.25, 22.0);
             addPointToDistanceToShooterAngle(6, 30.0);
 
-            addPointToDistanceToShooterRPM(1.75, 1325);
-            addPointToDistanceToShooterRPM(2.0, 1350);
-            addPointToDistanceToShooterRPM(2.25, 1375);
-            addPointToDistanceToShooterRPM(2.5, 1400);
-            addPointToDistanceToShooterRPM(2.75, 1425);
-            addPointToDistanceToShooterRPM(3.0, 1450);
+            addPointToDistanceToShooterRPM(1.75, 1340);
+            addPointToDistanceToShooterRPM(2.0, 1365);
+            addPointToDistanceToShooterRPM(2.25, 1390);
+            addPointToDistanceToShooterRPM(2.5, 1415);
+            addPointToDistanceToShooterRPM(2.75, 1440);
+            addPointToDistanceToShooterRPM(3.0, 1475);
             addPointToDistanceToShooterRPM(3.25, 1550);
             addPointToDistanceToShooterRPM(3.5, 1675);
             addPointToDistanceToShooterRPM(3.75, 1775);
