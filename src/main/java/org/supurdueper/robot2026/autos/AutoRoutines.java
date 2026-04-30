@@ -196,7 +196,7 @@ public class AutoRoutines {
                         .resetOdometry()
                         .andThen(Commands.runOnce(() -> RobotStates.setAutoDropIntake(true)))
                         .andThen(Commands.waitSeconds(0.25))
-                        .andThen(Commands.runOnce(() -> RobotStates.setAutoDropIntake(false)))
+                        .andThen(Commands.runOnce(() -> RobotStates.setAutoDropHood(true)))
                         .andThen(Commands.waitSeconds(1.75))
                         .andThen(Commands.waitSeconds(SmartDashboard.getNumber("Auto Timeout", 0)))
                         .andThen(Commands.runOnce(() -> RobotStates.setAutoRev(true)))

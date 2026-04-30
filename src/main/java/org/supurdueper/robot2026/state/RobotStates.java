@@ -41,12 +41,17 @@ public final class RobotStates {
     @Setter
     private static boolean autoRev = false;
 
+    @Getter
+    @Setter
+    private static boolean autoDropHood = false;
+
     // auto
     public static final Trigger auto_intake = new Trigger(RobotStates::isAutoIntake).and(auto);
     public static final Trigger auto_aim = new Trigger(RobotStates::isAutoAim).and(auto);
     public static final Trigger auto_shoot = new Trigger(RobotStates::isAutoShoot).and(auto);
     public static final Trigger auto_drop_intake = new Trigger(RobotStates::isAutoDropIntake).and(auto);
     public static final Trigger auto_rev = new Trigger(RobotStates::isAutoRev).and(auto);
+    public static final Trigger auto_drop_hood = new Trigger(RobotStates::isAutoDropHood).and(auto);
 
     // information
     public static final Trigger infoShooterAtSpeed = shooter.isAtVelocityTrigger();
