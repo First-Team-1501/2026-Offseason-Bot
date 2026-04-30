@@ -99,7 +99,7 @@ public class Robot extends SupurdueperRobot {
         resetCommandsAndButtons();
 
         if (!DriverStation.isFMSAttached()) SmartDashboard.putBoolean("Won Auto", true);
-        RobotController.setBrownoutVoltage(6.3);
+        RobotController.setBrownoutVoltage(5.75);
     }
 
     @Override
