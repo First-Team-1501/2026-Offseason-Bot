@@ -7,8 +7,8 @@
    "max_Bump_Velocity":{
     "dimension":"LinVel",
     "var":{
-     "exp":"2.25 m / s",
-     "val":2.25
+     "exp":"2.67 m / s",
+     "val":2.67
     }
    },
    "max_Intake_Velocity":{
