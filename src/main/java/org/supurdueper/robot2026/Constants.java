@@ -205,6 +205,8 @@ public final class Constants {
         public static final InterpolatingDoubleTreeMap distanceToShooterAngle = new InterpolatingDoubleTreeMap();
         public static final InterpolatingDoubleTreeMap distanceToShooterRPM = new InterpolatingDoubleTreeMap();
         public static final InterpolatingDoubleTreeMap distanceToUptakeRPM = new InterpolatingDoubleTreeMap();
+        public static final InterpolatingDoubleTreeMap distanceToTime = new InterpolatingDoubleTreeMap();
+
 
         private static void addPointToDistanceToShooterAngle(double distanceMeters, double angleDegrees) {
             distanceToShooterAngle.put(distanceMeters, angleDegrees);
@@ -217,6 +219,11 @@ public final class Constants {
         private static void addPointToDistanceToShooterRPM(double distanceMeters, double velocityRPM) {
             distanceToShooterRPM.put(distanceMeters, velocityRPM);
         }
+        
+        private static void addPointToDistanceToTime(double distanceMeters, double timeSeconds) {
+            distanceToTime.put(distanceMeters, timeSeconds);
+        }
+
 
         static {
             addPointToDistanceToShooterAngle(1.75, 13.5);
