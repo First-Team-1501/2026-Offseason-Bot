@@ -31,7 +31,8 @@ public final class Constants {
     public static final double loopPeriodSecs = 0.02;
     public static boolean tuningMode = false;
     public static boolean publishToNT = true;
-    public static CANBus canivoreBus = new CANBus("canivore");
+    public static CANBus upperBus = new CANBus("Upper Bot CANivore");
+    public static CANBus lowerBus = new CANBus("Lower Bot Canivore");
     public static CANBus rioBus = new CANBus("rio");
 
     public static final class DriverConstants {

@@ -5,46 +5,45 @@ import com.ctre.phoenix6.CANBus;
 public enum CanId {
 
     // Drive
-    TALONFX_DRIVE_FL(1, Constants.canivoreBus),
-    TALONFX_STEER_FL(2, Constants.canivoreBus),
-    TALONFX_DRIVE_FR(3, Constants.canivoreBus),
-    TALONFX_STEER_FR(4, Constants.canivoreBus),
-    TALONFX_DRIVE_BL(5, Constants.canivoreBus),
-    TALONFX_STEER_BL(6, Constants.canivoreBus),
-    TALONFX_DRIVE_BR(7, Constants.canivoreBus),
-    TALONFX_STEER_BR(8, Constants.canivoreBus),
-    CANCODER_STEER_FL(21, Constants.canivoreBus),
-    CANCODER_STEER_FR(22, Constants.canivoreBus),
-    CANCODER_STEER_BL(23, Constants.canivoreBus),
-    CANCODER_STEER_BR(24, Constants.canivoreBus),
-    PIGEON(25, Constants.canivoreBus),
-    CANDLE(29, Constants.canivoreBus),
+    TALONFX_DRIVE_FL(1, Constants.lowerBus),
+    TALONFX_STEER_FL(2, Constants.lowerBus),
+    TALONFX_DRIVE_FR(7, Constants.lowerBus),
+    TALONFX_STEER_FR(8, Constants.lowerBus),
+    TALONFX_DRIVE_BL(4, Constants.lowerBus),
+    TALONFX_STEER_BL(5, Constants.lowerBus),
+    TALONFX_DRIVE_BR(10, Constants.lowerBus),
+    TALONFX_STEER_BR(11, Constants.lowerBus),
+    CANCODER_STEER_FL(3, Constants.lowerBus),
+    CANCODER_STEER_FR(9, Constants.lowerBus),
+    CANCODER_STEER_BL(6, Constants.lowerBus),
+    CANCODER_STEER_BR(12, Constants.lowerBus),
+    PIGEON(15, Constants.lowerBus),
+    CANDLE(29, Constants.upperBus),
 
     // Intake
-    INTAKE_ONE(9, Constants.canivoreBus),
-    INTAKE_TWO(10, Constants.canivoreBus),
+    INTAKE_ONE(6, Constants.upperBus),
+    INTAKE_TWO(7, Constants.upperBus),
 
     // Hopper
-    INDEXER(12, Constants.canivoreBus),
-    UPTAKE(11, Constants.canivoreBus),
+    INDEXER(5, Constants.upperBus),
+    UPTAKE(8, Constants.upperBus),
 
     // Feeder
-    FEEDER_ONE(13, Constants.canivoreBus),
-    FEEDER_TWO(14, Constants.canivoreBus),
+    FEEDER_ONE(3, Constants.upperBus),
+    FEEDER_TWO(10, Constants.upperBus),
 
     // Shooter Hood
-    SHOOTER_HOOD(15, Constants.canivoreBus),
-    CANCODER_HOOD(26, Constants.canivoreBus),
+    SHOOTER_HOOD(9, Constants.upperBus),
 
     // Shooter
-    SHOOTER_ONE(16, Constants.canivoreBus),
-    SHOOTER_TWO(17, Constants.canivoreBus),
-    SHOOTER_THREE(18, Constants.canivoreBus),
-    SHOOTER_FOUR(19, Constants.canivoreBus),
-    SHOOTER_FIVE(20, Constants.canivoreBus),
+    SHOOTER_ONE(1, Constants.upperBus),
+    SHOOTER_TWO(2, Constants.upperBus),
+    SHOOTER_THREE(4, Constants.upperBus),
+    SHOOTER_FOUR(11, Constants.upperBus),
+    SHOOTER_FIVE(12, Constants.upperBus),
 
     // CLIMBER
-    CLIMBER(21, Constants.canivoreBus);
+    CLIMBER(21, Constants.upperBus);
 
     private final int mDeviceNumber;
     private final CANBus mBus;
