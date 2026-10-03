@@ -71,8 +71,7 @@ public class RobotContainer {
         uptake = new Uptake();
         shooterHood = new ShooterHood();
         vision = new Vision();
-        uptake = new Uptake();
-        lights = new Lights();
+        // lights = new Lights();
         // climber = new Climber();
         configureBindings();
     }
