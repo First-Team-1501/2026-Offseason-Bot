@@ -146,7 +146,16 @@ Notes:
     `Vision/limelight Pose (mt2)` against a known robot position.
 11. DS: drive stick in USB slot 0, rotation stick in slot 1; verify buttons per section 2.4.
 
-## 6. Known issues and limitations
+## 6. Verification status
+
+| Check | Result |
+|---|---|
+| `gradlew build` | Pass. One pre-existing warning: `Robot.java:139` deprecated `Command.schedule()`. |
+| `gradlew simulateJava` startup | Pass: "Robot program startup complete", no exceptions. One startup burst of "CAN message is stale" for lower-bus devices (sim timing); none after init. |
+| Limelight NT topics | Code inspection: all Limelight NT access derives from `kLimelightNames`. No runtime NT client used. |
+| On-robot bring-up | Pending (section 5). |
+
+## 7. Known issues and limitations
 
 - Simulation: Phoenix sim keys devices by type and ID only (`PlatformJNI.JNI_SimCreate(type, id)`).
   Upper and lower TalonFX IDs overlap (1, 2, 4, 5, 7, 8, 10, 11), so simulation is valid for startup and NT
