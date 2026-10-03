@@ -45,6 +45,11 @@ public final class Constants {
         public static final double kSlowModeScalor = 0.85;
         public static final double kDefaultTurnScalor = 0.75;
         public static final double kTurboModeScalor = 1;
+        public static final int kDriveStickPort = 0;
+        public static final int kRotationStickPort = 1;
+        public static final int kTestControllerPort = 3;
+        public static final double kStickDeadband = 0.05;
+        public static final double kStickExponent = 3.0;
     }
 
     public static final class DriveConstants {

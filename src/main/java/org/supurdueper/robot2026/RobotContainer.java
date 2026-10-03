@@ -7,6 +7,7 @@ package org.supurdueper.robot2026;
 import edu.wpi.first.wpilibj2.command.Commands;
 import lombok.Getter;
 import org.supurdueper.robot2026.state.Driver;
+import org.supurdueper.robot2026.state.DriverSticks;
 import org.supurdueper.robot2026.state.RobotStates;
 import org.supurdueper.robot2026.subsystems.Climber;
 import org.supurdueper.robot2026.subsystems.Feeder;
@@ -27,7 +28,7 @@ public class RobotContainer {
     private static Drivetrain drivetrain;
 
     @Getter
-    private static Driver driver;
+    private static DriverSticks driver;
 
     @Getter
     private static Driver testController;
@@ -60,8 +61,8 @@ public class RobotContainer {
     private Uptake uptake;
 
     public RobotContainer() {
-        driver = new Driver(0);
-        testController = new Driver(2);
+        driver = new DriverSticks();
+        testController = new Driver(Constants.DriverConstants.kTestControllerPort);
         drivetrain = TunerConstants.createDrivetrain();
         intake = new Intake();
         hopper = new Hopper();

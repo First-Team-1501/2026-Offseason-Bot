@@ -6,6 +6,7 @@ import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import lombok.Getter;
 import lombok.Setter;
+import org.supurdueper.lib.gamepad.Gamepad;
 import org.supurdueper.robot2026.RobotContainer;
 import org.supurdueper.robot2026.subsystems.Shooter;
 import org.supurdueper.robot2026.subsystems.ShooterHood;
@@ -16,7 +17,7 @@ public final class RobotStates {
     public static final Trigger teleop = RobotModeTriggers.teleop();
     public static final Trigger auto = RobotModeTriggers.autonomous();
     public static final Trigger disabled = RobotModeTriggers.disabled();
-    public static final Driver driver = RobotContainer.getDriver();
+    public static final DriverSticks driver = RobotContainer.getDriver();
     public static final Driver testController = RobotContainer.getTestController();
     public static final Shooter shooter = RobotContainer.getShooter();
     public static final ShooterHood hood = RobotContainer.getShooterHood();
@@ -59,16 +60,17 @@ public final class RobotStates {
     public static final Trigger infoReadyToShoot = infoHoodAtAngle.and(infoShooterAtSpeed);
 
     // Actions
-    public static final Trigger rezeroFieldHeading = driver.select.and(teleop);
-    public static final Trigger actionIntake = driver.leftBumper.and(teleop);
-    public static final Trigger actionAim = driver.rightTrigger.and(teleop);
-    public static final Trigger actionShoot = driver.rightBumper.and(teleop);
-    public static final Trigger actionPurge = driver.leftTrigger.and(teleop);
-    public static final Trigger actionSetShot = driver.Y.and(teleop);
+    public static final Trigger rezeroFieldHeading = driver.rezeroHeading.and(teleop);
+    public static final Trigger actionIntake = driver.intake.and(teleop);
+    public static final Trigger actionAim = driver.aim.and(teleop);
+    public static final Trigger actionShoot = driver.shoot.and(teleop);
+    public static final Trigger actionPurge = driver.purge.and(teleop);
+    public static final Trigger actionSetShot = driver.setShot.and(teleop);
+    public static final Trigger actionZeroHood = driver.zeroHood;
 
-    public static final Trigger actionClimb = driver.B.and(teleop);
-    public static final Trigger actionClimberUp = driver.Y.and(teleop);
-    public static final Trigger actionClimberHome = driver.A.and(teleop);
+    public static final Trigger actionClimb = Gamepad.kFalse;
+    public static final Trigger actionClimberUp = Gamepad.kFalse;
+    public static final Trigger actionClimberHome = Gamepad.kFalse;
 
     public static final Trigger actionTestA = testController.A.and(teleop);
     public static final Trigger actionTestB = testController.B.and(teleop);
