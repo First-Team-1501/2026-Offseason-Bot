@@ -46,7 +46,7 @@ public class Feeder extends VelocitySubsystem implements SupurdueperSubsystem {
         config.TorqueCurrent.PeakForwardTorqueCurrent = FeederConstants.kMaxAmps;
         config.TorqueCurrent.PeakReverseTorqueCurrent = 0;
         config.MotorOutput.PeakForwardDutyCycle = 1.0;
-        config.MotorOutput.PeakForwardDutyCycle = 0.0;
+        config.MotorOutput.PeakReverseDutyCycle = 0.0;
         config.Feedback.SensorToMechanismRatio = FeederConstants.kGearRatio;
         configureMotors();
         Robot.add(this);

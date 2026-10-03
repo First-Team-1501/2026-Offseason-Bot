@@ -95,8 +95,8 @@ public final class Constants {
                 .withSupplyCurrentLimit(40)
                 .withSupplyCurrentLimitEnable(true);
         public static final double kP = 99999.0;
-        public static final double kS = 9.0;
-        public static final double kV = 0.15;
+        public static final double kS = 7.06;
+        public static final double kV = 0.118;
         public static final double shooterGearRatio = 36.0 / 24.0;
         public static final AngularVelocity kVelocityTolerance = RPM.of(100);
         public static final AngularVelocity kShootRPM = RPM.of(1600);

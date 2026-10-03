@@ -37,7 +37,7 @@ public class Shooter extends VelocitySubsystem implements SupurdueperSubsystem {
         config.TorqueCurrent.PeakForwardTorqueCurrent = ShooterConstants.kMaxAmps;
         config.TorqueCurrent.PeakReverseTorqueCurrent = 0;
         config.MotorOutput.PeakForwardDutyCycle = 1.0;
-        config.MotorOutput.PeakForwardDutyCycle = 0.0;
+        config.MotorOutput.PeakReverseDutyCycle = 0.0;
         configureMotors();
         // Manually create followers since we have more than two
         TalonFXFactory.createPermanentFollowerTalon(CanId.SHOOTER_TWO, motor, false);
