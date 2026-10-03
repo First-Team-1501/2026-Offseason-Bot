@@ -21,7 +21,8 @@ import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj.util.Color8Bit;
-import org.supurdueper.robot2026.subsystems.Vision;
+import java.util.List;
+import org.supurdueper.robot2026.Constants.VisionConstants;
 import org.supurdueper.robot2026.utils.FieldCalculations;
 
 public class DriveTelemetry {
@@ -45,16 +46,12 @@ public class DriveTelemetry {
     /* What to publish over networktables for telemetry */
     private final NetworkTableInstance inst = NetworkTableInstance.getDefault();
 
-    private final NetworkTable rightLimelightTable = inst.getTable(Vision.rightLimelightName);
-    private final NetworkTable backLimelightTable = inst.getTable(Vision.backLimelightName);
-    private final NetworkTable leftLimelightTable = inst.getTable(Vision.leftLimelightName);
-
-    private final DoubleArrayPublisher rightLimelightRobotOrientationPublisher =
-            rightLimelightTable.getDoubleArrayTopic("robot_orientation_set").publish();
-    private final DoubleArrayPublisher backLimelightRobotOrientationPublisher =
-            backLimelightTable.getDoubleArrayTopic("robot_orientation_set").publish();
-    private final DoubleArrayPublisher leftLimelightRobotOrientationPublisher =
-            leftLimelightTable.getDoubleArrayTopic("robot_orientation_set").publish();
+    private final List<DoubleArrayPublisher> limelightRobotOrientationPublishers =
+            VisionConstants.kLimelightNames.stream()
+                    .map(name -> inst.getTable(name)
+                            .getDoubleArrayTopic("robot_orientation_set")
+                            .publish())
+                    .toList();
     private double[] robotOrientation = {0, 0, 0, 0, 0, 0};
 
     /* Robot swerve drive state */
@@ -116,9 +113,9 @@ public class DriveTelemetry {
     public void telemeterize(SwerveDriveState state) {
 
         robotOrientation[0] = state.Pose.getRotation().getDegrees();
-        rightLimelightRobotOrientationPublisher.set(robotOrientation);
-        backLimelightRobotOrientationPublisher.set(robotOrientation);
-        leftLimelightRobotOrientationPublisher.set(robotOrientation);
+        for (DoubleArrayPublisher publisher : limelightRobotOrientationPublishers) {
+            publisher.set(robotOrientation);
+        }
 
         /* Telemeterize the swerve drive state */
         drivePose.set(state.Pose);

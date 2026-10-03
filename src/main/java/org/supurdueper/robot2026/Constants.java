@@ -25,6 +25,7 @@ import edu.wpi.first.units.measure.AngularAcceleration;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.units.measure.Voltage;
+import java.util.List;
 import org.supurdueper.lib.utils.ExpCurve;
 
 public final class Constants {
@@ -56,6 +57,10 @@ public final class Constants {
         public static final AngularVelocity rotationClosedLoopDeadband = RadiansPerSecond.of(0.00);
         public static final LinearVelocity translationClosedLoopDeadband = MetersPerSecond.of(0.01);
         public static final Translation2d robotToBumperCenter = null;
+    }
+
+    public static final class VisionConstants {
+        public static final List<String> kLimelightNames = List.of("limelight");
     }
 
     public static boolean disableHAL = false;
