@@ -30,7 +30,7 @@ import org.supurdueper.lib.utils.ExpCurve;
 
 public final class Constants {
     public static final double loopPeriodSecs = 0.02;
-    public static boolean tuningMode = false;
+    public static boolean tuningMode = true;
     public static boolean publishToNT = true;
     public static CANBus upperBus = new CANBus("Upper Bot CANivore");
     public static CANBus lowerBus = new CANBus("Lower Bot Canivore");
@@ -104,9 +104,10 @@ public final class Constants {
                 .withStatorCurrentLimitEnable(true)
                 .withSupplyCurrentLimit(40)
                 .withSupplyCurrentLimitEnable(true);
-        public static final double kP = 99999.0;
-        public static final double kS = 7.06;
-        public static final double kV = 0.118;
+        // VelocityVoltage gains, volts per mechanism rotation/sec. Initial estimates, tune on robot.
+        public static final double kP = 0.25;
+        public static final double kS = 0.2;
+        public static final double kV = 0.18;
         public static final double shooterGearRatio = 36.0 / 24.0;
         public static final AngularVelocity kVelocityTolerance = RPM.of(100);
         public static final AngularVelocity kShootRPM = RPM.of(1600);
@@ -125,9 +126,10 @@ public final class Constants {
         public static final Voltage kIntakeVoltage = Volts.of(10);
         public static final Voltage kPurgeVoltage = Volts.of(0);
         public static final AngularVelocity kIntakeSpeed = RPM.of(1800);
-        public static final double kV = 0.0;
-        public static final double kS = 12.0;
-        public static final double kP = 8.0;
+        // VelocityVoltage gains, volts per mechanism rotation/sec. Initial estimates, tune on robot.
+        public static final double kV = 0.24;
+        public static final double kS = 0.3;
+        public static final double kP = 0.2;
         public static final AngularVelocity velocityTolerance = RPM.of(50);
         public static final AngularVelocity kAgitateSpeed = RPM.of(-300);
         public static final Voltage kAgitateVoltage = Volts.of(0.5);
@@ -135,9 +137,10 @@ public final class Constants {
     }
 
     public class FeederConstants {
-        public static final double kP = 6.5;
-        public static final double kS = 3.7;
-        public static final double kV = 0.07;
+        // VelocityVoltage gains, volts per mechanism rotation/sec. Initial estimates, tune on robot.
+        public static final double kP = 0.2;
+        public static final double kS = 0.2;
+        public static final double kV = 0.16;
         public static final AngularVelocity velocityTolerance = RPM.of(60);
         public static final double kMaxAmps = 60.0;
         public static final double kGearRatio = 24.0 / 18.0;
@@ -152,9 +155,10 @@ public final class Constants {
     }
 
     public class UptakeConstants {
-        public static final double kP = 12.0;
-        public static final double kS = 3.0;
-        public static final double kV = 0.1;
+        // VelocityVoltage gains, volts per mechanism rotation/sec. Initial estimates, tune on robot.
+        public static final double kP = 0.2;
+        public static final double kS = 0.2;
+        public static final double kV = 0.23;
         public static final AngularVelocity velocityTolerance = RPM.of(60);
         public static final double kMaxAmps = 60.0;
         public static final double kGearRatio = 34.0 / 18.0;
@@ -177,9 +181,10 @@ public final class Constants {
         public static final AngularVelocity kPurgeVelocity = RPM.of(-4);
         public static final AngularVelocity kShootVelocity = RPM.of(1700);
         public static final double kGearRatio = 24.0 / 12.0;
-        public static final double kp = 10.0;
-        public static final double ks = 7.5;
-        public static final double kv = 0.1;
+        // VelocityVoltage gains, volts per mechanism rotation/sec. Initial estimates, tune on robot.
+        public static final double kp = 0.2;
+        public static final double ks = 0.3;
+        public static final double kv = 0.21;
     }
 
     public class ClimberConstants {

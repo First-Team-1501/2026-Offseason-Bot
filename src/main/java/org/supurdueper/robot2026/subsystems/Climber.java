@@ -25,7 +25,7 @@ import org.supurdueper.robot2026.state.RobotStates;
 
 public class Climber extends PositionSubsystem implements SupurdueperSubsystem {
     /** Creates a new Climber. */
-    PositionVoltage noMotionMagic = new PositionVoltage(Rotations.of(0));
+    PositionVoltage noMotionMagic = new PositionVoltage(Rotations.of(0)).withEnableFOC(false);
 
     public Climber() {
         configureMotors();

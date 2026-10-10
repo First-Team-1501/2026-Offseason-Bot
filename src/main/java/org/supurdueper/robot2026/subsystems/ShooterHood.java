@@ -36,7 +36,7 @@ import org.supurdueper.robot2026.utils.FieldCalculations;
 
 public class ShooterHood extends PositionSubsystem implements SupurdueperSubsystem {
 
-    private PositionVoltage noMagicMotion = new PositionVoltage(0);
+    private PositionVoltage noMagicMotion = new PositionVoltage(0).withEnableFOC(false);
     private final LoggedTunableNumber shooterAngle;
 
     /** Creates a new ShooterHood. */

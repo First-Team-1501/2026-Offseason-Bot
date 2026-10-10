@@ -5,18 +5,18 @@ import com.ctre.phoenix6.CANBus;
 public enum CanId {
 
     // Drive
-    TALONFX_DRIVE_FL(1, Constants.lowerBus),
-    TALONFX_STEER_FL(2, Constants.lowerBus),
-    TALONFX_DRIVE_FR(7, Constants.lowerBus),
-    TALONFX_STEER_FR(8, Constants.lowerBus),
-    TALONFX_DRIVE_BL(4, Constants.lowerBus),
-    TALONFX_STEER_BL(5, Constants.lowerBus),
-    TALONFX_DRIVE_BR(10, Constants.lowerBus),
-    TALONFX_STEER_BR(11, Constants.lowerBus),
-    CANCODER_STEER_FL(3, Constants.lowerBus),
-    CANCODER_STEER_FR(9, Constants.lowerBus),
-    CANCODER_STEER_BL(6, Constants.lowerBus),
-    CANCODER_STEER_BR(12, Constants.lowerBus),
+    TALONFX_DRIVE_FL(10, Constants.lowerBus),
+    TALONFX_STEER_FL(11, Constants.lowerBus),
+    TALONFX_DRIVE_FR(4, Constants.lowerBus),
+    TALONFX_STEER_FR(5, Constants.lowerBus),
+    TALONFX_DRIVE_BL(7, Constants.lowerBus),
+    TALONFX_STEER_BL(8, Constants.lowerBus),
+    TALONFX_DRIVE_BR(1, Constants.lowerBus),
+    TALONFX_STEER_BR(2, Constants.lowerBus),
+    CANCODER_STEER_FL(12, Constants.lowerBus),
+    CANCODER_STEER_FR(6, Constants.lowerBus),
+    CANCODER_STEER_BL(9, Constants.lowerBus),
+    CANCODER_STEER_BR(3, Constants.lowerBus),
     PIGEON(15, Constants.lowerBus),
     CANDLE(29, Constants.upperBus),
 
@@ -36,11 +36,11 @@ public enum CanId {
     SHOOTER_HOOD(9, Constants.upperBus),
 
     // Shooter
-    SHOOTER_ONE(1, Constants.upperBus),
-    SHOOTER_TWO(2, Constants.upperBus),
-    SHOOTER_THREE(4, Constants.upperBus),
-    SHOOTER_FOUR(11, Constants.upperBus),
-    SHOOTER_FIVE(12, Constants.upperBus),
+    SHOOTER_ONE(12, Constants.upperBus),
+    SHOOTER_TWO(11, Constants.upperBus),
+    SHOOTER_THREE(1, Constants.upperBus),
+    SHOOTER_FOUR(2, Constants.upperBus),
+    SHOOTER_FIVE(4, Constants.upperBus),
 
     // CLIMBER
     CLIMBER(21, Constants.upperBus);
