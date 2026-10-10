@@ -145,7 +145,7 @@ public class Feeder extends VelocitySubsystem implements SupurdueperSubsystem {
 
     @Override
     public boolean followerInverted() {
-        return true;
+        return false;
     }
 
     @Override
@@ -155,7 +155,7 @@ public class Feeder extends VelocitySubsystem implements SupurdueperSubsystem {
 
     @Override
     public boolean inverted() {
-        return false;
+        return true;
     }
 
     @Override

@@ -4,7 +4,7 @@ import static edu.wpi.first.units.Units.RotationsPerSecond;
 
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.Slot0Configs;
-import com.ctre.phoenix6.controls.VelocityTorqueCurrentFOC;
+import com.ctre.phoenix6.controls.VelocityVoltage;
 import edu.wpi.first.units.Units;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -25,7 +25,8 @@ public abstract class VelocitySubsystem extends TalonFXSubsystem {
     private final LoggedTunableNumber ks;
     private final LoggedTunableNumber kv;
     private final List<LoggedTunableNumber> pidGains;
-    private final VelocityTorqueCurrentFOC velocityRequest = new VelocityTorqueCurrentFOC(0);
+    // Voltage closed loop with FOC disabled: no Phoenix Pro license required
+    private final VelocityVoltage velocityRequest = new VelocityVoltage(0).withEnableFOC(false);
     protected final AngularVelocity velocityTolerance;
     private final SysIdRoutine sysIdRoutine;
     private final Trigger atVelocity = new Trigger(this::isAtVelocity);
