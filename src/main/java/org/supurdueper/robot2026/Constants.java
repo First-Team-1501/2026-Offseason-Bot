@@ -113,11 +113,11 @@ public final class Constants {
                 .withStatorCurrentLimitEnable(true)
                 .withSupplyCurrentLimit(40)
                 .withSupplyCurrentLimitEnable(true);
-        // VelocityVoltage gains, volts per mechanism rotation/sec. kS and kV fitted from steady-state flywheel speeds
-        // in
-        // the 2026-10-17 robot logs (900-1725 RPM; kS 0.2 left the flywheel 40-70 RPM short at every speed).
+        // VelocityVoltage gains, volts per mechanism rotation/sec. kS 0.55 was fitted while motor 1 braked the
+        // flywheel;
+        // with that fixed most of the drag is gone, so kS is back to 0.2 until it is refit from new logs.
         public static final double kP = 0.25;
-        public static final double kS = 0.55;
+        public static final double kS = 0.2;
         public static final double kV = 0.18;
         public static final double shooterGearRatio = 36.0 / 24.0;
         public static final AngularVelocity kVelocityTolerance = RPM.of(100);
@@ -125,7 +125,7 @@ public final class Constants {
         public static final AngularVelocity kIdleRPM = RPM.of(900);
         public static final AngularVelocity kRevRpm = RPM.of(1200);
         // Multiplier on LookupTables.distanceToShooterRPM; adjustable live as SmartDashboard "Shooter/LUT RPM Scale".
-        public static final double kLutRpmScale = 1.20;
+        public static final double kLutRpmScale = 1.10;
         // Multiplier on LookupTables.distanceToForwardRPM; adjustable live as SmartDashboard "Shooter/Forward RPM
         // Scale".
         public static final double kForwardRpmScale = 1.0;

@@ -42,7 +42,9 @@ public class Shooter extends VelocitySubsystem implements SupurdueperSubsystem {
         allMotors.add(motor);
         // Manually create followers since we have more than two
         allMotors.add(TalonFXFactory.createPermanentFollowerTalon(CanId.SHOOTER_TWO, motor, false));
-        allMotors.add(TalonFXFactory.createPermanentFollowerTalon(CanId.SHOOTER_THREE, motor, false));
+        // Motor 1 sits on the opposite side from the leader (12): with Aligned it braked the flywheel at the current
+        // limit (2026-10-17 per-motor log)
+        allMotors.add(TalonFXFactory.createPermanentFollowerTalon(CanId.SHOOTER_THREE, motor, true));
         allMotors.add(TalonFXFactory.createPermanentFollowerTalon(CanId.SHOOTER_FOUR, motor, true));
         allMotors.add(TalonFXFactory.createPermanentFollowerTalon(CanId.SHOOTER_FIVE, motor, true));
         Robot.add(this);
