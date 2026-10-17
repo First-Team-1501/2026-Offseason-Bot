@@ -6,6 +6,7 @@ import static edu.wpi.first.units.Units.Meters;
 import dev.doglog.DogLog;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import org.supurdueper.robot2026.Constants.LookupTables;
 import org.supurdueper.robot2026.Constants.ShooterConstants;
@@ -27,6 +28,7 @@ public final class ShotCalculator {
     private static final String kManualAngleKey = "Shot Tuning/Angle (Deg)";
     private static final String kRecordKey = "Shot Tuning/Record";
     private static final String kDistanceKey = "Shot Tuning/Distance (m)";
+    private static final String kInRangeKey = "Shot Tuning/In Range";
     private static final double kMaxManualRpm = 3500;
 
     private static boolean wasManual = false;
@@ -75,6 +77,17 @@ public final class ShotCalculator {
         return LookupTables.distanceToShooterAngle.get(distanceMeters(robotPose));
     }
 
+    /**
+     * False only for hub shots from beyond kMaxHubShotDistanceMeters; manual tuning, forwarding and auto are not
+     * capped.
+     */
+    public static boolean inRange(Pose2d robotPose) {
+        return isManual()
+                || DriverStation.isAutonomous()
+                || FieldCalculations.isForwarding(robotPose)
+                || distanceMeters(robotPose) <= ShooterConstants.kMaxHubShotDistanceMeters;
+    }
+
     /** Distance the tables use: robot center to the hub from our zone, to the forwarding point elsewhere. */
     public static double distanceMeters(Pose2d robotPose) {
         return FieldCalculations.distanceToAimPoint(robotPose).in(Meters);
@@ -91,6 +104,7 @@ public final class ShotCalculator {
         }
         wasManual = manual;
         SmartDashboard.putNumber(kDistanceKey, distance);
+        SmartDashboard.putBoolean(kInRangeKey, inRange(robotPose));
         DogLog.log("Shooter/Forwarding", forwarding);
         DogLog.log("Shooter/Distance To Aim Point", distance);
         DogLog.log("Shot Tuning/Manual", manual);

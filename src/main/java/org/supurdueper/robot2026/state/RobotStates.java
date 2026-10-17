@@ -10,6 +10,7 @@ import org.supurdueper.lib.gamepad.Gamepad;
 import org.supurdueper.robot2026.RobotContainer;
 import org.supurdueper.robot2026.subsystems.Shooter;
 import org.supurdueper.robot2026.subsystems.ShooterHood;
+import org.supurdueper.robot2026.utils.ShotCalculator;
 
 public final class RobotStates {
 
@@ -58,6 +59,8 @@ public final class RobotStates {
     public static final Trigger infoShooterAtSpeed = shooter.isAtVelocityTrigger();
     public static final Trigger infoHoodAtAngle = hood.isAtPositionTrigger();
     public static final Trigger infoReadyToShoot = infoHoodAtAngle.and(infoShooterAtSpeed);
+    public static final Trigger infoInRange = new Trigger(
+            () -> ShotCalculator.inRange(RobotContainer.getDrivetrain().getState().Pose));
 
     // Actions
     public static final Trigger rezeroFieldHeading = driver.rezeroHeading.and(teleop);

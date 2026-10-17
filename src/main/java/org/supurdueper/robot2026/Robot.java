@@ -9,8 +9,10 @@ import choreo.auto.AutoFactory;
 import com.ctre.phoenix6.HootAutoReplay;
 import dev.doglog.DogLog;
 import dev.doglog.DogLogOptions;
+import edu.wpi.first.net.WebServer;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.Threads;
 import edu.wpi.first.wpilibj.Timer;
@@ -76,7 +78,9 @@ public class Robot extends SupurdueperRobot {
                 .withLogExtras(false)
                 .withCaptureDs(false)
                 .withNtPublish(Constants.publishToNT)
-                .withCaptureNt(false));
+                .withCaptureNt(false)
+                // Default 1000 overflowed at startup on the robot; per-motor shooter logging adds more
+                .withLogEntryQueueCapacity(4000));
         Vision.setCameraPose();
 
         // Limelight port fowarding
@@ -90,6 +94,8 @@ public class Robot extends SupurdueperRobot {
 
         if (!DriverStation.isFMSAttached()) SmartDashboard.putBoolean("Won Auto", true);
         RobotController.setBrownoutVoltage(5.75);
+        // Serve the deploy folder so Elastic's "Download From Robot" can load deploy/elastic-layout.json
+        WebServer.start(5800, Filesystem.getDeployDirectory().getPath());
     }
 
     @Override

@@ -55,7 +55,8 @@ public final class Constants {
     public static final class DriveConstants {
         public static final double headingKp = 15.0;
         public static final double headingKi = 0.0;
-        public static final double headingKd = 0.2;
+        // kD 0.2 -> 0.6 from aim step responses in the 2026-10-17 logs (less overshoot, same settle time)
+        public static final double headingKd = 0.6;
         public static final double translationKp = 7.0;
         public static final double translationKi = 0;
         public static final double translationKd = 0.1;
@@ -128,6 +129,8 @@ public final class Constants {
         // Multiplier on LookupTables.distanceToForwardRPM; adjustable live as SmartDashboard "Shooter/Forward RPM
         // Scale".
         public static final double kForwardRpmScale = 1.0;
+        // Hub shots (drive stick 18) do not feed from farther than this; set from shot testing
+        public static final double kMaxHubShotDistanceMeters = 4.0;
     }
 
     public class HopperConstants {
@@ -140,10 +143,11 @@ public final class Constants {
                 .withSupplyCurrentLimitEnable(true);
         public static final Voltage kIntakeVoltage = Volts.of(10);
         public static final Voltage kPurgeVoltage = Volts.of(0);
-        public static final AngularVelocity kIntakeSpeed = RPM.of(1800);
-        // VelocityVoltage gains, volts per mechanism rotation/sec. Initial estimates, tune on robot.
-        public static final double kV = 0.24;
-        public static final double kS = 0.3;
+        // 1900 keeps the feed rate the 2026-10-17 shots ran at (1800 with the old gains actually ran about 1900)
+        public static final AngularVelocity kIntakeSpeed = RPM.of(1900);
+        // VelocityVoltage gains, volts per mechanism rotation/sec. kS and kV fitted from the 2026-10-17 logs.
+        public static final double kV = 0.22;
+        public static final double kS = 0.25;
         public static final double kP = 0.2;
         public static final AngularVelocity velocityTolerance = RPM.of(50);
         public static final AngularVelocity kAgitateSpeed = RPM.of(-300);
@@ -152,10 +156,10 @@ public final class Constants {
     }
 
     public class FeederConstants {
-        // VelocityVoltage gains, volts per mechanism rotation/sec. Initial estimates, tune on robot.
+        // VelocityVoltage gains, volts per mechanism rotation/sec. kS and kV fitted from the 2026-10-17 logs.
         public static final double kP = 0.2;
-        public static final double kS = 0.2;
-        public static final double kV = 0.16;
+        public static final double kS = 0.085;
+        public static final double kV = 0.154;
         public static final AngularVelocity velocityTolerance = RPM.of(60);
         public static final double kMaxAmps = 60.0;
         public static final double kGearRatio = 24.0 / 18.0;
@@ -170,10 +174,11 @@ public final class Constants {
     }
 
     public class UptakeConstants {
-        // VelocityVoltage gains, volts per mechanism rotation/sec. Initial estimates, tune on robot.
+        // VelocityVoltage gains, volts per mechanism rotation/sec. Fitted from the 2026-10-17 logs (one operating
+        // point, 1500 RPM, plus coast-down friction).
         public static final double kP = 0.2;
-        public static final double kS = 0.2;
-        public static final double kV = 0.23;
+        public static final double kS = 0.25;
+        public static final double kV = 0.218;
         public static final AngularVelocity velocityTolerance = RPM.of(60);
         public static final double kMaxAmps = 60.0;
         public static final double kGearRatio = 34.0 / 18.0;
@@ -198,10 +203,11 @@ public final class Constants {
         // While shooting; negative = opposite of the intake direction
         public static final AngularVelocity kShootVelocity = RPM.of(-1700);
         public static final double kGearRatio = 24.0 / 12.0;
-        // VelocityVoltage gains, volts per mechanism rotation/sec. Initial estimates, tune on robot.
+        // VelocityVoltage gains, volts per mechanism rotation/sec. kv from the fitted back-EMF, ks for the ball load
+        // (2026-10-17 logs). 4000 RPM intake is beyond what the motors reach, so it runs at full output either way.
         public static final double kp = 0.2;
-        public static final double ks = 0.3;
-        public static final double kv = 0.21;
+        public static final double ks = 1.0;
+        public static final double kv = 0.185;
     }
 
     public class ClimberConstants {

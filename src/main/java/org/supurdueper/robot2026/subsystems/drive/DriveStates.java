@@ -36,8 +36,10 @@ public class DriveStates {
         this.driver = RobotContainer.getDriver();
         fieldCentricFacingAngle.HeadingController.setPID(headingKp, headingKi, headingKd);
         fieldCentricFacingAngle.RotationalDeadband = rotationClosedLoopDeadband.in(RadiansPerSecond);
+        fieldCentricFacingAngle.MaxAbsRotationalRate = MaxAngularRate;
         driveFacingHub.HeadingController.setPID(headingKp, headingKi, headingKd);
         driveFacingHub.RotationalDeadband = rotationClosedLoopDeadband.in(RadiansPerSecond);
+        driveFacingHub.MaxAbsRotationalRate = MaxAngularRate;
     }
 
     public void bindCommands() {
