@@ -5,7 +5,6 @@
 package org.supurdueper.robot2026.subsystems;
 
 import static edu.wpi.first.units.Units.Amps;
-import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.RPM;
 import static edu.wpi.first.units.Units.Volts;
 
@@ -15,22 +14,18 @@ import dev.doglog.DogLog;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
-import org.supurdueper.lib.LoggedTunableNumber;
 import org.supurdueper.lib.TalonFXFactory;
 import org.supurdueper.lib.subsystems.SupurdueperSubsystem;
 import org.supurdueper.lib.subsystems.VelocitySubsystem;
 import org.supurdueper.robot2026.CanId;
-import org.supurdueper.robot2026.Constants;
-import org.supurdueper.robot2026.Constants.LookupTables;
 import org.supurdueper.robot2026.Constants.ShooterConstants;
 import org.supurdueper.robot2026.Robot;
 import org.supurdueper.robot2026.RobotContainer;
 import org.supurdueper.robot2026.state.RobotStates;
-import org.supurdueper.robot2026.utils.FieldCalculations;
+import org.supurdueper.robot2026.utils.ShotCalculator;
 
 public class Shooter extends VelocitySubsystem implements SupurdueperSubsystem {
 
-    private final LoggedTunableNumber shooterVelocity;
     /** Creates a new VelocityTest. */
     public Shooter() {
         config.Feedback.SensorToMechanismRatio = ShooterConstants.shooterGearRatio;
@@ -45,8 +40,6 @@ public class Shooter extends VelocitySubsystem implements SupurdueperSubsystem {
         TalonFXFactory.createPermanentFollowerTalon(CanId.SHOOTER_FOUR, motor, true);
         TalonFXFactory.createPermanentFollowerTalon(CanId.SHOOTER_FIVE, motor, true);
         Robot.add(this);
-        shooterVelocity = new LoggedTunableNumber("Shot Tuning/Speed (RPM)");
-        shooterVelocity.initDefault(1500);
     }
 
     @Override
@@ -63,6 +56,7 @@ public class Shooter extends VelocitySubsystem implements SupurdueperSubsystem {
         DogLog.log("Shooter/At Velocity", isAtVelocity());
         DogLog.log("Shooter/Current", motor.getTorqueCurrent().getValue().in(Amps));
         DogLog.log("Battery Voltage", RobotController.getBatteryVoltage());
+        ShotCalculator.periodic(RobotContainer.getDrivetrain().getState().Pose);
     }
 
     @Override
@@ -111,14 +105,7 @@ public class Shooter extends VelocitySubsystem implements SupurdueperSubsystem {
     }
 
     private AngularVelocity getShotVelocity() {
-        if (Constants.tuningMode) {
-            return RPM.of(shooterVelocity.get());
-        } else {
-            double distanceToGoalMeters = FieldCalculations.distanceToGoal(
-                            RobotContainer.getDrivetrain().getState().Pose)
-                    .in(Meters);
-            return RPM.of(LookupTables.distanceToShooterRPM.get(distanceToGoalMeters));
-        }
+        return RPM.of(ShotCalculator.shotRpm(RobotContainer.getDrivetrain().getState().Pose));
     }
 
     @Override

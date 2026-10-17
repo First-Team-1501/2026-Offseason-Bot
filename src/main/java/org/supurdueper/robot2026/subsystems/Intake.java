@@ -113,7 +113,7 @@ public class Intake extends VelocitySubsystem implements SupurdueperSubsystem {
         RobotStates.actionShoot
                 .or(RobotStates.auto_shoot)
                 .or(RobotStates.actionSetShot)
-                .whileTrue(runEnd(this::intake, this::stop));
+                .whileTrue(runShoot());
         RobotStates.actionPurge.whileTrue(runEnd(this::purge, this::stop));
         // RobotStates.testController.B.onTrue(goToVelocity(() -> RPM.of(500)));
         // RobotStates.testController.X.onTrue(goToVelocity(() -> RPM.of(1000)));

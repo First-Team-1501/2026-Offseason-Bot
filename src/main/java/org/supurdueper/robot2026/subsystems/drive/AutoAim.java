@@ -9,9 +9,7 @@ import dev.doglog.DogLog;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
-import org.supurdueper.lib.utils.AllianceFlip;
 import org.supurdueper.robot2026.utils.FieldCalculations;
-import org.supurdueper.robot2026.utils.FieldConstants;
 
 /**
  * The SwerveRequest::apply function runs in a fast (250hz on CAN FD) thread that is timed on the CTRE StatusSignal API.
@@ -24,31 +22,24 @@ public class AutoAim extends FieldCentricFacingAngle {
     Rotation2d aimedTolerance = Rotation2d.fromDegrees(0.25);
     SwerveRequest xMode = new SwerveDriveBrake();
     Translation2d pointToFace;
-    Translation2d hub = FieldConstants.Hub.topCenterPoint.toTranslation2d();
-    double feedShotX = FieldConstants.LinesVertical.starting;
-    Translation2d bottomHalfFieldFeed = new Translation2d(feedShotX, FieldConstants.LinesHorizontal.center / 2);
-    Translation2d topHalfFieldFeed = new Translation2d(feedShotX, FieldConstants.LinesHorizontal.center * 1.5);
 
-    public AutoAim() {}
+    public AutoAim() {
+        // TargetDirection is field-relative (blue origin) on both alliances; translation still follows
+        // the ForwardPerspective set by the caller.
+        this.TargetDirectionPerspective = TargetDirectionPerspectiveValue.BlueAlliance;
+    }
 
     @Override
     public StatusCode apply(SwerveControlParameters parameters, SwerveModule<?, ?, ?>... modulesToApply) {
         Pose2d currentPose = parameters.currentPose;
 
-        if (FieldCalculations.ourZone(currentPose)) {
-            this.pointToFace = AllianceFlip.apply(FieldConstants.Hub.topCenterPoint.toTranslation2d());
-        } else if (FieldCalculations.bottomHalf(currentPose)) {
-            this.pointToFace = AllianceFlip.apply(bottomHalfFieldFeed);
-        } else {
-            this.pointToFace = AllianceFlip.apply(topHalfFieldFeed);
-        }
+        this.pointToFace = FieldCalculations.aimPoint(currentPose);
 
         DogLog.log("AutoAim/PointToFace", pointToFace);
 
-        this.TargetDirection = pointToFace.minus(currentPose.getTranslation()).getAngle();
-        if (!AllianceFlip.shouldFlip()) {
-            this.TargetDirection = this.TargetDirection.rotateBy(Rotation2d.k180deg);
-        }
+        // The shooter is on the robot rear, so point the rear at the target.
+        this.TargetDirection =
+                pointToFace.minus(currentPose.getTranslation()).getAngle().rotateBy(Rotation2d.k180deg);
 
         DogLog.log(
                 "AutoAim/Error",

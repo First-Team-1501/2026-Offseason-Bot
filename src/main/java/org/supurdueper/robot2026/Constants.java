@@ -30,7 +30,7 @@ import org.supurdueper.lib.utils.ExpCurve;
 
 public final class Constants {
     public static final double loopPeriodSecs = 0.02;
-    public static boolean tuningMode = true;
+    public static boolean tuningMode = false;
     public static boolean publishToNT = true;
     public static CANBus upperBus = new CANBus("Upper Bot CANivore");
     public static CANBus lowerBus = new CANBus("Lower Bot Canivore");
@@ -66,6 +66,14 @@ public final class Constants {
 
     public static final class VisionConstants {
         public static final List<String> kLimelightNames = List.of("limelight");
+        // Robot-space camera pose sent to the Limelight from code (overrides the web UI); same order and signs as the
+        // web UI fields LL Forward/Right/Up (m) and LL Roll/Pitch/Yaw (deg). Camera behind center, looking backward.
+        public static final double kCameraForwardMeters = -0.28;
+        public static final double kCameraRightMeters = 0.13;
+        public static final double kCameraUpMeters = 0.199;
+        public static final double kCameraRollDegrees = 0.0;
+        public static final double kCameraPitchDegrees = 25.0;
+        public static final double kCameraYawDegrees = 180.0;
     }
 
     public static boolean disableHAL = false;
@@ -104,15 +112,22 @@ public final class Constants {
                 .withStatorCurrentLimitEnable(true)
                 .withSupplyCurrentLimit(40)
                 .withSupplyCurrentLimitEnable(true);
-        // VelocityVoltage gains, volts per mechanism rotation/sec. Initial estimates, tune on robot.
+        // VelocityVoltage gains, volts per mechanism rotation/sec. kS and kV fitted from steady-state flywheel speeds
+        // in
+        // the 2026-10-17 robot logs (900-1725 RPM; kS 0.2 left the flywheel 40-70 RPM short at every speed).
         public static final double kP = 0.25;
-        public static final double kS = 0.2;
+        public static final double kS = 0.55;
         public static final double kV = 0.18;
         public static final double shooterGearRatio = 36.0 / 24.0;
         public static final AngularVelocity kVelocityTolerance = RPM.of(100);
         public static final AngularVelocity kShootRPM = RPM.of(1600);
         public static final AngularVelocity kIdleRPM = RPM.of(900);
         public static final AngularVelocity kRevRpm = RPM.of(1200);
+        // Multiplier on LookupTables.distanceToShooterRPM; adjustable live as SmartDashboard "Shooter/LUT RPM Scale".
+        public static final double kLutRpmScale = 1.20;
+        // Multiplier on LookupTables.distanceToForwardRPM; adjustable live as SmartDashboard "Shooter/Forward RPM
+        // Scale".
+        public static final double kForwardRpmScale = 1.0;
     }
 
     public class HopperConstants {
@@ -165,6 +180,7 @@ public final class Constants {
         public static final CurrentLimitsConfigs kCurrentLimit =
                 new CurrentLimitsConfigs().withStatorCurrentLimit(kMaxAmps).withStatorCurrentLimitEnable(true);
         public static final AngularVelocity setShotVelocity = RPM.of(1000);
+        public static final AngularVelocity forwardVelocity = RPM.of(2000);
         public static final AngularVelocity purgeVelocity = RPM.of(-500);
         public static final AngularVelocity idleVelocity = RPM.of(500);
     }
@@ -179,7 +195,8 @@ public final class Constants {
         public static final AngularVelocity kVelocityTolerance = RPM.of(50);
         public static final AngularVelocity kIntakeVelocity = RPM.of(4000);
         public static final AngularVelocity kPurgeVelocity = RPM.of(-4);
-        public static final AngularVelocity kShootVelocity = RPM.of(1700);
+        // While shooting; negative = opposite of the intake direction
+        public static final AngularVelocity kShootVelocity = RPM.of(-1700);
         public static final double kGearRatio = 24.0 / 12.0;
         // VelocityVoltage gains, volts per mechanism rotation/sec. Initial estimates, tune on robot.
         public static final double kp = 0.2;
@@ -222,6 +239,17 @@ public final class Constants {
         public static final InterpolatingDoubleTreeMap distanceToShooterRPM = new InterpolatingDoubleTreeMap();
         public static final InterpolatingDoubleTreeMap distanceToUptakeRPM = new InterpolatingDoubleTreeMap();
         public static final InterpolatingDoubleTreeMap distanceToTime = new InterpolatingDoubleTreeMap();
+        // Forwarding: distance from robot to FieldCalculations.aimPoint (forwarding point in our zone)
+        public static final InterpolatingDoubleTreeMap distanceToForwardAngle = new InterpolatingDoubleTreeMap();
+        public static final InterpolatingDoubleTreeMap distanceToForwardRPM = new InterpolatingDoubleTreeMap();
+
+        private static void addPointToDistanceToForwardAngle(double distanceMeters, double angleDegrees) {
+            distanceToForwardAngle.put(distanceMeters, angleDegrees);
+        }
+
+        private static void addPointToDistanceToForwardRPM(double distanceMeters, double velocityRPM) {
+            distanceToForwardRPM.put(distanceMeters, velocityRPM);
+        }
 
         private static void addPointToDistanceToShooterAngle(double distanceMeters, double angleDegrees) {
             distanceToShooterAngle.put(distanceMeters, angleDegrees);
@@ -281,6 +309,18 @@ public final class Constants {
             addPointToDistanceToUptakeRPM(4.25, 800);
             addPointToDistanceToUptakeRPM(5.25, 800);
             addPointToDistanceToUptakeRPM(5.5, 2000);
+
+            // Untuned starting points: flattest hood, RPM sized to land past the forwarding point
+            addPointToDistanceToForwardAngle(2.0, 30.0);
+            addPointToDistanceToForwardAngle(8.0, 30.0);
+
+            addPointToDistanceToForwardRPM(2.0, 1750);
+            addPointToDistanceToForwardRPM(3.0, 2000);
+            addPointToDistanceToForwardRPM(4.0, 2200);
+            addPointToDistanceToForwardRPM(5.0, 2400);
+            addPointToDistanceToForwardRPM(6.0, 2575);
+            addPointToDistanceToForwardRPM(7.0, 2750);
+            addPointToDistanceToForwardRPM(8.0, 2900);
         }
     }
 }

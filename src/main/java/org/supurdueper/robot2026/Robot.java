@@ -9,6 +9,7 @@ import choreo.auto.AutoFactory;
 import com.ctre.phoenix6.HootAutoReplay;
 import dev.doglog.DogLog;
 import dev.doglog.DogLogOptions;
+import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.Threads;
@@ -36,6 +37,11 @@ public class Robot extends SupurdueperRobot {
     /* log and replay timestamp and joystick data */
     private final HootAutoReplay m_timeAndJoystickReplay =
             new HootAutoReplay().withTimestampReplay().withJoystickReplay();
+
+    private static final String kBuildSummary = "Build: " + BuildConstants.MAVEN_NAME + " sha="
+            + BuildConstants.GIT_SHA + " branch=" + BuildConstants.GIT_BRANCH + " dirty=" + BuildConstants.DIRTY
+            + " built=" + BuildConstants.BUILD_DATE;
+    private int loopCount = 0;
 
     public Robot() {
         m_robotContainer = new RobotContainer();
@@ -71,23 +77,7 @@ public class Robot extends SupurdueperRobot {
                 .withCaptureDs(false)
                 .withNtPublish(Constants.publishToNT)
                 .withCaptureNt(false));
-        // Record metadata
-        DogLog.log("Git/ProjectName", BuildConstants.MAVEN_NAME);
-        DogLog.log("Git/BuildDate", BuildConstants.BUILD_DATE);
-        DogLog.log("Git/GitSHA", BuildConstants.GIT_SHA);
-        DogLog.log("Git/GitDate", BuildConstants.GIT_DATE);
-        DogLog.log("Git/GitBranch", BuildConstants.GIT_BRANCH);
-        switch (BuildConstants.DIRTY) {
-            case 0:
-                DogLog.log("Git/GitDirty", "All changes committed");
-                break;
-            case 1:
-                DogLog.log("Git/GitDirty", "Uncomitted changes");
-                break;
-            default:
-                DogLog.log("Git/GitDirty", "Unknown");
-                break;
-        }
+        Vision.setCameraPose();
 
         // Limelight port fowarding
         // for (int port = 5800; port <= 5809; port++) {
@@ -104,6 +94,9 @@ public class Robot extends SupurdueperRobot {
 
     @Override
     public void robotPeriodic() {
+        if (++loopCount == 50) {
+            logBuildInfo();
+        }
         m_timeAndJoystickReplay.update();
         Threads.setCurrentThreadPriority(true, 1);
         double startTime = Timer.getFPGATimestamp();
@@ -120,9 +113,38 @@ public class Robot extends SupurdueperRobot {
         }
     }
 
+    /**
+     * Record which build is running, about 1 s into the main loop. Robot construction takes over 10 s, so
+     * DataLogManager has paused data records during robotInit; and DogLog never rewrites an unchanged string, so a
+     * value dropped then is never written later.
+     */
+    private void logBuildInfo() {
+        DataLogManager.log(kBuildSummary);
+        DogLog.log("Git/ProjectName", BuildConstants.MAVEN_NAME);
+        DogLog.log("Git/BuildDate", BuildConstants.BUILD_DATE);
+        DogLog.log("Git/GitSHA", BuildConstants.GIT_SHA);
+        DogLog.log("Git/GitDate", BuildConstants.GIT_DATE);
+        DogLog.log("Git/GitBranch", BuildConstants.GIT_BRANCH);
+        switch (BuildConstants.DIRTY) {
+            case 0:
+                DogLog.log("Git/GitDirty", "All changes committed");
+                break;
+            case 1:
+                DogLog.log("Git/GitDirty", "Uncomitted changes");
+                break;
+            default:
+                DogLog.log("Git/GitDirty", "Unknown");
+                break;
+        }
+    }
+
     @Override
     public void disabledInit() {
+        Vision.setCameraPose();
         Vision.setDisabled();
+        // Also while disabled, so the MegaTag1 heading seed uses the filtered tags before the first enable
+        Vision.setAprilTagFilter();
+        Vision.updateIMUMode();
     }
 
     @Override
@@ -133,6 +155,7 @@ public class Robot extends SupurdueperRobot {
 
     @Override
     public void autonomousInit() {
+        DataLogManager.log(kBuildSummary);
         Vision.setEnabled();
         Vision.setAprilTagFilter();
         Vision.updateIMUMode();
@@ -147,6 +170,7 @@ public class Robot extends SupurdueperRobot {
 
     @Override
     public void teleopInit() {
+        DataLogManager.log(kBuildSummary);
         resetCommandsAndButtons();
         Vision.setEnabled();
         Vision.setAprilTagFilter();

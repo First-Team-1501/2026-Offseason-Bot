@@ -83,13 +83,14 @@ public class TunerConstants {
     // Theoretical free speed (m/s) at 12 V applied output;
     // This needs to be tuned to your individual robot
     // TODO: Tune this
-    public static final LinearVelocity kSpeedAt12Volts = MetersPerSecond.of(4.39);
+    public static final LinearVelocity kSpeedAt12Volts = MetersPerSecond.of(5.12);
 
     // Every 1 rotation of the azimuth results in kCoupleRatio drive motor turns;
     // This may need to be tuned to your individual robot
-    private static final double kCoupleRatio = 4.5;
+    private static final double kCoupleRatio = 3.857142857142857;
 
-    private static final double kDriveGearRatio = 7.03125;
+    // SDS MK5n R2 (values from the 1501 Tuner X swerve project)
+    private static final double kDriveGearRatio = 6.026785714285714;
     private static final double kSteerGearRatio = 26.09090909090909;
     private static final Distance kWheelRadius = Inches.of(2);
 
@@ -134,11 +135,14 @@ public class TunerConstants {
                     .withSteerFrictionVoltage(kSteerFrictionVoltage)
                     .withDriveFrictionVoltage(kDriveFrictionVoltage);
 
+    // Encoder offsets were measured in Tuner X with the shooter end as front. With the intake end as front, each
+    // module keeps its own offset and moves to the opposite side, whose drive inversion supplies the 180 deg.
+
     // Front Left
     private static final int kFrontLeftDriveMotorId = CanId.TALONFX_DRIVE_FL.getDeviceNumber();
     private static final int kFrontLeftSteerMotorId = CanId.TALONFX_STEER_FL.getDeviceNumber();
     private static final int kFrontLeftEncoderId = CanId.CANCODER_STEER_FL.getDeviceNumber();
-    private static final Angle kFrontLeftEncoderOffset = Rotations.of(-0.130615234375);
+    private static final Angle kFrontLeftEncoderOffset = Rotations.of(0.054443359375);
     private static final boolean kFrontLeftSteerMotorInverted = false;
     private static final boolean kFrontLeftEncoderInverted = false;
 
@@ -149,7 +153,7 @@ public class TunerConstants {
     private static final int kFrontRightDriveMotorId = CanId.TALONFX_DRIVE_FR.getDeviceNumber();
     private static final int kFrontRightSteerMotorId = CanId.TALONFX_STEER_FR.getDeviceNumber();
     private static final int kFrontRightEncoderId = CanId.CANCODER_STEER_FR.getDeviceNumber();
-    private static final Angle kFrontRightEncoderOffset = Rotations.of(-0.2763671875);
+    private static final Angle kFrontRightEncoderOffset = Rotations.of(-0.092041015625);
     private static final boolean kFrontRightSteerMotorInverted = false;
     private static final boolean kFrontRightEncoderInverted = false;
 
@@ -160,7 +164,7 @@ public class TunerConstants {
     private static final int kBackLeftDriveMotorId = CanId.TALONFX_DRIVE_BL.getDeviceNumber();
     private static final int kBackLeftSteerMotorId = CanId.TALONFX_STEER_BL.getDeviceNumber();
     private static final int kBackLeftEncoderId = CanId.CANCODER_STEER_BL.getDeviceNumber();
-    private static final Angle kBackLeftEncoderOffset = Rotations.of(-0.092041015625);
+    private static final Angle kBackLeftEncoderOffset = Rotations.of(-0.2763671875);
     private static final boolean kBackLeftSteerMotorInverted = false;
     private static final boolean kBackLeftEncoderInverted = false;
 
@@ -171,7 +175,7 @@ public class TunerConstants {
     private static final int kBackRightDriveMotorId = CanId.TALONFX_DRIVE_BR.getDeviceNumber();
     private static final int kBackRightSteerMotorId = CanId.TALONFX_STEER_BR.getDeviceNumber();
     private static final int kBackRightEncoderId = CanId.CANCODER_STEER_BR.getDeviceNumber();
-    private static final Angle kBackRightEncoderOffset = Rotations.of(0.054443359375);
+    private static final Angle kBackRightEncoderOffset = Rotations.of(-0.130615234375);
     private static final boolean kBackRightSteerMotorInverted = false;
     private static final boolean kBackRightEncoderInverted = false;
 

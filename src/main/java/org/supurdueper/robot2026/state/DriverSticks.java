@@ -12,12 +12,12 @@ public class DriverSticks {
     private final Joystick rotationStick = new Joystick(kRotationStickPort);
 
     public final Trigger rezeroHeading = new JoystickButton(driveStick, 1);
-    public final Trigger setShot = new JoystickButton(driveStick, 16);
+    public final Trigger intake = new JoystickButton(driveStick, 16);
     public final Trigger purge = new JoystickButton(driveStick, 17);
-    public final Trigger aim = new JoystickButton(driveStick, 18);
+    public final Trigger shoot = new JoystickButton(driveStick, 18);
     public final Trigger zeroHood = new JoystickButton(rotationStick, 1);
-    public final Trigger intake = new JoystickButton(rotationStick, 17);
-    public final Trigger shoot = new JoystickButton(rotationStick, 18);
+    public final Trigger setShot = new JoystickButton(rotationStick, 17);
+    public final Trigger aim = new JoystickButton(rotationStick, 18);
 
     public double getDriveFwdPositive() {
         return shape(-driveStick.getY()) * kSlowModeScalor;

@@ -12,6 +12,7 @@ import static edu.wpi.first.units.Units.Volts;
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import dev.doglog.DogLog;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
@@ -55,7 +56,7 @@ public class Uptake extends VelocitySubsystem implements SupurdueperSubsystem {
         RobotStates.actionShoot
                 .or(RobotStates.auto_shoot)
                 .whileTrue(Commands.waitUntil(RobotStates.infoShooterAtSpeed)
-                        .andThen(startEnd(() -> setVelocity(getShotVelocity()), this::stop)));
+                        .andThen(runEnd(() -> setVelocity(getShotVelocity()), this::stop)));
         ;
         RobotStates.actionSetShot.whileTrue(Commands.waitUntil(RobotStates.infoShooterAtSpeed)
                 .andThen(startEnd(() -> setVelocity(UptakeConstants.setShotVelocity), this::stop)));
@@ -70,9 +71,11 @@ public class Uptake extends VelocitySubsystem implements SupurdueperSubsystem {
     }
 
     private AngularVelocity getShotVelocity() {
-        double distanceToGoalMeters = FieldCalculations.distanceToGoal(
-                        RobotContainer.getDrivetrain().getState().Pose)
-                .in(Meters);
+        Pose2d pose = RobotContainer.getDrivetrain().getState().Pose;
+        if (FieldCalculations.isForwarding(pose)) {
+            return UptakeConstants.forwardVelocity;
+        }
+        double distanceToGoalMeters = FieldCalculations.distanceToGoal(pose).in(Meters);
         return RPM.of(LookupTables.distanceToUptakeRPM.get(distanceToGoalMeters));
     }
 
