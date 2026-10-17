@@ -159,7 +159,9 @@ Notes:
    the table at the current distance; feeding needs at least 1000 RPM). When a shot scores, press
    `Shot Tuning/Record`: the log gets `Shot Tuning/Recorded Point` = [distance m, RPM, deg, forwarding] and the
    console a matching line. Distance is `Shot Tuning/Distance (m)` (robot center to hub center).
-8. Hood: zero with port 1 btn 1; verify soft limits (7 to 30 deg).
+8. Hood: zero with port 1 btn 1; soft limits 7 deg to 41.5 deg (0.115234 mechanism rot, measured top of travel
+   on the 1501 hood). Hood angles depend on the hood resting on its bottom stop when robot code starts (or after
+   zeroing).
 9. Intake, hopper, feeder, uptake: verify direction and follower flags (7457 values retained).
 10. LL4: hostname `limelight`, static IP 10.15.1.11; robot-space camera pose (section 2.3, measured from the
     center of the module rectangle); AprilTag pipeline 0 with Full 3D; field map matching the event field

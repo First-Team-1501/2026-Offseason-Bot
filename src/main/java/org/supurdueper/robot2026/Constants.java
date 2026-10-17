@@ -93,7 +93,8 @@ public final class Constants {
         public static final double kg = 0;
         public static final double profileKa = 0;
         public static final double profileKv = 0;
-        public static final Angle kForwardSoftLimit = Degrees.of(30);
+        // Measured top of travel on the 1501 hood (Tuner X position, current conversion): 0.115234 rot = 41.5 deg
+        public static final Angle kForwardSoftLimit = Rotations.of(0.115234);
         public static final Angle kReverseSoftLimit = Degrees.of(7);
         public static final Voltage kPeakForwardVoltage = Volts.of(12);
         public static final Voltage kPeakReverseVoltage = Volts.of(-12);
