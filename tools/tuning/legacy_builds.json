@@ -1,0 +1,69 @@
+{
+  "_comment": "Build-1 mechanism configuration (pre-/Tuning telemetry) per git SHA prefix, transcribed from Constants.java, CanId.java and the subsystem classes at each commit. Used only for logs without /Tuning/<Mechanism>/Config. Units as in the data contract: gains V per mechanism rot/s (velocity) or V per mechanism rot (position); tolerance in mechanism units.",
+  "default": "725f02d",
+  "unknown_sha_note": "Log has no /Robot/Git/GitSHA; configuration assumed equal to the default build.",
+  "builds": {
+    "725f02d": {
+      "note": "2026-10-10 'flipped motor again, manual fully works' (and dirty builds on top of it)",
+      "heading": {"kP": 15.0, "kI": 0.0, "kD": 0.2, "maxRateRadPerSec": null},
+      "mechanisms": {
+        "Shooter": {"loop": "velocity", "leader": 12, "followers": {"11": "Aligned", "1": "Aligned", "2": "Opposed", "4": "Opposed"},
+                    "gains": {"kP": 0.25, "kI": 0.0, "kD": 0.0, "kS": 0.2, "kV": 0.18, "kA": 0.0, "kG": 0.0},
+                    "sensorToMechanismRatio": 1.5, "statorLimit": 50.0, "statorLimitEnable": true, "supplyLimit": 40.0, "supplyLimitEnable": true,
+                    "supplyLowerLimit": null, "supplyLowerTime": null, "inverted": false, "neutralMode": "Coast", "tolerance": 1.6666667},
+        "Feeder": {"loop": "velocity", "leader": 3, "followers": {"10": "Opposed"},
+                   "gains": {"kP": 0.2, "kI": 0.0, "kD": 0.0, "kS": 0.2, "kV": 0.16, "kA": 0.0, "kG": 0.0},
+                   "sensorToMechanismRatio": 1.3333333, "statorLimit": 60.0, "statorLimitEnable": true, "supplyLimit": 40.0, "supplyLimitEnable": true,
+                   "supplyLowerLimit": null, "supplyLowerTime": null, "inverted": true, "neutralMode": "Coast", "tolerance": 1.0},
+        "Uptake": {"loop": "velocity", "leader": 8, "followers": {},
+                   "gains": {"kP": 0.2, "kI": 0.0, "kD": 0.0, "kS": 0.2, "kV": 0.23, "kA": 0.0, "kG": 0.0},
+                   "sensorToMechanismRatio": 1.8888889, "statorLimit": 60.0, "statorLimitEnable": true, "supplyLimit": null, "supplyLimitEnable": false,
+                   "supplyLowerLimit": null, "supplyLowerTime": null, "inverted": true, "neutralMode": "Coast", "tolerance": 1.0},
+        "Hopper": {"loop": "velocity", "leader": 5, "followers": {},
+                   "gains": {"kP": 0.2, "kI": 0.0, "kD": 0.0, "kS": 0.3, "kV": 0.24, "kA": 0.0, "kG": 0.0},
+                   "sensorToMechanismRatio": 2.2222222, "statorLimit": 70.0, "statorLimitEnable": true, "supplyLimit": 40.0, "supplyLimitEnable": true,
+                   "supplyLowerLimit": null, "supplyLowerTime": null, "inverted": false, "neutralMode": "Coast", "tolerance": 0.8333333},
+        "Intake": {"loop": "velocity", "leader": 6, "followers": {"7": "Opposed"},
+                   "gains": {"kP": 0.2, "kI": 0.0, "kD": 0.0, "kS": 0.3, "kV": 0.21, "kA": 0.0, "kG": 0.0},
+                   "sensorToMechanismRatio": 2.0, "statorLimit": 70.0, "statorLimitEnable": true, "supplyLimit": null, "supplyLimitEnable": false,
+                   "supplyLowerLimit": null, "supplyLowerTime": null, "inverted": true, "neutralMode": "Coast", "tolerance": 0.8333333},
+        "ShooterHood": {"loop": "position", "leader": 9, "followers": {},
+                        "gains": {"kP": 800.0, "kI": 0.0, "kD": 0.0, "kS": 0.0, "kV": 0.0, "kA": 0.0, "kG": 0.0},
+                        "gravityType": "Arm_Cosine", "sensorToMechanismRatio": 330.5555556, "statorLimit": 50.0, "statorLimitEnable": true,
+                        "supplyLimit": null, "supplyLimitEnable": false, "supplyLowerLimit": null, "supplyLowerTime": null,
+                        "inverted": true, "neutralMode": "Brake", "tolerance": 0.00083333, "hoodDownThresholdDeg": null, "stowAngleDeg": 7.0}
+      }
+    },
+    "1cbf48e": {
+      "note": "2026-10-17 aim, vision, forwarding and shooter fixes: Shooter kS 0.2 -> 0.55",
+      "base": "725f02d",
+      "heading": {"kP": 15.0, "kI": 0.0, "kD": 0.2, "maxRateRadPerSec": null},
+      "overrides": {"Shooter": {"gains": {"kS": 0.55}}}
+    },
+    "3943f58": {
+      "note": "2026-10-17 log-fitted feeder/uptake/hopper/intake gains, heading kD 0.6 and 1.5 rot/s cap, per-motor shooter logging",
+      "base": "1cbf48e",
+      "heading": {"kP": 15.0, "kI": 0.0, "kD": 0.6, "maxRateRadPerSec": 9.42477796},
+      "overrides": {
+        "Feeder": {"gains": {"kS": 0.085, "kV": 0.154}},
+        "Uptake": {"gains": {"kS": 0.25, "kV": 0.218}},
+        "Hopper": {"gains": {"kS": 0.25, "kV": 0.22}},
+        "Intake": {"gains": {"kS": 1.0, "kV": 0.185}}
+      }
+    },
+    "3832fc4": {
+      "note": "2026-10-17 shooter motor 1 Opposed (was braking); Shooter kS 0.55 -> 0.2",
+      "base": "3943f58",
+      "overrides": {"Shooter": {"gains": {"kS": 0.2}, "followers": {"11": "Aligned", "1": "Opposed", "2": "Opposed", "4": "Opposed"}}}
+    },
+    "51d9007": {
+      "note": "2026-10-17 hood top soft limit 41.5 deg (no gain change)",
+      "base": "3832fc4"
+    },
+    "d1dfde7": {
+      "note": "2026-10-21 hood/flywheel interlock, stow angle 1.5 deg above the bottom, trench zone; heading gains live tunable",
+      "base": "51d9007",
+      "overrides": {"ShooterHood": {"hoodDownThresholdDeg": 7.75, "stowAngleDeg": 8.5}}
+    }
+  }
+}

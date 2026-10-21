@@ -1,0 +1,52 @@
+{
+  "_comment": "Performance targets, battery targets, recommendation policy and health thresholds for analyze.py. Velocity errors in RPM, angles in deg, times in s.",
+  "mechanisms": {
+    "Shooter": {"ss_error_rpm": 25, "spinup_s": 1.0, "spinup_from_rpm": 900, "recovery_s": 0.25, "dip_threshold_rpm": 30},
+    "Feeder": {"ss_error_rpm": 50},
+    "Uptake": {"ss_error_rpm": 50},
+    "Hopper": {"ss_error_rpm": 50},
+    "Intake": {"report_only": true},
+    "ShooterHood": {"settle_tol_deg": 0.3, "settle_s": 0.3, "overshoot_deg": 0.5},
+    "SwerveSteer": {"report_only": true},
+    "SwerveDrive": {"report_only": true}
+  },
+  "heading": {"step_deg": 90, "within_deg": 1.0, "within_s": 0.6, "ss_error_deg": 0.5},
+  "battery": {"brownouts": 0, "min_volley_v": 8.5, "volley_margin_v": 0.3, "minimize": "energy_wh_per_enabled_min"},
+  "policy": {
+    "ff_step_max_frac": 0.25,
+    "gain_step_max_frac": 0.25,
+    "limit_step_min_frac": 0.10,
+    "limit_step_max_frac": 0.20,
+    "block_feedback_change_if_current_limited_frac": 0.20,
+    "ff_r2_min": 0.90,
+    "ci_rel_max": 0.25,
+    "min_steady_windows": 4,
+    "min_steady_s": 2.0,
+    "min_setpoints_for_kv": 2,
+    "min_ff_change_frac": 0.05,
+    "supply_rarely_frac": 0.01,
+    "perf_margin_frac": 0.30,
+    "sustained_supply_frac_of_limit": 0.70,
+    "sustained_supply_s": 1.0,
+    "max_stator_limit_a": 120.0
+  },
+  "health": {
+    "stall_speed_frac": 0.10,
+    "stall_min_s": 0.20,
+    "stall_current_frac_of_limit": 0.80,
+    "follower_ratio_tol": 0.05,
+    "braking_current_a": 10.0,
+    "saturation_margin_v": 0.5,
+    "error_growth_min_s": 0.30,
+    "friction_shift_frac": 0.30,
+    "fit_shift_frac": 0.30,
+    "temp_max_c": 70.0,
+    "position_stall_s": 0.30,
+    "spike_jump_a": 20.0,
+    "spike_jump_frac_of_limit": 0.40,
+    "data_gap_s": 0.10,
+    "healthy_max_share": 0.02,
+    "degraded_max_share": 0.10,
+    "baseline_logs": 5
+  }
+}
