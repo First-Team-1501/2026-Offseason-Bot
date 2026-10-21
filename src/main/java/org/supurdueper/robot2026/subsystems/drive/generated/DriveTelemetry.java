@@ -17,30 +17,24 @@ import edu.wpi.first.networktables.StructArrayPublisher;
 import edu.wpi.first.networktables.StructPublisher;
 import edu.wpi.first.util.datalog.DoubleArrayLogEntry;
 import edu.wpi.first.wpilibj.DataLogManager;
-import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
-import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj.util.Color;
-import edu.wpi.first.wpilibj.util.Color8Bit;
 import java.util.List;
 import org.supurdueper.robot2026.Constants.VisionConstants;
 import org.supurdueper.robot2026.utils.FieldCalculations;
 
+/**
+ * Swerve state telemetry from the 250 Hz odometry thread. Only the Limelight robot orientation (MegaTag2) is published
+ * every state; NT DriveState and DogLog get every 5th state (50 Hz), the tuning arrays every 2nd (125 Hz). The CTRE
+ * template's per-module Mechanism2d widgets were removed: about 2000 NT writes per second on a CPU-saturated rio.
+ */
 public class DriveTelemetry {
-    private final double MaxSpeed;
 
     /**
-     * Construct a telemetry object, with the specified max speed of the robot
+     * Construct a telemetry object
      *
-     * @param maxSpeed Maximum speed in meters per second
+     * @param maxSpeed Maximum speed in meters per second (unused since the module Mechanism2d widgets were removed)
      */
     public DriveTelemetry(double maxSpeed) {
-        MaxSpeed = maxSpeed;
-
-        /* Set up the module state Mechanism2d telemetry */
-        for (int i = 0; i < 4; ++i) {
-            SmartDashboard.putData("Module " + i, m_moduleMechanisms[i]);
-        }
+        fieldTypePub.set("Field2d");
     }
 
     /* What to publish over networktables for telemetry */
@@ -80,38 +74,11 @@ public class DriveTelemetry {
             table.getDoubleArrayTopic("robotPose").publish();
     private final StringPublisher fieldTypePub = table.getStringTopic(".type").publish();
 
-    /* Mechanisms to represent the swerve module states */
-    private final Mechanism2d[] m_moduleMechanisms = new Mechanism2d[] {
-        new Mechanism2d(1, 1), new Mechanism2d(1, 1), new Mechanism2d(1, 1), new Mechanism2d(1, 1),
-    };
-    /* A direction and length changing ligament for speed representation */
-    private final MechanismLigament2d[] m_moduleSpeeds = new MechanismLigament2d[] {
-        m_moduleMechanisms[0].getRoot("RootSpeed", 0.5, 0.5).append(new MechanismLigament2d("Speed", 0.5, 0)),
-        m_moduleMechanisms[1].getRoot("RootSpeed", 0.5, 0.5).append(new MechanismLigament2d("Speed", 0.5, 0)),
-        m_moduleMechanisms[2].getRoot("RootSpeed", 0.5, 0.5).append(new MechanismLigament2d("Speed", 0.5, 0)),
-        m_moduleMechanisms[3].getRoot("RootSpeed", 0.5, 0.5).append(new MechanismLigament2d("Speed", 0.5, 0)),
-    };
-    /* A direction changing and length constant ligament for module direction */
-    private final MechanismLigament2d[] m_moduleDirections = new MechanismLigament2d[] {
-        m_moduleMechanisms[0]
-                .getRoot("RootDirection", 0.5, 0.5)
-                .append(new MechanismLigament2d("Direction", 0.1, 0, 0, new Color8Bit(Color.kWhite))),
-        m_moduleMechanisms[1]
-                .getRoot("RootDirection", 0.5, 0.5)
-                .append(new MechanismLigament2d("Direction", 0.1, 0, 0, new Color8Bit(Color.kWhite))),
-        m_moduleMechanisms[2]
-                .getRoot("RootDirection", 0.5, 0.5)
-                .append(new MechanismLigament2d("Direction", 0.1, 0, 0, new Color8Bit(Color.kWhite))),
-        m_moduleMechanisms[3]
-                .getRoot("RootDirection", 0.5, 0.5)
-                .append(new MechanismLigament2d("Direction", 0.1, 0, 0, new Color8Bit(Color.kWhite))),
-    };
-
     private final double[] m_poseArray = new double[3];
 
-    // telemeterize runs on the 250 Hz odometry thread; DogLog every call overflowed its queue (MAX_QUEUED_LOGS on
-    // DriveState/ModuleStates), so DogLog gets every 5th state (50 Hz)
-    private static final int kDogLogDecimation = 5;
+    // Every 5th state (50 Hz): NT DriveState and DogLog. DogLog every state overflowed its queue (MAX_QUEUED_LOGS on
+    // DriveState/ModuleStates).
+    private static final int kDecimation = 5;
     private int telemeterizeCount = 0;
 
     // Tuning telemetry (DataLog, not DogLog): module speeds and angles at 125 Hz (every 2nd state) for the drive and
@@ -130,22 +97,15 @@ public class DriveTelemetry {
     private final double[] moduleSpeeds = new double[4];
     private final double[] moduleTargetSpeeds = new double[4];
 
-    /** Accept the swerve drive state and telemeterize it to SmartDashboard and the logs. */
+    /** Accept the swerve drive state and telemeterize it to NetworkTables and the logs. */
     public void telemeterize(SwerveDriveState state) {
+        telemeterizeCount++;
 
+        // MegaTag2 needs the latest heading every state
         robotOrientation[0] = state.Pose.getRotation().getDegrees();
         for (DoubleArrayPublisher publisher : limelightRobotOrientationPublishers) {
             publisher.set(robotOrientation);
         }
-
-        /* Telemeterize the swerve drive state */
-        drivePose.set(state.Pose);
-        driveSpeeds.set(state.Speeds);
-        driveModuleStates.set(state.ModuleStates);
-        driveModuleTargets.set(state.ModuleTargets);
-        driveModulePositions.set(state.ModulePositions);
-        driveTimestamp.set(state.Timestamp);
-        driveOdometryFrequency.set(1.0 / state.OdometryPeriod);
 
         /* Tuning telemetry (CTRE SignalLogger is off; see Robot.robotInit) */
         if (telemeterizeCount % kTuningDecimation == 0) {
@@ -162,32 +122,34 @@ public class DriveTelemetry {
             driveTargetSpeedsEntry.update(moduleTargetSpeeds);
         }
 
+        if (telemeterizeCount % kDecimation != 0) {
+            return;
+        }
+
+        /* Telemeterize the swerve drive state */
+        drivePose.set(state.Pose);
+        driveSpeeds.set(state.Speeds);
+        driveModuleStates.set(state.ModuleStates);
+        driveModuleTargets.set(state.ModuleTargets);
+        driveModulePositions.set(state.ModulePositions);
+        driveTimestamp.set(state.Timestamp);
+        driveOdometryFrequency.set(1.0 / state.OdometryPeriod);
+
         /* Telemeterize the pose to a Field2d */
-        fieldTypePub.set("Field2d");
         m_poseArray[0] = state.Pose.getX();
         m_poseArray[1] = state.Pose.getY();
         m_poseArray[2] = state.Pose.getRotation().getDegrees();
         fieldPub.set(m_poseArray);
 
         /* Log to DogLog */
-        if (++telemeterizeCount % kDogLogDecimation == 0) {
-            DogLog.log("DriveState/Speeds", state.Speeds);
-            DogLog.log("DriveState/ModuleStates", state.ModuleStates);
-            DogLog.log("DriveState/ModuleTargets", state.ModuleTargets);
-            DogLog.log("DriveState/ModulePositions", state.ModulePositions);
-            DogLog.log("DriveState/OdometryPeriod", state.OdometryPeriod, "seconds");
-            DogLog.log("Pose", m_poseArray);
-            DogLog.log(
-                    "Distance To Goal",
-                    FieldCalculations.distanceToGoal(state.Pose).in(Meters));
-            DogLog.log("Our Zone", FieldCalculations.ourZone(state.Pose));
-        }
-
-        /* Telemeterize each module state to a Mechanism2d */
-        for (int i = 0; i < 4; ++i) {
-            m_moduleSpeeds[i].setAngle(state.ModuleStates[i].angle);
-            m_moduleDirections[i].setAngle(state.ModuleStates[i].angle);
-            m_moduleSpeeds[i].setLength(state.ModuleStates[i].speedMetersPerSecond / (2 * MaxSpeed));
-        }
+        DogLog.log("DriveState/Speeds", state.Speeds);
+        DogLog.log("DriveState/ModuleStates", state.ModuleStates);
+        DogLog.log("DriveState/ModuleTargets", state.ModuleTargets);
+        DogLog.log("DriveState/ModulePositions", state.ModulePositions);
+        DogLog.log("DriveState/OdometryPeriod", state.OdometryPeriod, "seconds");
+        DogLog.log("Pose", m_poseArray);
+        DogLog.log(
+                "Distance To Goal", FieldCalculations.distanceToGoal(state.Pose).in(Meters));
+        DogLog.log("Our Zone", FieldCalculations.ourZone(state.Pose));
     }
 }

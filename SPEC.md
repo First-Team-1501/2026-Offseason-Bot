@@ -155,6 +155,7 @@ off target. 7457's version (lock within 0.25 deg) was commented out.
 | 29 | X-lock while shooting with auto-aim (section 2.6) | `AutoAim.java`, `DriveStates.java`, `Constants.java` |
 | 30 | Startup re-application of unchanged tunable gains removed (defaults recorded at construction) | `VelocitySubsystem.java`, `PositionSubsystem.java` |
 | 31 | Shooter `kV` 0.171 and idle 700 RPM from the 2026-10-21 log analysis (section 4); follower `Voltage` logged | `Constants.java`, `MotorTelemetry.java` |
+| 32 | Loop-overrun reductions (about 90 overruns/min before; rio CPU saturated): CTRE template module Mechanism2d widgets removed (about 2000 NT writes/s from the odometry thread); NT DriveState and Field2d pose at 50 Hz, Field2d type set once (Limelight orientation stays at 250 Hz for MegaTag2); main thread at real-time priority for all of `robotPeriodic` (was the scheduler only); `HootAutoReplay` removed (hoot logging is off) | `DriveTelemetry.java`, `Robot.java` |
 
 Notes:
 

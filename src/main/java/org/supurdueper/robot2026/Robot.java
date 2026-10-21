@@ -6,7 +6,6 @@ package org.supurdueper.robot2026;
 
 import choreo.auto.AutoChooser;
 import choreo.auto.AutoFactory;
-import com.ctre.phoenix6.HootAutoReplay;
 import com.ctre.phoenix6.SignalLogger;
 import dev.doglog.DogLog;
 import dev.doglog.DogLogOptions;
@@ -37,10 +36,6 @@ public class Robot extends SupurdueperRobot {
     private final AutoRoutines autoRoutines;
     private final AutoChooser autoChooser = new AutoChooser();
     private final LoggedTunableNumber autoTimeout;
-
-    /* log and replay timestamp and joystick data */
-    private final HootAutoReplay m_timeAndJoystickReplay =
-            new HootAutoReplay().withTimestampReplay().withJoystickReplay();
 
     private static final String kBuildSummary = "Build: " + BuildConstants.MAVEN_NAME + " sha="
             + BuildConstants.GIT_SHA + " branch=" + BuildConstants.GIT_BRANCH + " dirty=" + BuildConstants.DIRTY
@@ -108,12 +103,12 @@ public class Robot extends SupurdueperRobot {
         if (++loopCount == 50) {
             logBuildInfo();
         }
-        m_timeAndJoystickReplay.update();
+        // Real-time priority for the whole periodic: on the CPU-saturated rio the work after the scheduler (telemetry,
+        // logging) was preempted at normal priority and overran the loop
         Threads.setCurrentThreadPriority(true, 1);
         double startTime = Timer.getFPGATimestamp();
         CommandScheduler.getInstance().run();
         double endTime = Timer.getFPGATimestamp();
-        Threads.setCurrentThreadPriority(false, 0);
         DogLog.log("Loop Time", endTime - startTime);
         TuningTelemetry.periodic();
         // for bunker hub lights to get match time from network tables
@@ -123,6 +118,7 @@ public class Robot extends SupurdueperRobot {
         } else {
             DogLog.log("Match Time", Timer.getMatchTime());
         }
+        Threads.setCurrentThreadPriority(false, 0);
     }
 
     /**
