@@ -16,6 +16,7 @@ sys.path.insert(0, HERE)
 
 import analyze  # noqa: E402
 import make_synthetic_log  # noqa: E402
+import recommend  # noqa: E402
 import wpilog  # noqa: E402
 
 ELIGIBLE = {'gain_tuning_eligible_after_utc': '2026-01-01T00:00:00Z', 'declared_by': 'test'}
@@ -79,6 +80,71 @@ class SyntheticLog(unittest.TestCase):
                                                     'to_utc': None, 'reason': 'test'}])
         _, rep, _, _ = analyze.analyze_log(self.path, targets, elig, [])
         self.assertFalse([p for p in rep['recommendations']['proposals'] if p['mechanism'] == 'Shooter'])
+
+    def test_no_follower_events_when_coupled(self):
+        h = self.report['mechanisms']['Shooter']['health']
+        self.assertFalse([e for e in h['events'] if e['type'] in ('decoupled', 'follower')])
+
+
+class DecoupledFollower(unittest.TestCase):
+    """Follower 11 at 0.6 x the leader for most of the log: the whole-log median ratio is far from 1, which before
+    1.1.0 was taken as a units difference and disabled the ratio check (intake motor 6, FRC_20261021_222140)."""
+    WINDOW = (5.0, 40.0)
+
+    @classmethod
+    def setUpClass(cls):
+        cls.tmp = tempfile.TemporaryDirectory()
+        path = os.path.join(cls.tmp.name, 'FRC_20261022_130000.wpilog')
+        make_synthetic_log.make(path, decouple=cls.WINDOW)
+        targets = analyze.load_json(analyze.P.TARGETS_JSON, {})
+        _, cls.report, _, _ = analyze.analyze_log(path, targets, ELIGIBLE, [])
+
+    @classmethod
+    def tearDownClass(cls):
+        cls.tmp.cleanup()
+
+    def test_decoupled_follower_faulty_and_flagged(self):
+        h = self.report['mechanisms']['Shooter']['health']
+        self.assertEqual(h['verdict'], 'faulty')
+        dec = [e for e in h['events'] if e['type'] == 'decoupled']
+        self.assertTrue(dec)
+        self.assertTrue(all(str(e['motor']) == '11' for e in dec))
+        self.assertGreater(sum(e['duration_s'] for e in dec), 25.0)
+        self.assertGreaterEqual(dec[0]['t0'], self.WINDOW[0] - 0.1)
+        self.assertAlmostEqual(dec[0]['median_ratio'], 0.6, delta=0.02)
+        flags = [f['text'] for f in self.report['recommendations']['flags'] if f['mechanism'] == 'Shooter']
+        self.assertTrue(any('detached or slipping drive' in t for t in flags))
+        self.assertFalse([p for p in self.report['recommendations']['proposals'] if p['mechanism'] == 'Shooter'])
+
+
+class SwerveDriveProposal(unittest.TestCase):
+    POLICY = analyze.load_json(analyze.P.TARGETS_JSON, {}).get('policy', {})
+
+    @staticmethod
+    def analysis(ks_ci):
+        """Pooled drive fit shaped like FRC_20261021_222140 (kS 0.2358, kV 0.1111 per rotor rot/s)."""
+        motors = {str(c): {'ff_fit': {'status': 'ok', 'kV_identifiable': True, 'kV': kv}}
+                  for c, kv in ((1, 0.1140), (4, 0.1123), (7, 0.1088), (10, 0.1136))}
+        pf = {'status': 'ok', 'kV_identifiable': True, 'windows': 42, 'steady_s': 16.8, 'r2': 0.9995, 'kS': 0.2358,
+              'kV': 0.1111, 'kS_ci95': ks_ci, 'kV_ci95': 0.0044, 'kS_ci_rel': ks_ci / 0.2358, 'kV_ci_rel': 0.0044 / 0.1111,
+              'setpoints_rpm': [-1237, -712, 398, 659, 1598], 'kV_per_mps': 2.098}
+        return {'gains': {'kP': 0.1, 'kS': 0.0, 'kV': 0.124}, 'pooled_ff_fit': pf, 'motors': motors}
+
+    def test_kv_step_and_initial_ks(self):
+        R = recommend.Recs()
+        recommend._swerve_drive_props(R, 'SwerveDrive', self.analysis(0.0444), self.POLICY, 0)
+        props = {p['parameter']: p for p in R.proposals}
+        self.assertAlmostEqual(props['kV']['proposed'], 0.1111, places=4)   # -10.4%, inside the 25% bound
+        self.assertEqual(props['kV']['confidence'], 'medium')               # kS CI 19% > 10%: not high
+        self.assertEqual(props['kV']['motor'], 'all')
+        self.assertAlmostEqual(props['kS']['proposed'], 0.2358, places=4)   # current 0: initial value
+        self.assertEqual(props['kS']['confidence'], 'low')
+
+    def test_wide_ci_blocks_only_that_parameter(self):
+        R = recommend.Recs()
+        recommend._swerve_drive_props(R, 'SwerveDrive', self.analysis(0.1), self.POLICY, 0)   # kS CI 42%
+        self.assertEqual([p['parameter'] for p in R.proposals], ['kV'])
+        self.assertTrue(any(b['parameter'] == 'kS' for b in R.not_proposed))
 
 
 class Reader(unittest.TestCase):

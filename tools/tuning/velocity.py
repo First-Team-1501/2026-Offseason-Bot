@@ -15,7 +15,8 @@ from fitstats import (NAN, central_diff, finite, jackknife, mean, median, moving
 WINDOW_S = 0.4
 SETTLE_S = 0.3
 CONVEYORS = ('Feeder', 'Uptake', 'Hopper')
-MECHANICAL_EVENTS = ('jam', 'follower', 'saturated', 'friction', 'temperature', 'position_stall', 'current_spike')
+MECHANICAL_EVENTS = ('jam', 'follower', 'decoupled', 'saturated', 'friction', 'temperature', 'position_stall',
+                     'current_spike')
 
 
 def sgn(x):
@@ -421,9 +422,9 @@ def _openloop_ff(g, w, V, cmd, excl, at_stator, at_supply, vsat, gains, mech):
 def analyze_swerve_drive(ds, mech, grid, health):
     """Drive-motor FF per module from the 125 Hz /Tuning/SwerveDrive/Speeds array (m/s) and each motor's Voltage.
     Speeds convert to rotor rot/s with driveGearRatio and wheelRadiusMeters from Config (Phoenix swerve drive gains
-    are per rotor rot/s when sensorToMechanismRatio is 1). Report only."""
+    are per rotor rot/s when sensorToMechanismRatio is 1). The pooled fit feeds recommend._swerve_drive_props."""
     cfg = mech.config
-    res = {'mechanism': mech.name, 'loop': 'velocity', 'report_only': True, 'gains': mech.gains(),
+    res = {'mechanism': mech.name, 'loop': 'velocity', 'report_only': False, 'gains': mech.gains(),
            'config_source': mech.config_source, 'stator_limit_a': mech.stator_limit(), 'supply_limit_a': mech.supply_limit(),
            'motors': {}, 'notes': list(mech.notes)}
     sp = mech.arrays.get('Speeds')

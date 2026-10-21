@@ -40,7 +40,7 @@ import tuning_paths as P  # noqa: E402
 import velocity as VE  # noqa: E402
 from fitstats import median  # noqa: E402
 
-ANALYZER_VERSION = '1.0.0'
+ANALYZER_VERSION = '1.1.0'
 ELIGIBILITY_JSON = os.path.join(P.TUNING_DIR, 'eligibility.json')
 LOAD_MECHS = ('Shooter', 'Feeder', 'Uptake', 'Hopper')
 

@@ -286,7 +286,7 @@ def _velocity_md(a):
     md = []
     if a.get('pooled_ff_fit'):
         pf = a['pooled_ff_fit']
-        md.append('- Drive FF pooled over modules (report only; per rotor rot/s, %s rotor rot/s per m/s; config kV from '
+        md.append('- Drive FF pooled over modules (basis of the driveGains kS/kV proposals; per rotor rot/s, %s rotor rot/s per m/s; config kV from '
                   'speedAt12Volts %s): %s; kV %s V per m/s' % (f(a.get('rotor_rps_per_mps'), 3), f(a.get('config_kv_from_speed_at_12v'), 4),
                                                             _fit(pf), f(pf.get('kV_per_mps'), 3)))
     for cid, m in (a.get('motors') or {}).items():

@@ -5,6 +5,8 @@ Conditions (thresholds in targets.json "health"):
   jam           reference/commanded output high, abs(velocity) < stall_speed_frac of expected for > stall_min_s,
                 stator current >= stall_current_frac_of_limit * stator limit
   follower      follower velocity ratio to the leader off by > follower_ratio_tol, opposite sign, or braking
+  decoupled     follower velocity ratio off by > decoupled_ratio_tol for >= decoupled_min_s: detached or slipping
+                drive (counts like a jam)
   saturated     output at battery voltage or stator limit while abs(error) grows for > error_growth_min_s
   friction      steady-window voltage differs from the history-median FF prediction by > friction_shift_frac
                 (added by velocity.py; needs an eligible history baseline with the same config signature)
@@ -13,7 +15,7 @@ Conditions (thresholds in targets.json "health"):
   current_spike stator current jump without a load event, reference change or command start
   data_gap      no new Velocity/Current/Voltage record for > data_gap_s while commanded or moving
 Verdict: healthy (unhealthy share <= healthy_max_share, no jam), degraded (<= degraded_max_share, no jam),
-faulty (larger share or any jam), no_data (active time < 1 s).
+faulty (larger share or any jam, position stall or decoupled follower), no_data (active time < 1 s).
 """
 import math
 
@@ -24,14 +26,16 @@ NAN = float('nan')
 
 DEFAULTS = {
     'stall_speed_frac': 0.10, 'stall_min_s': 0.20, 'stall_current_frac_of_limit': 0.80, 'follower_ratio_tol': 0.05,
-    'braking_current_a': 10.0, 'saturation_margin_v': 0.5, 'error_growth_min_s': 0.30, 'friction_shift_frac': 0.30,
+    'decoupled_ratio_tol': 0.20, 'decoupled_min_s': 0.5, 'braking_current_a': 10.0, 'saturation_margin_v': 0.5, 'error_growth_min_s': 0.30, 'friction_shift_frac': 0.30,
     'fit_shift_frac': 0.30, 'temp_max_c': 70.0, 'position_stall_s': 0.30, 'spike_jump_a': 20.0,
     'spike_jump_frac_of_limit': 0.40, 'data_gap_s': 0.10, 'healthy_max_share': 0.02, 'degraded_max_share': 0.10,
     'baseline_logs': 5,
 }
 
 TYPE_TEXT = {
-    'jam': 'stall/jam', 'follower': 'follower disagreement', 'saturated': 'saturated with growing error',
+    'jam': 'stall/jam', 'follower': 'follower disagreement',
+    'decoupled': 'follower decoupled from the leader (detached or slipping drive)',
+    'saturated': 'saturated with growing error',
     'friction': 'abnormal friction', 'temperature': 'over-temperature', 'position_stall': 'position stall',
     'current_spike': 'current spike without load', 'data_gap': 'data gap (CAN or logging dropout)',
 }
@@ -121,7 +125,7 @@ class Health:
         self.active_s = act * dt
         self.bad_s = badn * dt
         self.share = badn / act if act else 0.0
-        jam = any(e['type'] in ('jam', 'position_stall') for e in self.events)
+        jam = any(e['type'] in ('jam', 'position_stall', 'decoupled') for e in self.events)
         if self.active_s < 1.0:
             self.verdict = 'no_data'
         elif jam or self.share > self.p['degraded_max_share']:
@@ -412,11 +416,14 @@ def _check_followers(h, mech, grid):
         if not ratios:
             continue
         med = sorted(ratios)[len(ratios) // 2]
-        units_mismatch = med > 0 and abs(med - 1.0) > 0.2
+        # build 2 logs follower Velocity in mechanism rot/s (data contract), so a median far from 1 is a real
+        # disagreement (e.g. a follower decoupled for most of the log); only legacy logs may differ in units
+        units_mismatch = mech.legacy and med > 0 and abs(med - 1.0) > 0.2
         if units_mismatch:
             h.notes.append('Follower %s velocity is %.3f x leader (units differ from mechanism rot/s?); '
                            'only the sign is checked.' % (fid, med))
         mask = [False] * n
+        dec = [False] * n
         brake = [False] * n
         m = max(1, int(round(0.1 / dt)))
         for k in range(n):
@@ -434,6 +441,9 @@ def _check_followers(h, mech, grid):
                         if 0 <= j < n and finite(wl[j]) and abs(wl[j]) >= thr]
                 if steady and not (near and min(near) <= p['follower_ratio_tol']):
                     mask[k] = True
+                # a disagreement this large is not sample skew, even during speed changes
+                if abs(r - 1.0) > p['decoupled_ratio_tol'] and not (near and min(near) <= p['decoupled_ratio_tol']):
+                    dec[k] = True
             braking = False
             if tqf is not None and finite(tqf[k]) and wf[k] * tqf[k] < 0 and abs(tqf[k]) > p['braking_current_a']:
                 braking = True
@@ -443,16 +453,41 @@ def _check_followers(h, mech, grid):
                 leader_brakes = tql is not None and finite(tql[k]) and wl[k] * tql[k] < 0
                 if not decel[k] and not leader_brakes:
                     brake[k] = True
+        # sustained large disagreement: its own event type (counts like a jam), not also a 'follower' event
+        in_dec = [False] * n
+        for a, b in runs(dec):
+            if (b - a) * dt >= p['decoupled_min_s'] - 1e-9:
+                for k in range(a, b):
+                    in_dec[k] = True
+        isl, isf_mag = grid.get(L, 'StatorCurrent'), grid.get(fid, 'StatorCurrent')
+        if not units_mismatch:
+            h.checks_run.append('follower %s decoupled' % fid)
+            h.add('decoupled', in_dec, fid, min_s=0.0,
+                  detail=lambda a, b, wf=wf, isf_mag=isf_mag: {
+                      'leader': L, 'median_ratio': _median_ratio(wf, wl, a, b),
+                      'leader_speed_rps': _median_abs(wl, a, b), 'follower_speed_rps': _median_abs(wf, a, b),
+                      'leader_current_a': _median_abs(isl, a, b), 'follower_current_a': _median_abs(isf_mag, a, b)})
         h.checks_run.append('follower %s ratio/sign' % fid)
-        h.add('follower', mask, fid, min_s=0.1,
-              detail=lambda a, b, fid=fid: {'kind': 'ratio', 'median_ratio': round(
-                  sorted(wf[k] / wl[k] for k in range(a, b) if finite(wf[k]) and finite(wl[k]) and wl[k])[(b - a) // 2], 3)})
+        h.add('follower', [x and not y for x, y in zip(mask, in_dec)], fid, min_s=0.1,
+              detail=lambda a, b, wf=wf: {'kind': 'ratio', 'median_ratio': _median_ratio(wf, wl, a, b)})
         if tqf is not None or isf is not None:
             cur = tqf if tqf is not None else isf
             h.checks_run.append('follower %s braking' % fid)
             h.add('follower', brake, fid, min_s=0.1,
                   detail=lambda a, b, cur=cur: {'kind': 'braking', 'mean_current_a': round(
                       sum(cur[k] for k in range(a, b) if finite(cur[k])) / max(1, b - a), 1)})
+
+
+def _median_ratio(wf, wl, a, b):
+    rs = sorted(wf[k] / wl[k] for k in range(a, b) if finite(wf[k]) and finite(wl[k]) and wl[k])
+    return round(rs[len(rs) // 2], 3) if rs else None
+
+
+def _median_abs(x, a, b):
+    if x is None:
+        return None
+    v = sorted(abs(x[k]) for k in range(a, b) if finite(x[k]))
+    return round(v[len(v) // 2], 1) if v else None
 
 
 def _check_temperature(h, mech, grid):

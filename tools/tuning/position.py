@@ -5,7 +5,7 @@ import math
 import health as H
 from fitstats import NAN, finite, mean, median, percentile, runs
 
-MECHANICAL_EVENTS = ('jam', 'follower', 'saturated', 'temperature', 'position_stall', 'current_spike')
+MECHANICAL_EVENTS = ('jam', 'follower', 'decoupled', 'saturated', 'temperature', 'position_stall', 'current_spike')
 
 
 def _summ(xs, nd=3):

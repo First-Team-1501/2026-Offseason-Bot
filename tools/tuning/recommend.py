@@ -198,6 +198,17 @@ def build(results, heading, robot, targets, eligible, elig_reason, hist_ctx, tar
             types = ', '.join('%s %d x %.1f s' % (k, v['count'], v['seconds']) for k, v in (h.get('by_type') or {}).items())
             R.flag(name, 'inspect', 'mechanical issue suspected: inspect %s (unhealthy %.1f%% of %.1f s active; %s)'
                    % (name, 100 * (h.get('unhealthy_share') or 0), h.get('active_s') or 0, types or 'jam'))
+        dec = {}
+        for e in h.get('events') or []:
+            if e.get('type') == 'decoupled':
+                dec.setdefault(e.get('motor'), []).append(e)
+        for fid, evs in sorted(dec.items(), key=lambda kv: str(kv[0])):
+            lg = max(evs, key=lambda e: e['duration_s'])
+            R.flag(name, 'inspect', 'inspect %s: motor %s turns at %s x the speed of leader %s for %.1f s in %d interval(s) from '
+                   't %.1f s (longest: leader %s A at %s rot/s, motor %s %s A at %s rot/s): detached or slipping drive' % (
+                       name, fid, _rng([e['median_ratio'] for e in evs if e.get('median_ratio') is not None]), lg.get('leader'),
+                       sum(e['duration_s'] for e in evs), len(evs), evs[0]['t0'], lg.get('leader_current_a'),
+                       lg.get('leader_speed_rps'), fid, lg.get('follower_current_a'), lg.get('follower_speed_rps')))
         ctx = hist_ctx.get(name) or {}
         prev_log, prev_sig = ctx.get('prev_log'), ctx.get('prev_signature')
         if prev_sig and ctx.get('signature') and prev_sig != ctx['signature']:
@@ -244,7 +255,9 @@ def build(results, heading, robot, targets, eligible, elig_reason, hist_ctx, tar
         if any(d.get('flag') for d in ls.values()):
             degrade += 1   # unequal load share: the plant may change once it is fixed
         ctx = hist_ctx.get(name) or {}
-        if a.get('loop') == 'velocity':
+        if name == 'SwerveDrive':
+            _swerve_drive_props(R, name, a, policy, degrade)
+        elif a.get('loop') == 'velocity':
             _velocity_props(R, name, a, res, policy, hp, degrade, ctx, target_rows, robot, targets)
         elif a.get('loop') == 'position' and name == 'ShooterHood':
             _hood_props(R, name, a, res, policy, degrade, target_rows)
@@ -365,6 +378,60 @@ def _velocity_props(R, name, a, res, policy, hp, degrade, ctx, target_rows, robo
                           {'failing': [{'metric': r['metric'], 'measured': r['measured'], 'target': r['target']} for r in fails],
                            'stator_limit_frac': lim_frac})
         _limit_props(R, name, cid, a, res, policy, degrade, target_rows, robot, targets)
+
+
+def _swerve_drive_props(R, name, a, policy, degrade):
+    """Drive kS/kV (TunerConstants.driveGains, per rotor rot/s) from the FF fit pooled over the modules. The gains act
+    on closed-loop velocity requests only (autos, DriveToPose); teleop drives open-loop voltage."""
+    gains = a.get('gains') or {}
+    pf = a.get('pooled_ff_fit') or {}
+    if pf.get('status') != 'ok':
+        R.block(name, 'kS/kV', 'no usable pooled drive FF fit (%s)' % (pf.get('status') or 'none'))
+        return
+    if not pf.get('kV_identifiable'):
+        R.block(name, 'kS/kV', 'kV not identifiable (a single driving speed)')
+        return
+    reasons = []
+    if pf['windows'] < policy.get('min_steady_windows', 4):
+        reasons.append('%d steady windows < %d' % (pf['windows'], policy.get('min_steady_windows', 4)))
+    if (pf.get('steady_s') or 0) < policy.get('min_steady_s', 2.0):
+        reasons.append('%.1f s steady < %.1f s' % (pf.get('steady_s') or 0, policy.get('min_steady_s', 2.0)))
+    if pf.get('r2') is None or pf['r2'] < policy.get('ff_r2_min', 0.9):
+        reasons.append('R^2 %.3f < %.2f' % (pf.get('r2') or float('nan'), policy.get('ff_r2_min', 0.9)))
+    if reasons:
+        R.block(name, 'kS/kV', '; '.join(reasons))
+        return
+    kvs = sorted(m['ff_fit']['kV'] for m in (a.get('motors') or {}).values()
+                 if (m.get('ff_fit') or {}).get('status') == 'ok' and m['ff_fit'].get('kV_identifiable'))
+    spread = (kvs[-1] - kvs[0]) / kvs[len(kvs) // 2] if len(kvs) >= 2 and kvs[len(kvs) // 2] > 0 else None
+    sp = pf.get('setpoints_rpm') or []
+    both = any(x > 0 for x in sp) and any(x < 0 for x in sp)
+    ev = {'windows': pf['windows'], 'steady_s': pf.get('steady_s'), 'r2': _r(pf.get('r2')), 'kS_fit': _r(pf['kS']),
+          'kS_ci95': _r(pf.get('kS_ci95')), 'kV_fit': _r(pf['kV']), 'kV_ci95': _r(pf.get('kV_ci95')),
+          'kV_per_mps': pf.get('kV_per_mps'), 'setpoints_rpm': sp, 'both_directions': both,
+          'module_kV': [_r(x) for x in kvs], 'module_kV_spread': _r(spread, 3),
+          'applies_to': 'TunerConstants.driveGains: closed-loop velocity (autos, DriveToPose); teleop open loop unaffected'}
+    conf = 'high' if (pf['windows'] >= 8 and pf['r2'] >= 0.97 and len(sp) >= 3 and (pf.get('kS_ci_rel') or 1) <= 0.10
+                      and (pf.get('kV_ci_rel') or 1) <= 0.10 and both and spread is not None and spread <= 0.10) else 'medium'
+    conf = lower(conf, degrade)
+    frac = policy.get('ff_step_max_frac', 0.25)
+    minchg = policy.get('min_ff_change_frac', 0.05)
+    for key in ('kS', 'kV'):
+        cr = pf.get(key + '_ci_rel')
+        if cr is None or cr > policy.get('ci_rel_max', 0.25):
+            R.block(name, key, 'CI half-width %s of the estimate > %.0f%%' % (
+                ('%.0f%%' % (100 * cr)) if cr is not None else 'unknown', 100 * policy.get('ci_rel_max', 0.25)))
+            continue
+        cur, fit = gains.get(key, 0.0), pf[key]
+        if fit < 0:
+            R.block(name, key, 'fitted %s %.4f is negative (non-physical)' % (key, fit))
+            continue
+        if abs(fit - cur) <= minchg * max(abs(cur), 1e-3):
+            continue
+        val, initial = bounded(cur, fit, frac)
+        R.propose(name, 'all', key, cur, val, lower(conf) if initial else conf,
+                  ('initial value (current 0)' if initial else 'step toward the pooled drive FF fit (bounded %.0f%%)'
+                   % (100 * frac)) + '; drive motors, per rotor rot/s', ev)
 
 
 def _pred_table(m, gains, new, ff):

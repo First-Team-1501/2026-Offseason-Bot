@@ -8,6 +8,7 @@ Contents (FPGA time base, 50 Hz motor signals written only when changed = ZOH sk
   Power: battery voltage, BrownedOut, Enabled, Mode (50 Hz).
   Interlock violation: hood held below 7.75 deg for 0.5 s while the shooter leader voltage is non-zero.
   systemTime: epoch microseconds; ShooterHood Config hoodDownThresholdDeg 7.75.
+  Optional decouple=(t0, t1): follower 11 turns at 0.6 x the leader inside the window (detached drive).
 usage: py -3.14 -I make_synthetic_log.py <out.wpilog>
 """
 import json
@@ -41,7 +42,7 @@ class ZohWriter:
         self.w.append(name, t, v)
 
 
-def make(path, seed=1):
+def make(path, seed=1, decouple=None):
     rnd = random.Random(seed)
     w = wpilog.Writer(path)
     Z = ZohWriter(w)
@@ -115,7 +116,8 @@ def make(path, seed=1):
         Z.put('/Tuning/Shooter/12/StatorCurrent', t, i_stator)
         Z.put('/Tuning/Shooter/12/SupplyCurrent', t, round(i_stator * abs(V) / vb, 1))
         Z.put('/Tuning/Shooter/12/ControlMode', t, 'VelocityVoltage')
-        Z.put('/Tuning/Shooter/11/Velocity', t, round(w_true + rnd.gauss(0, 0.01), 3))
+        f_scale = 0.6 if decouple and decouple[0] <= t < decouple[1] else 1.0
+        Z.put('/Tuning/Shooter/11/Velocity', t, round(f_scale * w_true + rnd.gauss(0, 0.01), 3))
         Z.put('/Tuning/Shooter/11/StatorCurrent', t, i_stator)
         Z.put('/Tuning/Shooter/11/SupplyCurrent', t, round(i_stator * abs(V) / vb, 1))
         if abs(t - round(t)) < DT / 2:
@@ -160,7 +162,7 @@ def make(path, seed=1):
     w.append('/Tuning/Power/Enabled', T_END, False)
     w.append('/Tuning/Power/Mode', T_END, 'disabled')
     w.close()
-    return {'kS': KS, 'kV': KV, 'interlock': INTERLOCK}
+    return {'kS': KS, 'kV': KV, 'interlock': INTERLOCK, 'decouple': decouple}
 
 
 if __name__ == '__main__':
