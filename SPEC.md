@@ -154,6 +154,7 @@ off target. 7457's version (lock within 0.25 deg) was commented out.
 | 28 | CTRE SignalLogger (hoot) off: `enableAutoLogging(false)`, `stop()`; `SignalLogger.start()` and `write*` calls removed | `Robot.java`, `DriveTelemetry.java` |
 | 29 | X-lock while shooting with auto-aim (section 2.6) | `AutoAim.java`, `DriveStates.java`, `Constants.java` |
 | 30 | Startup re-application of unchanged tunable gains removed (defaults recorded at construction) | `VelocitySubsystem.java`, `PositionSubsystem.java` |
+| 31 | Shooter `kV` 0.171 and idle 700 RPM from the 2026-10-21 log analysis (section 4); follower `Voltage` logged | `Constants.java`, `MotorTelemetry.java` |
 
 Notes:
 
@@ -167,7 +168,14 @@ Notes:
 ## 4. Kraken X60 flywheel gains
 
 - Control: `VelocityVoltage`, FOC off (7457: `VelocityTorqueCurrentFOC` bang-bang, `kP` 99999). Gains in V
-  per mechanism rot/s: `kP` 0.25, `kS` 0.2 (placeholder, refit pending), `kV` 0.18.
+  per mechanism rot/s: `kP` 0.25, `kS` 0.2, `kV` 0.171.
+- 2026-10-21 refit (first post-sign-off log `FRC_20261021_211040`, 913-1622 RPM, two independent fits, R^2 >= 0.995):
+  `kS` 0.198-0.212 (unchanged), `kV` 0.1705-0.1713 (was 0.18; the flywheel ran 18-37 RPM fast). `kP` unchanged:
+  per-ball dips of 55-203 RPM recovered to within 25 RPM in 0.02-0.10 s, stator limit reached in under 2% of feeding.
+- Idle `kIdleRPM` 700 (was 900): idle drew about 12 A supply at 900 RPM; spin-up from 900 took 0.22-0.32 s of the
+  1.0 s target. Pending verification in the next log.
+- Load share (2026-10-21): leader 12 carries about 3x the stator and supply current of each follower at the same speed
+  (18.8 A vs 6.2-6.6 A at 900 RPM); mechanical check pending; follower voltage now logged.
 - `kS` 0.55 was fitted from the 2026-10-17 logs (900-1725 RPM; with `kS` 0.2 the flywheel settled 40-70 RPM below
   target) while follower motor 1 braked the flywheel at the current limit. After the direction fix (`3832fc4`) `kS`
   returned to 0.2 until a refit from new logs; fitted `kV` 0.180 equals the existing value.
@@ -248,9 +256,10 @@ Notes:
 - Writer: `lib/telemetry` (`TuningTelemetry.periodic()` from `Robot.robotPeriodic`), straight to the WPILib DataLog
   (no DogLog queue, no NT); values rounded and written only on change.
 - Per motor `/Tuning/<Mechanism>/<CAN id>/`: leaders `Voltage`, `Velocity`, `Reference`, `StatorCurrent`,
-  `SupplyCurrent`, `ControlMode`, `Temp` (1 Hz); position leaders add `Position`; followers `Velocity`,
+  `SupplyCurrent`, `ControlMode`, `Temp` (1 Hz); position leaders add `Position`; followers `Voltage`, `Velocity`,
   `StatorCurrent`, `SupplyCurrent`, `Temp`; swerve motors `Voltage`, `StatorCurrent`, `SupplyCurrent`, `ControlMode`,
-  `Temp`. Mechanism signals requested at 100 Hz, logged at 50 Hz.
+  `Temp`. Mechanism signals requested at 100 Hz, logged at 50 Hz while enabled and 2 Hz while disabled; `ControlMode`
+  and `MechanismOK` at 10 Hz.
 - Per mechanism: `Config` (JSON: gains, ratio, current limits, inversion, neutral mode, tolerance, extras) at 1 Hz
   and on change; `MechanismOK` from dashboard `Tuning/Mechanism OK/<Mechanism>` (default true; set false while a
   mechanism is known faulty; resets to true on code restart).

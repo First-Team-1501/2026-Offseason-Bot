@@ -22,7 +22,7 @@ final class MotorTelemetry {
         LEADER,
         /** LEADER plus position. */
         POSITION_LEADER,
-        /** Speed and currents; a follower's output mirrors its leader. */
+        /** Output, speed and currents (output for load-share checks against the leader). */
         FOLLOWER,
         /** Output, currents, control mode; speed and angle come from the swerve state arrays (odometry thread). */
         SWERVE
@@ -45,9 +45,7 @@ final class MotorTelemetry {
 
     MotorTelemetry(DataLog log, String mechanismPrefix, TalonFX motor, Role role) {
         String prefix = mechanismPrefix + motor.getDeviceID() + "/";
-        if (role != Role.FOLLOWER) {
-            add(log, prefix + "Voltage", motor.getMotorVoltage(false), 0.01);
-        }
+        add(log, prefix + "Voltage", motor.getMotorVoltage(false), 0.01);
         if (role != Role.SWERVE) {
             add(log, prefix + "Velocity", motor.getVelocity(false), 0.001);
         }

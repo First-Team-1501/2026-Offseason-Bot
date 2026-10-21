@@ -127,16 +127,18 @@ public final class Constants {
                 .withStatorCurrentLimitEnable(true)
                 .withSupplyCurrentLimit(40)
                 .withSupplyCurrentLimitEnable(true);
-        // VelocityVoltage gains, volts per mechanism rotation/sec. kS 0.55 was fitted while motor 1 braked the
-        // flywheel;
-        // with that fixed most of the drag is gone, so kS is back to 0.2 until it is refit from new logs.
+        // VelocityVoltage gains, volts per mechanism rotation/sec. kS/kV fitted from the 2026-10-21 post-sign-off log
+        // (FRC_20261021_211040, 913-1622 RPM, R^2 >= 0.995): kS 0.198-0.212, kV 0.1705-0.1713. kV 0.18 ran the flywheel
+        // 18-37 RPM fast. kP unchanged (per-ball recovery to within 25 RPM in 0.02-0.10 s; not current-limited).
         public static final double kP = 0.25;
         public static final double kS = 0.2;
-        public static final double kV = 0.18;
+        public static final double kV = 0.171;
         public static final double shooterGearRatio = 36.0 / 24.0;
         public static final AngularVelocity kVelocityTolerance = RPM.of(100);
         public static final AngularVelocity kShootRPM = RPM.of(1600);
-        public static final AngularVelocity kIdleRPM = RPM.of(900);
+        // 700 (was 900) to cut the idle draw (about 12 A supply at 900 RPM); spin-up from 900 took 0.22-0.32 s of the
+        // 1.0 s target (2026-10-21). Verify spin-up and idle current in the next log.
+        public static final AngularVelocity kIdleRPM = RPM.of(700);
         public static final AngularVelocity kRevRpm = RPM.of(1200);
         // Multiplier on LookupTables.distanceToShooterRPM; adjustable live as SmartDashboard "Shooter/LUT RPM Scale".
         public static final double kLutRpmScale = 1.10;
