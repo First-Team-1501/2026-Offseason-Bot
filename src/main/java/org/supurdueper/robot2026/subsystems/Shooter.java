@@ -13,6 +13,7 @@ import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.hardware.TalonFX;
 import dev.doglog.DogLog;
 import edu.wpi.first.units.measure.AngularVelocity;
+import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import java.util.ArrayList;
@@ -50,8 +51,41 @@ public class Shooter extends VelocitySubsystem implements SupurdueperSubsystem {
         Robot.add(this);
     }
 
+    /** The flywheel is never powered while the hood is down; commands keep running and resume when it rises. */
+    private boolean hoodInterlock() {
+        return RobotContainer.getShooterHood().isDown();
+    }
+
+    @Override
+    protected void setVelocity(AngularVelocity angularvelocity) {
+        if (hoodInterlock()) {
+            stop();
+            return;
+        }
+        super.setVelocity(angularvelocity);
+    }
+
+    @Override
+    protected void setVelocity(double angularvelocity) {
+        if (hoodInterlock()) {
+            stop();
+            return;
+        }
+        super.setVelocity(angularvelocity);
+    }
+
+    @Override
+    protected void runVoltage(Voltage volts) {
+        if (hoodInterlock()) {
+            stop();
+            return;
+        }
+        super.runVoltage(volts);
+    }
+
     @Override
     protected boolean isAtVelocity() {
+        if (hoodInterlock()) return false;
         if (getVelocity().lt(RPM.of(1000))) return false;
         return super.isAtVelocity();
     }
@@ -62,6 +96,7 @@ public class Shooter extends VelocitySubsystem implements SupurdueperSubsystem {
         DogLog.log("Shooter/Current RPM", getVelocity().in(RPM));
         DogLog.log("Shooter/Target RPM", getSetpoint().in(RPM));
         DogLog.log("Shooter/At Velocity", isAtVelocity());
+        DogLog.log("Shooter/Hood Interlock", hoodInterlock());
         DogLog.log("Shooter/Current", motor.getTorqueCurrent().getValue().in(Amps));
         DogLog.log("Battery Voltage", RobotController.getBatteryVoltage());
         ShotCalculator.periodic(RobotContainer.getDrivetrain().getState().Pose);

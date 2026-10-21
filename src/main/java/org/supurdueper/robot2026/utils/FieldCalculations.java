@@ -44,4 +44,20 @@ public class FieldCalculations {
     public static Distance distanceToAimPoint(Pose2d robotPose) {
         return Meters.of(robotPose.getTranslation().getDistance(aimPoint(robotPose)));
     }
+
+    // Trench zone: the trench depth plus half the robot length and hood travel time at full speed (x), and a small
+    // margin beside the opening (y)
+    private static final double kTrenchZoneMarginXMeters = 1.0;
+    private static final double kTrenchZoneMarginYMeters = 0.2;
+
+    /** Under or approaching any of the four trenches (both alliance sides), where the hood must be fully down. */
+    public static boolean inTrenchZone(Pose2d robotPose) {
+        double halfZoneDepth = FieldConstants.LeftTrench.depth / 2.0 + kTrenchZoneMarginXMeters;
+        boolean trenchX = Math.abs(robotPose.getX() - FieldConstants.LinesVertical.hubCenter) < halfZoneDepth
+                || Math.abs(robotPose.getX() - FieldConstants.LinesVertical.oppHubCenter) < halfZoneDepth;
+        boolean leftTrenchY = robotPose.getY()
+                > FieldConstants.fieldWidth - FieldConstants.LeftTrench.openingWidth - kTrenchZoneMarginYMeters;
+        boolean rightTrenchY = robotPose.getY() < FieldConstants.RightTrench.openingWidth + kTrenchZoneMarginYMeters;
+        return trenchX && (leftTrenchY || rightTrenchY);
+    }
 }

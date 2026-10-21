@@ -6,11 +6,13 @@ import static edu.wpi.first.units.Units.Meters;
 import dev.doglog.DogLog;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import org.supurdueper.robot2026.Constants.LookupTables;
 import org.supurdueper.robot2026.Constants.ShooterConstants;
 import org.supurdueper.robot2026.Constants.ShooterHoodConstants;
+import org.supurdueper.robot2026.subsystems.ShooterHood;
 
 /**
  * Flywheel speed and hood angle for the robot pose: hub shots from our zone, forwarding shots elsewhere.
@@ -38,7 +40,7 @@ public final class ShotCalculator {
         SmartDashboard.putNumber(kForwardRpmScaleKey, ShooterConstants.kForwardRpmScale);
         SmartDashboard.putBoolean(kManualKey, false);
         SmartDashboard.putNumber(kManualRpmKey, 0);
-        SmartDashboard.putNumber(kManualAngleKey, ShooterHoodConstants.kReverseSoftLimit.in(Degrees));
+        SmartDashboard.putNumber(kManualAngleKey, ShooterHood.stowAngle().in(Degrees));
         SmartDashboard.putBoolean(kRecordKey, false);
     }
 
@@ -51,11 +53,13 @@ public final class ShotCalculator {
         return tableRpm(robotPose);
     }
 
+    /** Manual angles stay at or above the stow angle, so manual shots never put the hood down with the flywheel on. */
     public static double shotAngleDeg(Pose2d robotPose) {
         if (isManual()) {
+            double stowDeg = ShooterHood.stowAngle().in(Degrees);
             return MathUtil.clamp(
-                    SmartDashboard.getNumber(kManualAngleKey, ShooterHoodConstants.kReverseSoftLimit.in(Degrees)),
-                    ShooterHoodConstants.kReverseSoftLimit.in(Degrees),
+                    SmartDashboard.getNumber(kManualAngleKey, stowDeg),
+                    stowDeg,
                     ShooterHoodConstants.kForwardSoftLimit.in(Degrees));
         }
         return tableAngleDeg(robotPose);
@@ -113,9 +117,10 @@ public final class ShotCalculator {
             double rpm = shotRpm(robotPose);
             double angle = shotAngleDeg(robotPose);
             DogLog.log("Shot Tuning/Recorded Point", new double[] {distance, rpm, angle, forwarding ? 1 : 0});
-            System.out.printf(
-                    "Shot Tuning point: %.2f m, %.0f RPM, %.1f deg%s%n",
-                    distance, rpm, angle, forwarding ? " (forwarding)" : "");
+            // Also to the "messages" entry and the console: not subject to DogLog queue drops
+            DataLogManager.log(String.format(
+                    "Shot Tuning point: %.2f m, %.0f RPM, %.1f deg%s",
+                    distance, rpm, angle, forwarding ? " (forwarding)" : ""));
         }
     }
 

@@ -25,18 +25,18 @@ Upper Bot CANivore:
 
 | ID | Device | `CanId` | Subsystem |
 |---|---|---|---|
-| 1 | Shooter motor (leader) | `SHOOTER_ONE` | `Shooter` |
-| 2 | Shooter motor | `SHOOTER_TWO` | `Shooter` |
+| 1 | Shooter motor (follower, Opposed) | `SHOOTER_THREE` | `Shooter` |
+| 2 | Shooter motor (follower, Opposed) | `SHOOTER_FOUR` | `Shooter` |
 | 3 | Feeder motor (leader) | `FEEDER_ONE` | `Feeder` |
-| 4 | Shooter motor | `SHOOTER_THREE` | `Shooter` |
+| 4 | Shooter motor (follower, Opposed) | `SHOOTER_FIVE` | `Shooter` |
 | 5 | Indexer | `INDEXER` | `Hopper` |
 | 6 | Intake motor (leader) | `INTAKE_ONE` | `Intake` |
 | 7 | Intake motor | `INTAKE_TWO` | `Intake` |
 | 8 | Main feeder roller | `UPTAKE` | `Uptake` |
 | 9 | Hood motor | `SHOOTER_HOOD` | `ShooterHood` |
 | 10 | Feeder motor | `FEEDER_TWO` | `Feeder` |
-| 11 | Shooter motor | `SHOOTER_FOUR` | `Shooter` |
-| 12 | Shooter motor | `SHOOTER_FIVE` | `Shooter` |
+| 11 | Shooter motor (follower, Aligned) | `SHOOTER_TWO` | `Shooter` |
+| 12 | Shooter motor (leader) | `SHOOTER_ONE` | `Shooter` |
 
 Lower Bot Canivore:
 
@@ -85,6 +85,26 @@ Hold-to-run, 7457 action semantics. Button numbers defined only in `state/Driver
 - Stick response from 1501 2026 code: deadband 0.05, cubic, then 7457 `kSlowModeScalor` 0.85.
 - Port 2 (1501 button board) unused.
 
+### 2.5 Hood and flywheel interlock
+
+Requirement (team, 2026-10-21): the shooter flywheel is never powered while the hood is fully down.
+
+| Item | Definition |
+|---|---|
+| Fully down | `kReverseSoftLimit` (7 deg; bottom stop 6.837 deg) |
+| Stow angle | `kReverseSoftLimit` + `kStowMarginDeg` (1.5 deg; live `ShooterHood/Stow Margin (Deg)` in tuning mode, clamped 0.5-5) |
+| Hood down (`ShooterHood.isDown`) | measured angle below `kReverseSoftLimit` + half the stow margin |
+| Interlock (`Shooter`) | while the hood is down, every velocity/voltage request becomes `NeutralOut` (coast); `isAtVelocity` is false, so no feed. Running commands resume when the hood rises. Flywheel only; feeder, uptake and hopper are not interlocked. |
+| Rest angle (`ShooterHood.restAngle`) | auto: fully down (7457 paths pass the trench with it down); teleop: fully down inside a trench zone, else stow |
+| Trench zone (`FieldCalculations.inTrenchZone`) | robot center within trench depth / 2 + 1.0 m of either hub line in x, and within the trench opening width + 0.2 m of the side wall in y; all four trenches |
+| Teleop in a trench zone | aim, shoot and fixed-shot hood targets are replaced by fully down, so the hood cannot rise under a trench; the interlock then blocks the flywheel |
+| Zeroing (port 1 btn 1) | drives to the stop (interlock active), re-zeroes, returns to the rest angle |
+| Manual shot tuning | `Shot Tuning/Angle (Deg)` minimum is the stow angle |
+| Telemetry | `Shooter/Hood Interlock`, `ShooterHood/Down`, `ShooterHood/In Trench Zone`, `ShooterHood/Rest Angle (Deg)` |
+
+Consequence: in auto the flywheel is unpowered between volleys (hood down) and spins up again when the hood rises
+for the next shot; `auto_rev` has no effect while the hood is down.
+
 ## 3. Software changes vs. 7457
 
 [R] = refactor for maintainability.
@@ -105,12 +125,16 @@ Hold-to-run, 7457 action semantics. Button numbers defined only in `state/Driver
 | 12 | Front = intake end; offsets measured in Tuner X with the shooter end as front, each kept with its module | `CanId.java`, `TunerConstants.java` |
 | 13 | Auto-aim heading in field frame (`TargetDirectionPerspective.BlueAlliance`); `AutoAim/Error` correct on red | `AutoAim.java` |
 | 14 | Forwarding: outside our zone, aim at a point in our zone and use `distanceToForwardRPM` / `Angle` (untuned) and uptake 2000 RPM | `FieldCalculations.java`, `AutoAim.java`, `Shooter.java`, `ShooterHood.java`, `Uptake.java`, `Constants.java` |
-| 15 | Live RPM multipliers: SmartDashboard `Shooter/LUT RPM Scale` (default 1.20), `Shooter/Forward RPM Scale` (1.0) | `Shooter.java`, `Constants.java` |
+| 15 | Live RPM multipliers: SmartDashboard `Shooter/LUT RPM Scale` (default 1.10 since `3832fc4`; 1.20 before), `Shooter/Forward RPM Scale` (1.0) | `Shooter.java`, `Constants.java` |
 | 16 | Vision: NT flush, MT2 gates, MegaTag1 heading seed while disabled, camera-pose check, telemetry; disabled throttle 50 | `Vision.java`, `Robot.java` |
 | 17 | Intake reverses (-1700 RPM) while shooting | `Intake.java`, `Constants.java` |
 | 18 | Build info logged 1 s into the main loop and on auto/teleop init (the data log is paused during the >10 s robot construction, so robotInit values never reached it) | `Robot.java` |
 | 19 | Shot speed and hood angle from one place (`ShotCalculator`): hub and forwarding tables, dashboard manual shot tuning with point recording; `tuningMode` now only affects gains | `ShotCalculator.java` (new), `Shooter.java`, `ShooterHood.java` |
 | 20 | Limelight robot-space pose sent from code (`VisionConstants.kCamera*`) at startup and on disable | `Constants.java`, `Vision.java`, `Robot.java` |
+| 21 | Hood and flywheel interlock, stow angle, trench zone (section 2.5) | `Constants.java`, `ShooterHood.java`, `Shooter.java`, `FieldCalculations.java`, `ShotCalculator.java` |
+| 22 | DogLog writes on the 250 Hz odometry thread decimated to 50 Hz (`DriveTelemetry`, `AutoAim`); they overflowed the DogLog queue (`MAX_QUEUED_LOGS` on `DriveState/ModuleStates`) | `DriveTelemetry.java`, `AutoAim.java` |
+| 23 | `Constants.tuningMode` true for tuning sessions (set false for events); aim heading gains live as `/Tuning/AutoAim/Kp|Ki|Kd`, applied values logged as `AutoAim/Applied Gains` | `Constants.java`, `DriveStates.java`, `Drivetrain.java` |
+| 24 | `Shot Tuning/Record` line also written to the DataLog `messages` entry (not subject to DogLog queue drops) | `ShotCalculator.java` |
 
 Notes:
 
@@ -124,13 +148,14 @@ Notes:
 ## 4. Kraken X60 flywheel gains
 
 - Control: `VelocityVoltage`, FOC off (7457: `VelocityTorqueCurrentFOC` bang-bang, `kP` 99999). Gains in V
-  per mechanism rot/s: `kP` 0.25, `kS` 0.55, `kV` 0.18.
-- `kS` / `kV` fitted from steady-state flywheel speeds in the 2026-10-17 logs (900-1725 RPM): with `kS` 0.2 the
-  flywheel settled 40-70 RPM below target at every speed; fitted `kV` 0.180 equals the existing value.
+  per mechanism rot/s: `kP` 0.25, `kS` 0.2 (placeholder, refit pending), `kV` 0.18.
+- `kS` 0.55 was fitted from the 2026-10-17 logs (900-1725 RPM; with `kS` 0.2 the flywheel settled 40-70 RPM below
+  target) while follower motor 1 braked the flywheel at the current limit. After the direction fix (`3832fc4`) `kS`
+  returned to 0.2 until a refit from new logs; fitted `kV` 0.180 equals the existing value.
 - Feeding waits for `Shooter/At Velocity`: at least 1000 RPM and within 100 RPM of target.
 - Unchanged: `kMaxAmps` 50 A stator limit, supply limit 40 A, ratio 36:24, distance LUTs (7457 values).
 - X60 free speed approx. 6000 RPM -> flywheel limit approx. 4000 RPM at 1.5:1; LUT maximum 2075 RPM
-  (2490 RPM with the 1.20 multiplier).
+  (2283 RPM with the 1.10 multiplier).
 
 ## 5. Bring-up checklist
 
@@ -161,7 +186,10 @@ Notes:
    console a matching line. Distance is `Shot Tuning/Distance (m)` (robot center to hub center).
 8. Hood: zero with port 1 btn 1; soft limits 7 deg to 41.5 deg (0.115234 mechanism rot, measured top of travel
    on the 1501 hood). Hood angles depend on the hood resting on its bottom stop when robot code starts (or after
-   zeroing).
+   zeroing). Interlock check (section 2.5): teleop enable -> hood at stow, flywheel may idle; zeroing ->
+   `Shooter/Hood Interlock` true and flywheel unpowered, then stow; trench zone -> hood fully down, flywheel
+   unpowered, aim/shoot hold the hood down; auto -> flywheel unpowered whenever the hood is down. Set the stow margin
+   live until the team confirms clearance, then copy it to `kStowMarginDeg`.
 9. Intake, hopper, feeder, uptake: verify direction and follower flags (7457 values retained).
 10. LL4: hostname `limelight`, static IP 10.15.1.11; robot-space camera pose (section 2.3, measured from the
     center of the module rectangle); AprilTag pipeline 0 with Full 3D; field map matching the event field

@@ -215,6 +215,9 @@ public class Drivetrain extends TunerSwerveDrivetrain implements SupurdueperSubs
         DogLog.log(
                 "Drive/Pigeon_BootDuringEnable",
                 getPigeon2().getFault_BootDuringEnable().getValue());
+        if (driveStates != null) {
+            driveStates.periodic();
+        }
     }
 
     private void startSimThread() {

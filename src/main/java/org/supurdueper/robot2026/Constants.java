@@ -30,7 +30,8 @@ import org.supurdueper.lib.utils.ExpCurve;
 
 public final class Constants {
     public static final double loopPeriodSecs = 0.02;
-    public static boolean tuningMode = false;
+    // true for tuning sessions (dashboard gains under /Tuning); false for events
+    public static boolean tuningMode = true;
     public static boolean publishToNT = true;
     public static CANBus upperBus = new CANBus("Upper Bot CANivore");
     public static CANBus lowerBus = new CANBus("Lower Bot Canivore");
@@ -96,6 +97,12 @@ public final class Constants {
         // Measured top of travel on the 1501 hood (Tuner X position, current conversion): 0.115234 rot = 41.5 deg
         public static final Angle kForwardSoftLimit = Rotations.of(0.115234);
         public static final Angle kReverseSoftLimit = Degrees.of(7);
+        // The flywheel must not be powered with the hood fully down. Rest (stow) angle is kReverseSoftLimit plus this
+        // margin; below kReverseSoftLimit plus half the margin the hood counts as down and the flywheel is unpowered
+        // (ShooterHood.isDown). Adjustable live in tuning mode as "ShooterHood/Stow Margin (Deg)", clamped below.
+        public static final double kStowMarginDeg = 1.5;
+        public static final double kMinStowMarginDeg = 0.5;
+        public static final double kMaxStowMarginDeg = 5.0;
         public static final Voltage kPeakForwardVoltage = Volts.of(12);
         public static final Voltage kPeakReverseVoltage = Volts.of(-12);
         public static final Angle kZeroPosition = Degrees.of(6.837);

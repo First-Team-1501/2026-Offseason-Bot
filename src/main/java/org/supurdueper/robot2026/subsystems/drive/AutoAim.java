@@ -22,6 +22,9 @@ public class AutoAim extends FieldCentricFacingAngle {
     Rotation2d aimedTolerance = Rotation2d.fromDegrees(0.25);
     SwerveRequest xMode = new SwerveDriveBrake();
     Translation2d pointToFace;
+    // apply() runs at 250 Hz; DogLog gets every 5th call (50 Hz) to keep its queue from overflowing
+    private static final int kDogLogDecimation = 5;
+    private int applyCount = 0;
 
     public AutoAim() {
         // TargetDirection is field-relative (blue origin) on both alliances; translation still follows
@@ -35,15 +38,17 @@ public class AutoAim extends FieldCentricFacingAngle {
 
         this.pointToFace = FieldCalculations.aimPoint(currentPose);
 
-        DogLog.log("AutoAim/PointToFace", pointToFace);
-
         // The shooter is on the robot rear, so point the rear at the target.
         this.TargetDirection =
                 pointToFace.minus(currentPose.getTranslation()).getAngle().rotateBy(Rotation2d.k180deg);
 
-        DogLog.log(
-                "AutoAim/Error",
-                Math.abs(this.TargetDirection.minus(currentPose.getRotation()).getDegrees()));
+        if (++applyCount % kDogLogDecimation == 0) {
+            DogLog.log("AutoAim/PointToFace", pointToFace);
+            DogLog.log(
+                    "AutoAim/Error",
+                    Math.abs(this.TargetDirection.minus(currentPose.getRotation())
+                            .getDegrees()));
+        }
         // if (Math.abs(this.TargetDirection.minus(currentPose.getRotation()).getDegrees())
         //         < aimedTolerance.getDegrees()) {
         //     if (Math.abs(this.VelocityX) < 0.2 && Math.abs(this.VelocityY) < 0.2) {

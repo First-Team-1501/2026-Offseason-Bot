@@ -109,6 +109,11 @@ public class DriveTelemetry {
 
     private final double[] m_poseArray = new double[3];
 
+    // telemeterize runs on the 250 Hz odometry thread; DogLog every call overflowed its queue (MAX_QUEUED_LOGS on
+    // DriveState/ModuleStates), so DogLog gets every 5th state (50 Hz)
+    private static final int kDogLogDecimation = 5;
+    private int telemeterizeCount = 0;
+
     /** Accept the swerve drive state and telemeterize it to SmartDashboard and SignalLogger. */
     public void telemeterize(SwerveDriveState state) {
 
@@ -134,23 +139,26 @@ public class DriveTelemetry {
         SignalLogger.writeStructArray("DriveState/ModulePositions", SwerveModulePosition.struct, state.ModulePositions);
         SignalLogger.writeDouble("DriveState/OdometryPeriod", state.OdometryPeriod, "seconds");
 
-        /* Log to DogLog */
-        DogLog.log("DriveState/Speeds", state.Speeds);
-        DogLog.log("DriveState/ModuleStates", state.ModuleStates);
-        DogLog.log("DriveState/ModuleTargets", state.ModuleTargets);
-        DogLog.log("DriveState/ModulePositions", state.ModulePositions);
-        DogLog.log("DriveState/OdometryPeriod", state.OdometryPeriod, "seconds");
-
         /* Telemeterize the pose to a Field2d */
         fieldTypePub.set("Field2d");
         m_poseArray[0] = state.Pose.getX();
         m_poseArray[1] = state.Pose.getY();
         m_poseArray[2] = state.Pose.getRotation().getDegrees();
-        DogLog.log("Pose", m_poseArray);
-        DogLog.log(
-                "Distance To Goal", FieldCalculations.distanceToGoal(state.Pose).in(Meters));
-        DogLog.log("Our Zone", FieldCalculations.ourZone(state.Pose));
         fieldPub.set(m_poseArray);
+
+        /* Log to DogLog */
+        if (++telemeterizeCount % kDogLogDecimation == 0) {
+            DogLog.log("DriveState/Speeds", state.Speeds);
+            DogLog.log("DriveState/ModuleStates", state.ModuleStates);
+            DogLog.log("DriveState/ModuleTargets", state.ModuleTargets);
+            DogLog.log("DriveState/ModulePositions", state.ModulePositions);
+            DogLog.log("DriveState/OdometryPeriod", state.OdometryPeriod, "seconds");
+            DogLog.log("Pose", m_poseArray);
+            DogLog.log(
+                    "Distance To Goal",
+                    FieldCalculations.distanceToGoal(state.Pose).in(Meters));
+            DogLog.log("Our Zone", FieldCalculations.ourZone(state.Pose));
+        }
 
         /* Telemeterize each module state to a Mechanism2d */
         for (int i = 0; i < 4; ++i) {

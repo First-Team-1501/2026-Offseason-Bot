@@ -8,11 +8,14 @@ import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.ctre.phoenix6.swerve.SwerveRequest.FieldCentricFacingAngle;
 import com.ctre.phoenix6.swerve.SwerveRequest.ForwardPerspectiveValue;
+import dev.doglog.DogLog;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import org.supurdueper.lib.LoggedTunableNumber;
 // import org.supurdueper.lib.swerve.DriveToPose;
 import org.supurdueper.lib.utils.AllianceFlip;
+import org.supurdueper.robot2026.Constants;
 import org.supurdueper.robot2026.RobotContainer;
 import org.supurdueper.robot2026.state.DriverSticks;
 import org.supurdueper.robot2026.subsystems.drive.DriveSysId.SysIdSwerveTranslationCurrent;
@@ -30,6 +33,10 @@ public class DriveStates {
     private final SysIdSwerveTranslationCurrent driveCurrentTuning = new SysIdSwerveTranslationCurrent();
     private final FieldCentricFacingAngle fieldCentricFacingAngle = new FieldCentricFacingAngle();
     private final AutoAim driveFacingHub = new AutoAim();
+    // Heading gains, adjustable live in tuning mode
+    private final LoggedTunableNumber headingKpTunable = new LoggedTunableNumber("AutoAim/Kp", headingKp);
+    private final LoggedTunableNumber headingKiTunable = new LoggedTunableNumber("AutoAim/Ki", headingKi);
+    private final LoggedTunableNumber headingKdTunable = new LoggedTunableNumber("AutoAim/Kd", headingKd);
 
     public DriveStates(Drivetrain drivetrain) {
         this.drivetrain = drivetrain;
@@ -40,6 +47,23 @@ public class DriveStates {
         driveFacingHub.HeadingController.setPID(headingKp, headingKi, headingKd);
         driveFacingHub.RotationalDeadband = rotationClosedLoopDeadband.in(RadiansPerSecond);
         driveFacingHub.MaxAbsRotationalRate = MaxAngularRate;
+    }
+
+    /** Tuning mode: apply dashboard heading gains to both facing requests (called from Drivetrain.periodic). */
+    public void periodic() {
+        if (!Constants.tuningMode) {
+            return;
+        }
+        LoggedTunableNumber.ifChanged(
+                hashCode(),
+                gains -> {
+                    fieldCentricFacingAngle.HeadingController.setPID(gains[0], gains[1], gains[2]);
+                    driveFacingHub.HeadingController.setPID(gains[0], gains[1], gains[2]);
+                    DogLog.log("AutoAim/Applied Gains", gains);
+                },
+                headingKpTunable,
+                headingKiTunable,
+                headingKdTunable);
     }
 
     public void bindCommands() {

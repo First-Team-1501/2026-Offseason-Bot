@@ -17,20 +17,26 @@ import com.ctre.phoenix6.configs.VoltageConfigs;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.signals.GravityTypeValue;
 import dev.doglog.DogLog;
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import org.supurdueper.lib.LoggedTunableNumber;
 import org.supurdueper.lib.subsystems.PositionSubsystem;
 import org.supurdueper.lib.subsystems.SupurdueperSubsystem;
 import org.supurdueper.robot2026.CanId;
-import org.supurdueper.robot2026.Constants;
 import org.supurdueper.robot2026.Constants.ShooterHoodConstants;
 import org.supurdueper.robot2026.Robot;
 import org.supurdueper.robot2026.RobotContainer;
 import org.supurdueper.robot2026.state.RobotStates;
+import org.supurdueper.robot2026.utils.FieldCalculations;
 import org.supurdueper.robot2026.utils.ShotCalculator;
 
 public class ShooterHood extends PositionSubsystem implements SupurdueperSubsystem {
+
+    private static final LoggedTunableNumber stowMarginDeg =
+            new LoggedTunableNumber("ShooterHood/Stow Margin (Deg)", ShooterHoodConstants.kStowMarginDeg);
 
     private PositionVoltage noMagicMotion = new PositionVoltage(0).withEnableFOC(false);
 
@@ -59,12 +65,14 @@ public class ShooterHood extends PositionSubsystem implements SupurdueperSubsyst
         return goToPosition(() -> Degrees.of(20));
     }
 
+    /** Drives to the bottom stop (the flywheel interlock cuts the shooter there), re-zeroes, then returns to rest. */
     public Command zero() {
         return run(() -> motor.setControl(voltageRequest.withOutput(-3).withIgnoreSoftwareLimits(true)))
                 .until(() -> motor.getStatorCurrent().getValueAsDouble() > 50.0)
                 .andThen(runOnce(
                         () -> motor.setControl(voltageRequest.withOutput(0).withIgnoreSoftwareLimits(false))))
-                .andThen(runOnce(() -> motor.setPosition(ShooterHoodConstants.kZeroPosition)));
+                .andThen(runOnce(() -> motor.setPosition(ShooterHoodConstants.kZeroPosition)))
+                .andThen(goToPosition(this::restAngle));
     }
 
     @Override
@@ -73,11 +81,51 @@ public class ShooterHood extends PositionSubsystem implements SupurdueperSubsyst
         DogLog.log("ShooterHood/Position (Deg)", getPosition().in(Degrees));
         DogLog.log("ShooterHood/Target Position (Deg)", getSetpoint().in(Degrees));
         DogLog.log("ShooterHood/Current", motor.getTorqueCurrent().getValue().in(Amps));
+        DogLog.log("ShooterHood/Down", isDown());
+        DogLog.log("ShooterHood/In Trench Zone", inTrenchZone());
+        DogLog.log("ShooterHood/Rest Angle (Deg)", restAngle().in(Degrees));
+    }
+
+    /** Rest angle just above the bottom stop, where the flywheel may run. */
+    public static Angle stowAngle() {
+        return ShooterHoodConstants.kReverseSoftLimit.plus(Degrees.of(stowMargin()));
+    }
+
+    /** Below this measured angle the hood counts as down and the flywheel is unpowered. */
+    public static Angle downThreshold() {
+        return ShooterHoodConstants.kReverseSoftLimit.plus(Degrees.of(stowMargin() / 2.0));
+    }
+
+    private static double stowMargin() {
+        return MathUtil.clamp(
+                stowMarginDeg.get(), ShooterHoodConstants.kMinStowMarginDeg, ShooterHoodConstants.kMaxStowMarginDeg);
+    }
+
+    /** Hood at or near the bottom stop: the shooter must not power the flywheel. */
+    public boolean isDown() {
+        return getPosition().lt(downThreshold());
+    }
+
+    private boolean inTrenchZone() {
+        return FieldCalculations.inTrenchZone(RobotContainer.getDrivetrain().getState().Pose);
+    }
+
+    /** Fully down in auto (the 7457 paths pass the trench with it down) and near a trench in teleop; else stowed. */
+    public Angle restAngle() {
+        if (DriverStation.isAutonomous() || inTrenchZone()) {
+            return ShooterHoodConstants.kReverseSoftLimit;
+        }
+        return stowAngle();
+    }
+
+    /** In teleop near a trench the hood stays fully down: aiming and shooting cannot raise it there. */
+    private Angle trenchSafe(Angle angle) {
+        return DriverStation.isTeleop() && inTrenchZone() ? ShooterHoodConstants.kReverseSoftLimit : angle;
     }
 
     public Angle getShotAngle() {
-        return Degrees.of(
-                ShotCalculator.shotAngleDeg(RobotContainer.getDrivetrain().getState().Pose));
+        return trenchSafe(Degrees.of(
+                ShotCalculator.shotAngleDeg(RobotContainer.getDrivetrain().getState().Pose)));
     }
 
     @Override
@@ -153,20 +201,20 @@ public class ShooterHood extends PositionSubsystem implements SupurdueperSubsyst
 
     @Override
     public void bindCommands() {
-        RobotStates.teleop.onTrue(goToPosition(() -> Constants.ShooterHoodConstants.kReverseSoftLimit));
+        RobotStates.teleop.onTrue(goToPosition(this::restAngle));
         RobotStates.actionAim
                 .or(RobotStates.actionShoot)
                 .or(RobotStates.auto_aim)
                 .or(RobotStates.auto_shoot)
                 .whileTrue(goToPosition(this::getShotAngle));
-        RobotStates.actionSetShot.onTrue(goToPosition(() -> Degrees.of(19)));
-        RobotStates.auto_drop_hood.onTrue(goToPosition(() -> (Constants.ShooterHoodConstants.kReverseSoftLimit)));
+        RobotStates.actionSetShot.onTrue(goToPosition(() -> trenchSafe(Degrees.of(19))));
+        RobotStates.auto_drop_hood.onTrue(goToPosition(() -> ShooterHoodConstants.kReverseSoftLimit));
         RobotStates.actionAim
                 .or(RobotStates.actionShoot)
                 .or(RobotStates.auto_aim)
                 .or(RobotStates.auto_shoot)
                 .or(RobotStates.actionSetShot)
-                .onFalse(goToPosition(() -> (Constants.ShooterHoodConstants.kReverseSoftLimit)));
+                .onFalse(goToPosition(this::restAngle));
         RobotStates.auto_drop_intake.onTrue(releaseIntake());
         RobotStates.actionZeroHood.onTrue(zero());
         RobotStates.testController.leftStickY.whileTrue(
