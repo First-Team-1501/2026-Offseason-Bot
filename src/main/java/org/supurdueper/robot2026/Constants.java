@@ -54,10 +54,13 @@ public final class Constants {
         public static final int kDriveStickPort = 0;
         public static final int kRotationStickPort = 1;
         public static final int kTestControllerPort = 3;
-        // Driver stick response (DriverControls.shape; 1501 2026 comp bot curve, which used 0.05 and 3.0). Start values
-        // from the driver's preference (low deadband); live as /Tuning/Driver/Stick Deadband and Stick Exponent
-        public static final double kStickDeadband = 0.02;
-        public static final double kStickExponent = 3.0;
+        // Driver stick response (DriverControls.shape; 1501 2026 comp bot curve, which used 0.05 and 3.0), tuned with
+        // the
+        // driver; live as /Tuning/Driver/Stick Deadband and Stick Exponent. Deadband 0.01 is just above one DS axis
+        // count
+        // (1/127)
+        public static final double kStickDeadband = 0.01;
+        public static final double kStickExponent = 2.0;
     }
 
     public static final class DriveConstants {
@@ -223,8 +226,9 @@ public final class Constants {
         public static final AngularVelocity kVelocityTolerance = RPM.of(50);
         public static final AngularVelocity kIntakeVelocity = RPM.of(4000);
         public static final AngularVelocity kPurgeVelocity = RPM.of(-4);
-        // While shooting; negative = opposite of the intake direction
-        public static final AngularVelocity kShootVelocity = RPM.of(-1700);
+        // While shooting: inward like the intake, slower. The 2026-10-17 value -1700 was inward only because the intake
+        // inversion was wrong (fixed 2026-10-21); the physical direction is unchanged
+        public static final AngularVelocity kShootVelocity = RPM.of(1700);
         public static final double kGearRatio = 24.0 / 12.0;
         // VelocityVoltage gains, volts per mechanism rotation/sec. kv from the fitted back-EMF, ks for the ball load
         // (2026-10-17 logs). 4000 RPM intake is beyond what the motors reach, so it runs at full output either way.

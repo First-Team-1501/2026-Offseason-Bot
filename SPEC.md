@@ -92,8 +92,9 @@ raw axes are defined only in these two classes.
 - Xbox triggers count as pressed above `kXboxTriggerThreshold` (0.5, WPILib default).
 - Stick response, both inputs, per axis (`DriverControls.shape`; 1501 2026 comp bot curve
   `DriveSticks.applyExponential`, there deadband 0.05 and exponent 3): 0 below deadband d, else
-  sign(x) * ((|x| - d) / (1 - d))^n; then 7457 `kSlowModeScalor` 0.85. Start values from the driver's preference
-  (2026-10-21): d = 0.02 (`kStickDeadband`), n = 3.0 (`kStickExponent`). Tuning mode: live as
+  sign(x) * ((|x| - d) / (1 - d))^n; then 7457 `kSlowModeScalor` 0.85. Tuned with the driver (2026-10-21): start
+  d 0.02, n 3.0 (deadzone too large); now d = 0.01 (`kStickDeadband`, just above one DS axis count, 1/127) and
+  n = 2.0 (`kStickExponent`, team). Tuning mode: live as
   `/Tuning/Driver/Stick Deadband` (clamped 0-0.3) and `/Tuning/Driver/Stick Exponent` (clamped 1-5); the driver tunes
   on the robot, then the final values go to `Constants`.
 - Port 3 Xbox: test controller (`TestController`; 7457 `Driver`, port 2). Bound outside disabled: feeder A stop,
@@ -156,7 +157,7 @@ off target. 7457's version (lock within 0.25 deg) was commented out.
 | 14 | Forwarding: outside our zone, aim at a point in our zone and use `distanceToForwardRPM` / `Angle` (untuned) and uptake 2000 RPM | `FieldCalculations.java`, `AutoAim.java`, `Shooter.java`, `ShooterHood.java`, `Uptake.java`, `Constants.java` |
 | 15 | Live RPM multipliers: SmartDashboard `Shooter/LUT RPM Scale` (default 1.10 since `3832fc4`; 1.20 before), `Shooter/Forward RPM Scale` (1.0) | `Shooter.java`, `Constants.java` |
 | 16 | Vision: NT flush, MT2 gates, MegaTag1 heading seed while disabled, camera-pose check, telemetry; disabled throttle 50 | `Vision.java`, `Robot.java` |
-| 17 | Intake reverses (-1700 RPM) while shooting | `Intake.java`, `Constants.java` |
+| 17 | Intake runs inward at 1700 RPM while shooting (7457: full intake speed); sign corrected in row 34 | `Intake.java`, `Constants.java` |
 | 18 | Build info logged 1 s into the main loop and on auto/teleop init (the data log is paused during the >10 s robot construction, so robotInit values never reached it) | `Robot.java` |
 | 19 | Shot speed and hood angle from one place (`ShotCalculator`): hub and forwarding tables, dashboard manual shot tuning with point recording; `tuningMode` now only affects gains | `ShotCalculator.java` (new), `Shooter.java`, `ShooterHood.java` |
 | 20 | Limelight robot-space pose sent from code (`VisionConstants.kCamera*`) at startup and on disable | `Constants.java`, `Vision.java`, `Robot.java` |
@@ -172,7 +173,8 @@ off target. 7457's version (lock within 0.25 deg) was commented out.
 | 30 | Startup re-application of unchanged tunable gains removed (defaults recorded at construction) | `VelocitySubsystem.java`, `PositionSubsystem.java` |
 | 31 | Shooter `kV` 0.171 and idle 700 RPM from the 2026-10-21 log analysis (section 4); follower `Voltage` logged | `Constants.java`, `MotorTelemetry.java` |
 | 32 | Loop-overrun reductions (about 90 overruns/min before; rio CPU saturated): CTRE template module Mechanism2d widgets removed (about 2000 NT writes/s from the odometry thread); NT DriveState and Field2d pose at 50 Hz, Field2d type set once (Limelight orientation stays at 250 Hz for MegaTag2); main thread at real-time priority for all of `robotPeriodic` (was the scheduler only); `HootAutoReplay` removed (hoot logging is off) | `DriveTelemetry.java`, `Robot.java` |
-| 33 | [R] Driver input selected by `kXboxDriver` (section 2.4): Xbox on port 0 or 1501 joysticks on ports 0 and 1, behind abstract `DriverControls` (button map and raw axes per input; one stick curve, live deadband and exponent, start 0.02 and 3.0); 7457 `Driver` (now the test controller only) renamed `TestController`, so its port 3 disconnect alert no longer reads "Driver" | `DriverControls.java`, `DriverXbox.java` (new), `DriverSticks.java`, `TestController.java` (was `Driver.java`), `RobotStates.java`, `RobotContainer.java`, `DriveStates.java`, `Constants.java` |
+| 33 | [R] Driver input selected by `kXboxDriver` (section 2.4): Xbox on port 0 or 1501 joysticks on ports 0 and 1, behind abstract `DriverControls` (button map and raw axes per input; one stick curve, live deadband and exponent, now 0.01 and 2.0); 7457 `Driver` (now the test controller only) renamed `TestController`, so its port 3 disconnect alert no longer reads "Driver" | `DriverControls.java`, `DriverXbox.java` (new), `DriverSticks.java`, `TestController.java` (was `Driver.java`), `RobotStates.java`, `RobotContainer.java`, `DriveStates.java`, `Constants.java` |
+| 34 | Intake direction: leader `inverted` false. With 7457's true, the intake action pushed balls out on the 1501 robot (team, 2026-10-21), while purge and the 2026-10-17 shooting value (-1700 RPM) pulled in. `kShootVelocity` +1700 keeps the shooting direction physically unchanged; purge now ejects. Intake velocity and voltage signs in logs before this build are opposite | `Intake.java`, `Constants.java` |
 
 Notes:
 
@@ -235,7 +237,8 @@ Notes:
    `Shooter/Hood Interlock` true and flywheel unpowered, then stow; trench zone -> hood fully down, flywheel
    unpowered, aim/shoot hold the hood down; auto -> flywheel unpowered whenever the hood is down. Set the stow margin
    live until the team confirms clearance, then copy it to `kStowMarginDeg`.
-9. Intake, hopper, feeder, uptake: verify direction and follower flags (7457 values retained).
+9. Intake, hopper, feeder, uptake: verify direction and follower flags (7457 values retained). Intake corrected
+   2026-10-21 (section 3 row 34); hopper agitation and uptake direction while intaking not yet verified.
 10. LL4: hostname `limelight`, static IP 10.15.1.11; robot-space camera pose (section 2.3, measured from the
     center of the module rectangle); AprilTag pipeline 0 with Full 3D; field map matching the event field
     (`FieldConstants.fieldType`); compare `Vision/limelight Pose (mt2)` and `Distance To Goal` against

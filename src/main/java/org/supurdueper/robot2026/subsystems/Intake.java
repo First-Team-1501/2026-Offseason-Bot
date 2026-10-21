@@ -53,9 +53,10 @@ public class Intake extends VelocitySubsystem implements SupurdueperSubsystem {
         return Constants.IntakeConstants.kCurrentLimit;
     }
 
+    // 1501 intake turns opposite to 7457's: with 7457's true, positive (intake) pushed balls out (team, 2026-10-21)
     @Override
     public boolean inverted() {
-        return true;
+        return false;
     }
 
     @Override
