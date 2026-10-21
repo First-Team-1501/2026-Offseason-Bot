@@ -70,7 +70,6 @@ final class MotorTelemetry {
         } else {
             controlMode = motor.getControlMode(false);
             controlModeEntry = new StringLogEntry(log, prefix + "ControlMode");
-            refreshSignals.add(controlMode);
         }
     }
 
@@ -84,12 +83,13 @@ final class MotorTelemetry {
         return refreshSignals;
     }
 
-    /** Writes changed values; temperature only on slow loops (1 Hz). */
-    void update(boolean slow) {
+    /** Writes changed values; control mode on medium loops (10 Hz), temperature on slow loops (1 Hz). */
+    void update(boolean medium, boolean slow) {
         for (Channel channel : channels) {
             channel.update();
         }
-        if (controlMode != null) {
+        if (medium && controlMode != null) {
+            controlMode.refresh();
             controlModeEntry.update(controlMode.getValue().toString());
         }
         if (slow) {

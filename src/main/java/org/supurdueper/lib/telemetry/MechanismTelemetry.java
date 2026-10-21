@@ -99,12 +99,18 @@ public final class MechanismTelemetry {
         configChanged = true;
     }
 
-    void update(boolean slow) {
+    /**
+     * @param medium 10 Hz items (control mode, MechanismOK)
+     * @param slow 1 Hz items (temperature, Config)
+     */
+    void update(boolean medium, boolean slow) {
         BaseStatusSignal.refreshAll(refreshSignals);
         for (MotorTelemetry motor : motors) {
-            motor.update(slow);
+            motor.update(medium, slow);
         }
-        mechanismOkEntry.update(SmartDashboard.getBoolean(mechanismOkKey, true));
+        if (medium) {
+            mechanismOkEntry.update(SmartDashboard.getBoolean(mechanismOkKey, true));
+        }
         if (slow || configChanged) {
             configEntry.update(configJson());
             configChanged = false;

@@ -21,6 +21,8 @@ import java.util.Map;
 public final class TuningTelemetry {
 
     private static final int kSlowLoops = 50; // 1 Hz at the 20 ms loop
+    private static final int kMediumLoops = 5; // 10 Hz: control mode, MechanismOK
+    private static final int kDisabledLoops = 25; // 2 Hz motor signals while disabled (the rio CPU is saturated)
     private static final int kPowerCheckLoop = 50;
     private static final double kMinPdhVoltage = 1.0;
 
@@ -54,8 +56,11 @@ public final class TuningTelemetry {
         double start = Timer.getFPGATimestamp();
         loopCount++;
         boolean slow = loopCount % kSlowLoops == 0;
-        for (MechanismTelemetry mechanism : mechanisms.values()) {
-            mechanism.update(slow);
+        boolean medium = loopCount % kMediumLoops == 0;
+        if (DriverStation.isEnabled() || loopCount % kDisabledLoops == 0) {
+            for (MechanismTelemetry mechanism : mechanisms.values()) {
+                mechanism.update(medium, slow);
+            }
         }
         logPower();
         telemetryTime.update(Math.round((Timer.getFPGATimestamp() - start) * 1e5) / 100.0);
