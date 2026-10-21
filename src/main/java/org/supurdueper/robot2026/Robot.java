@@ -43,6 +43,10 @@ public class Robot extends SupurdueperRobot {
     private int loopCount = 0;
 
     public Robot() {
+        // CTRE hoot logging off before any device exists: it starts with the CANivore devices and created a hoot folder
+        // on every code start (the tuning data goes to the .wpilog under /Tuning)
+        SignalLogger.enableAutoLogging(false);
+        SignalLogger.stop();
         m_robotContainer = new RobotContainer();
         autoFactory = RobotContainer.getDrivetrain().createAutoFactory();
         autoRoutines = new AutoRoutines(autoFactory);
@@ -71,8 +75,7 @@ public class Robot extends SupurdueperRobot {
 
     @Override
     public void robotInit() {
-        // CTRE hoot logging off: tuning data goes to the .wpilog (/Tuning), and hoot folders filled the rio disk
-        SignalLogger.enableAutoLogging(false);
+        // Again after construction, in case a device started it
         SignalLogger.stop();
         DogLog.setOptions(new DogLogOptions()
                 .withLogExtras(false)
