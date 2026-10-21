@@ -21,12 +21,13 @@ import java.util.Map;
 public final class TuningTelemetry {
 
     private static final int kSlowLoops = 50; // 1 Hz at the 20 ms loop
-    private static final int kPowerCheckLoop = 100;
+    private static final int kPowerCheckLoop = 50;
     private static final double kMinPdhVoltage = 1.0;
 
     private static final Map<String, MechanismTelemetry> mechanisms = new LinkedHashMap<>();
     private static int loopCount = 0;
     private static boolean powerInitialized = false;
+    private static boolean pdhChecked = false;
     private static PowerDistribution pdh;
     private static DoubleLogEntry batteryVoltage;
     private static BooleanLogEntry brownedOut;
@@ -74,13 +75,21 @@ public final class TuningTelemetry {
         if (pdh == null) {
             return;
         }
-        double voltage = pdh.getVoltage();
-        if (loopCount == kPowerCheckLoop && voltage < kMinPdhVoltage) {
-            // No power distribution module answering on the default ID: stop polling it
-            DataLogManager.log("TuningTelemetry: no power distribution module data, PDH logging off");
-            pdh = null;
-            return;
+        if (!pdhChecked) {
+            // Probe once, after its status frames had time to arrive: every read of an absent module reports a CAN
+            // error with a stack trace, which overran the loop
+            if (loopCount < kPowerCheckLoop) {
+                return;
+            }
+            pdhChecked = true;
+            if (pdh.getVoltage() < kMinPdhVoltage) {
+                DataLogManager.log("TuningTelemetry: no power distribution module data, PDH logging off");
+                pdh.close();
+                pdh = null;
+                return;
+            }
         }
+        double voltage = pdh.getVoltage();
         pdhVoltage.update(Math.round(voltage * 100) / 100.0);
         pdhTotalCurrent.update(Math.round(pdh.getTotalCurrent() * 10) / 10.0);
         double[] currents = pdh.getAllCurrents();
