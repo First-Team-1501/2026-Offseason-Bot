@@ -10,15 +10,11 @@ import static edu.wpi.first.units.Units.Volts;
 
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
-import com.ctre.phoenix6.hardware.TalonFX;
 import dev.doglog.DogLog;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
-import java.util.ArrayList;
-import java.util.List;
-import org.supurdueper.lib.TalonFXFactory;
 import org.supurdueper.lib.subsystems.SupurdueperSubsystem;
 import org.supurdueper.lib.subsystems.VelocitySubsystem;
 import org.supurdueper.robot2026.CanId;
@@ -30,8 +26,6 @@ import org.supurdueper.robot2026.utils.ShotCalculator;
 
 public class Shooter extends VelocitySubsystem implements SupurdueperSubsystem {
 
-    private final List<TalonFX> allMotors = new ArrayList<>();
-
     /** Creates a new VelocityTest. */
     public Shooter() {
         config.Feedback.SensorToMechanismRatio = ShooterConstants.shooterGearRatio;
@@ -40,14 +34,13 @@ public class Shooter extends VelocitySubsystem implements SupurdueperSubsystem {
         config.MotorOutput.PeakForwardDutyCycle = 1.0;
         config.MotorOutput.PeakReverseDutyCycle = 0.0;
         configureMotors();
-        allMotors.add(motor);
         // Manually create followers since we have more than two
-        allMotors.add(TalonFXFactory.createPermanentFollowerTalon(CanId.SHOOTER_TWO, motor, false));
+        addFollower(CanId.SHOOTER_TWO, false);
         // Motor 1 sits on the opposite side from the leader (12): with Aligned it braked the flywheel at the current
         // limit (2026-10-17 per-motor log)
-        allMotors.add(TalonFXFactory.createPermanentFollowerTalon(CanId.SHOOTER_THREE, motor, true));
-        allMotors.add(TalonFXFactory.createPermanentFollowerTalon(CanId.SHOOTER_FOUR, motor, true));
-        allMotors.add(TalonFXFactory.createPermanentFollowerTalon(CanId.SHOOTER_FIVE, motor, true));
+        addFollower(CanId.SHOOTER_THREE, true);
+        addFollower(CanId.SHOOTER_FOUR, true);
+        addFollower(CanId.SHOOTER_FIVE, true);
         Robot.add(this);
     }
 
@@ -99,23 +92,8 @@ public class Shooter extends VelocitySubsystem implements SupurdueperSubsystem {
         DogLog.log("Shooter/Hood Interlock", hoodInterlock());
         DogLog.log("Shooter/Current", motor.getTorqueCurrent().getValue().in(Amps));
         DogLog.log("Battery Voltage", RobotController.getBatteryVoltage());
+        // Per-motor speed, output and currents (follower direction checks) are in the /Tuning telemetry
         ShotCalculator.periodic(RobotContainer.getDrivetrain().getState().Pose);
-        for (TalonFX shooterMotor : allMotors) {
-            String key = "Shooter/Motor " + shooterMotor.getDeviceID();
-            double rpm = shooterMotor.getVelocity().getValue().in(RPM);
-            double torqueCurrentAmps =
-                    shooterMotor.getTorqueCurrent().getValue().in(Amps);
-            DogLog.log(key + "/RPM", rpm);
-            DogLog.log(key + "/Torque Current", torqueCurrentAmps);
-            DogLog.log(
-                    key + "/Supply Current",
-                    shooterMotor.getSupplyCurrent().getValue().in(Amps));
-            DogLog.log(
-                    key + "/Voltage", shooterMotor.getMotorVoltage().getValue().in(Volts));
-            // Torque against its own rotation: braking. A follower doing this while the others drive the flywheel has
-            // the wrong Aligned/Opposed flag.
-            DogLog.log(key + "/Braking", rpm * torqueCurrentAmps < 0 && Math.abs(torqueCurrentAmps) > 10);
-        }
     }
 
     @Override

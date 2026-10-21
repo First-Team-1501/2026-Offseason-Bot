@@ -10,6 +10,9 @@ import com.ctre.phoenix6.swerve.SwerveRequest.FieldCentricFacingAngle;
 import com.ctre.phoenix6.swerve.SwerveRequest.ForwardPerspectiveValue;
 import dev.doglog.DogLog;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.util.datalog.BooleanLogEntry;
+import edu.wpi.first.util.datalog.StringLogEntry;
+import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import org.supurdueper.lib.LoggedTunableNumber;
@@ -37,6 +40,12 @@ public class DriveStates {
     private final LoggedTunableNumber headingKpTunable = new LoggedTunableNumber("AutoAim/Kp", headingKp);
     private final LoggedTunableNumber headingKiTunable = new LoggedTunableNumber("AutoAim/Ki", headingKi);
     private final LoggedTunableNumber headingKdTunable = new LoggedTunableNumber("AutoAim/Kd", headingKd);
+    // Heading tuning telemetry (DataLog): aim active at 50 Hz, controller configuration at 1 Hz
+    private final BooleanLogEntry headingActive =
+            new BooleanLogEntry(DataLogManager.getLog(), "/Tuning/Heading/Active");
+    private final StringLogEntry headingConfig =
+            new StringLogEntry(DataLogManager.getLog(), "/Tuning/Heading/Config", "", "json");
+    private int periodicCount = 0;
 
     public DriveStates(Drivetrain drivetrain) {
         this.drivetrain = drivetrain;
@@ -49,8 +58,18 @@ public class DriveStates {
         driveFacingHub.MaxAbsRotationalRate = MaxAngularRate;
     }
 
-    /** Tuning mode: apply dashboard heading gains to both facing requests (called from Drivetrain.periodic). */
+    /** Heading telemetry; in tuning mode also applies dashboard heading gains (called from Drivetrain.periodic). */
     public void periodic() {
+        headingActive.update(actionAim.getAsBoolean() || auto_aim.getAsBoolean());
+        if (++periodicCount % 50 == 0) {
+            headingConfig.update("{\"kP\":" + driveFacingHub.HeadingController.getP()
+                    + ",\"kI\":" + driveFacingHub.HeadingController.getI()
+                    + ",\"kD\":" + driveFacingHub.HeadingController.getD()
+                    + ",\"maxRateRadPerSec\":" + driveFacingHub.MaxAbsRotationalRate
+                    + ",\"lockEnterDeg\":" + kAimLockEnterDeg
+                    + ",\"lockExitDeg\":" + kAimLockExitDeg
+                    + ",\"lockMaxTranslationMps\":" + kAimLockMaxTranslationMps + "}");
+        }
         if (!Constants.tuningMode) {
             return;
         }
@@ -101,7 +120,9 @@ public class DriveStates {
     }
 
     private Command driveFacingHub() {
+        // X-lock once aimed while shooting (AutoAim)
         return drivetrain.applyRequest(() -> driveFacingHub
+                .withLockWhenAimed(actionShoot.getAsBoolean() || auto_shoot.getAsBoolean())
                 .withVelocityX(driver.getDriveFwdPositive() * MaxSpeed)
                 .withVelocityY(driver.getDriveLeftPositive() * MaxSpeed)
                 .withForwardPerspective(ForwardPerspectiveValue.OperatorPerspective)

@@ -2,7 +2,6 @@ package org.supurdueper.robot2026.subsystems.drive.generated;
 
 import static edu.wpi.first.units.Units.Meters;
 
-import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.swerve.SwerveDrivetrain.SwerveDriveState;
 import dev.doglog.DogLog;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -16,6 +15,8 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StringPublisher;
 import edu.wpi.first.networktables.StructArrayPublisher;
 import edu.wpi.first.networktables.StructPublisher;
+import edu.wpi.first.util.datalog.DoubleArrayLogEntry;
+import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -35,7 +36,6 @@ public class DriveTelemetry {
      */
     public DriveTelemetry(double maxSpeed) {
         MaxSpeed = maxSpeed;
-        SignalLogger.start();
 
         /* Set up the module state Mechanism2d telemetry */
         for (int i = 0; i < 4; ++i) {
@@ -114,7 +114,23 @@ public class DriveTelemetry {
     private static final int kDogLogDecimation = 5;
     private int telemeterizeCount = 0;
 
-    /** Accept the swerve drive state and telemeterize it to SmartDashboard and SignalLogger. */
+    // Tuning telemetry (DataLog, not DogLog): module speeds and angles at 125 Hz (every 2nd state) for the drive and
+    // steer analysis, module order FL, FR, BL, BR
+    private static final int kTuningDecimation = 2;
+    private final DoubleArrayLogEntry steerAnglesEntry =
+            new DoubleArrayLogEntry(DataLogManager.getLog(), "/Tuning/SwerveSteer/Angles");
+    private final DoubleArrayLogEntry steerTargetsEntry =
+            new DoubleArrayLogEntry(DataLogManager.getLog(), "/Tuning/SwerveSteer/Targets");
+    private final DoubleArrayLogEntry driveSpeedsEntry =
+            new DoubleArrayLogEntry(DataLogManager.getLog(), "/Tuning/SwerveDrive/Speeds");
+    private final DoubleArrayLogEntry driveTargetSpeedsEntry =
+            new DoubleArrayLogEntry(DataLogManager.getLog(), "/Tuning/SwerveDrive/TargetSpeeds");
+    private final double[] moduleAngles = new double[4];
+    private final double[] moduleTargetAngles = new double[4];
+    private final double[] moduleSpeeds = new double[4];
+    private final double[] moduleTargetSpeeds = new double[4];
+
+    /** Accept the swerve drive state and telemeterize it to SmartDashboard and the logs. */
     public void telemeterize(SwerveDriveState state) {
 
         robotOrientation[0] = state.Pose.getRotation().getDegrees();
@@ -131,13 +147,20 @@ public class DriveTelemetry {
         driveTimestamp.set(state.Timestamp);
         driveOdometryFrequency.set(1.0 / state.OdometryPeriod);
 
-        /* Also write to log file */
-        SignalLogger.writeStruct("DriveState/Pose", Pose2d.struct, state.Pose);
-        SignalLogger.writeStruct("DriveState/Speeds", ChassisSpeeds.struct, state.Speeds);
-        SignalLogger.writeStructArray("DriveState/ModuleStates", SwerveModuleState.struct, state.ModuleStates);
-        SignalLogger.writeStructArray("DriveState/ModuleTargets", SwerveModuleState.struct, state.ModuleTargets);
-        SignalLogger.writeStructArray("DriveState/ModulePositions", SwerveModulePosition.struct, state.ModulePositions);
-        SignalLogger.writeDouble("DriveState/OdometryPeriod", state.OdometryPeriod, "seconds");
+        /* Tuning telemetry (CTRE SignalLogger is off; see Robot.robotInit) */
+        if (telemeterizeCount % kTuningDecimation == 0) {
+            // Rounded (0.01 deg, 1 mm/s) and written only on change, so a stationary robot adds no records
+            for (int i = 0; i < 4; ++i) {
+                moduleAngles[i] = Math.round(state.ModuleStates[i].angle.getDegrees() * 100) / 100.0;
+                moduleTargetAngles[i] = Math.round(state.ModuleTargets[i].angle.getDegrees() * 100) / 100.0;
+                moduleSpeeds[i] = Math.round(state.ModuleStates[i].speedMetersPerSecond * 1000) / 1000.0;
+                moduleTargetSpeeds[i] = Math.round(state.ModuleTargets[i].speedMetersPerSecond * 1000) / 1000.0;
+            }
+            steerAnglesEntry.update(moduleAngles);
+            steerTargetsEntry.update(moduleTargetAngles);
+            driveSpeedsEntry.update(moduleSpeeds);
+            driveTargetSpeedsEntry.update(moduleTargetSpeeds);
+        }
 
         /* Telemeterize the pose to a Field2d */
         fieldTypePub.set("Field2d");

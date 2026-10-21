@@ -101,6 +101,8 @@ public abstract class VelocitySubsystem extends TalonFXSubsystem {
         kv.initDefault(gains.kV);
         pidGains = new ArrayList<>();
         pidGains.addAll(List.of(kp, ks, kv));
+        // Record the defaults so only dashboard edits are applied
+        pidGains.forEach(gain -> gain.hasChanged(hashCode()));
         velocityTolerance = velocityTolerance();
         sysIdRoutine = sysIdConfig();
         // Add motion magic items to config
@@ -116,12 +118,24 @@ public abstract class VelocitySubsystem extends TalonFXSubsystem {
                     Slot0Configs slot0config =
                             new Slot0Configs().withKP(kp.get()).withKS(ks.get()).withKV(kv.get());
                     motor.getConfigurator().apply(config.withSlot0(slot0config));
+                    telemetry.markConfigChanged();
                     break;
                 }
             }
         }
+        updateTunableCurrentLimits();
         StatusSignal.refreshAll(motorVelocitySignal, motorSetpointSignal);
         super.periodic();
+    }
+
+    @Override
+    protected String telemetryLoop() {
+        return "velocity";
+    }
+
+    @Override
+    protected double telemetryTolerance() {
+        return velocityTolerance.in(RotationsPerSecond);
     }
 
     @Override

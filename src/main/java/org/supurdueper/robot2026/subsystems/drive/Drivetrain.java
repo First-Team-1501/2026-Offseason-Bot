@@ -6,6 +6,7 @@ import choreo.Choreo.TrajectoryLogger;
 import choreo.auto.AutoFactory;
 import choreo.trajectory.SwerveSample;
 import com.ctre.phoenix6.Utils;
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.swerve.SwerveDrivetrainConstants;
@@ -24,9 +25,14 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj2.command.Command;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
+import org.supurdueper.lib.TunableTalonFXConfig;
 import org.supurdueper.lib.subsystems.SupurdueperSubsystem;
+import org.supurdueper.lib.telemetry.MechanismTelemetry;
+import org.supurdueper.lib.telemetry.TuningTelemetry;
 import org.supurdueper.robot2026.Robot;
 import org.supurdueper.robot2026.subsystems.drive.generated.DriveTelemetry;
 import org.supurdueper.robot2026.subsystems.drive.generated.TunerConstants;
@@ -61,6 +67,15 @@ public class Drivetrain extends TunerSwerveDrivetrain implements SupurdueperSubs
     private DriveTelemetry telemetry = new DriveTelemetry(TunerConstants.kSpeedAt12Volts.in(MetersPerSecond));
     public DriveStates driveStates;
 
+    // Tuning: module order of the constructor arguments (TunerConstants: FL, FR, BL, BR)
+    private static final String[] kModuleNames = {"FL", "FR", "BL", "BR"};
+    private final List<TalonFX> driveMotors = new ArrayList<>();
+    private final List<TalonFX> steerMotors = new ArrayList<>();
+    private final TalonFXConfiguration driveConfig = new TalonFXConfiguration();
+    private final TalonFXConfiguration steerConfig = new TalonFXConfiguration();
+    private TunableTalonFXConfig driveTunables;
+    private TunableTalonFXConfig steerTunables;
+
     /**
      * Constructs a CTRE SwerveDrivetrain using the specified constants.
      *
@@ -76,8 +91,42 @@ public class Drivetrain extends TunerSwerveDrivetrain implements SupurdueperSubs
             startSimThread();
         }
         registerTelemetry(telemetry::telemeterize);
+        registerTuningTelemetry(modules);
         driveStates = new DriveStates(this);
         Robot.add(this);
+    }
+
+    /**
+     * Tuning telemetry and live gains/current limits for the drive and steer motors. Configurations are read back from
+     * the motors once (the swerve applies them), so the logged values are the applied ones.
+     */
+    private void registerTuningTelemetry(SwerveModuleConstants<?, ?, ?>... modules) {
+        SwerveModule<TalonFX, TalonFX, CANcoder>[] swerveModules = getModules();
+        for (SwerveModule<TalonFX, TalonFX, CANcoder> module : swerveModules) {
+            driveMotors.add(module.getDriveMotor());
+            steerMotors.add(module.getSteerMotor());
+        }
+        driveMotors.get(0).getConfigurator().refresh(driveConfig);
+        steerMotors.get(0).getConfigurator().refresh(steerConfig);
+        MechanismTelemetry driveTelemetry = TuningTelemetry.mechanism("SwerveDrive", "velocity")
+                .withConfig(() -> driveConfig, () -> 0)
+                .withExtra("driveGearRatio", () -> modules[0].DriveMotorGearRatio)
+                .withExtra("couplingGearRatio", () -> modules[0].CouplingGearRatio)
+                .withExtra("wheelRadiusMeters", () -> modules[0].WheelRadius)
+                .withExtra("speedAt12VoltsMps", () -> modules[0].SpeedAt12Volts)
+                .withExtra("slipCurrent", () -> modules[0].SlipCurrent);
+        MechanismTelemetry steerTelemetry = TuningTelemetry.mechanism("SwerveSteer", "position")
+                .withConfig(() -> steerConfig, () -> 0)
+                .withExtra("steerGearRatio", () -> modules[0].SteerMotorGearRatio);
+        for (int i = 0; i < swerveModules.length; i++) {
+            String module = i < kModuleNames.length ? kModuleNames[i] : "M" + i;
+            driveTelemetry.addSwerveMotor(driveMotors.get(i), module);
+            steerTelemetry.addSwerveMotor(steerMotors.get(i), module);
+        }
+        driveTunables = new TunableTalonFXConfig(
+                "SwerveDrive", driveConfig, () -> driveMotors, true, driveTelemetry::markConfigChanged);
+        steerTunables = new TunableTalonFXConfig(
+                "SwerveSteer", steerConfig, () -> steerMotors, true, steerTelemetry::markConfigChanged);
     }
 
     /**
@@ -217,6 +266,10 @@ public class Drivetrain extends TunerSwerveDrivetrain implements SupurdueperSubs
                 getPigeon2().getFault_BootDuringEnable().getValue());
         if (driveStates != null) {
             driveStates.periodic();
+        }
+        if (driveTunables != null) {
+            driveTunables.update();
+            steerTunables.update();
         }
     }
 

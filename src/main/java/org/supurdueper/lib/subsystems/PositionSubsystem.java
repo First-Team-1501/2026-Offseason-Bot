@@ -123,6 +123,8 @@ public abstract class PositionSubsystem extends TalonFXSubsystem {
         profileA.initDefault(motionMagicConfig.MotionMagicAcceleration);
         pidGains = new ArrayList<>();
         pidGains.addAll(List.of(kp, ki, kd, ks, kv, ka, kg, profileKa, profileKv, profileV, profileA));
+        // Record the defaults so only dashboard edits are applied
+        pidGains.forEach(gain -> gain.hasChanged(hashCode()));
         positionTolerance = positionTolerance();
         sysIdRoutine = sysIdConfig();
         // Add motion magic items to config
@@ -150,12 +152,24 @@ public abstract class PositionSubsystem extends TalonFXSubsystem {
                             .withMotionMagicCruiseVelocity(profileV.get())
                             .withMotionMagicAcceleration(profileA.get());
                     motor.getConfigurator().apply(config.withSlot0(slot0config).withMotionMagic(motionMagicConfigs));
+                    telemetry.markConfigChanged();
                     break;
                 }
             }
         }
+        updateTunableCurrentLimits();
         StatusSignal.refreshAll(motorPositionSignal, motorSetpointSignal);
         super.periodic();
+    }
+
+    @Override
+    protected String telemetryLoop() {
+        return "position";
+    }
+
+    @Override
+    protected double telemetryTolerance() {
+        return positionTolerance.in(Units.Rotations);
     }
 
     @Override

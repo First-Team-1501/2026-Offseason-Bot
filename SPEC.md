@@ -105,6 +105,19 @@ Requirement (team, 2026-10-21): the shooter flywheel is never powered while the 
 Consequence: in auto the flywheel is unpowered between volleys (hood down) and spins up again when the hood rises
 for the next shot; `auto_rev` has no effect while the hood is down.
 
+### 2.6 X-lock while shooting with auto-aim
+
+Requirement (team, 2026-10-21): while shooting with auto-aim, the wheels X-lock so other robots cannot push the robot
+off target. 7457's version (lock within 0.25 deg) was commented out.
+
+| Item | Definition |
+|---|---|
+| Active | auto-aim request (`actionAim` or `auto_aim`) with shoot requested (`actionShoot` or `auto_shoot`) |
+| Lock | aim error < `kAimLockEnterDeg` (1.0), driver translation command < `kAimLockMaxTranslationMps` (0.2 m/s), yaw rate < `kAimLockMaxTurnRateRadPerSec` (0.3) |
+| Release | aim error > `kAimLockExitDeg` (3.0; heading controller re-aims, then locks again), driver translates, or shoot released |
+| Request | `SwerveDriveBrake` (modules in X, drive output 0) |
+| Telemetry | `AutoAim/X Lock` (DogLog), `/Tuning/Heading/Locked` |
+
 ## 3. Software changes vs. 7457
 
 [R] = refactor for maintainability.
@@ -135,6 +148,12 @@ for the next shot; `auto_rev` has no effect while the hood is down.
 | 22 | DogLog writes on the 250 Hz odometry thread decimated to 50 Hz (`DriveTelemetry`, `AutoAim`); they overflowed the DogLog queue (`MAX_QUEUED_LOGS` on `DriveState/ModuleStates`) | `DriveTelemetry.java`, `AutoAim.java` |
 | 23 | `Constants.tuningMode` true for tuning sessions (set false for events); aim heading gains live as `/Tuning/AutoAim/Kp|Ki|Kd`, applied values logged as `AutoAim/Applied Gains` | `Constants.java`, `DriveStates.java`, `Drivetrain.java` |
 | 24 | `Shot Tuning/Record` line also written to the DataLog `messages` entry (not subject to DogLog queue drops) | `ShotCalculator.java` |
+| 25 | Tuning telemetry for all 21 TalonFX, power and heading, written directly to the DataLog under `/Tuning` (section 8) | `lib/telemetry/*` (new), `TalonFXSubsystem.java`, `VelocitySubsystem.java`, `PositionSubsystem.java`, `Shooter.java`, `ShooterHood.java`, `Drivetrain.java`, `DriveTelemetry.java`, `AutoAim.java`, `DriveStates.java`, `Robot.java` |
+| 26 | [R] Followers created through `TalonFXSubsystem.addFollower` (telemetry registration, live limits); `Shooter` per-motor DogLog block removed (replaced by `/Tuning`) | `TalonFXSubsystem.java`, `Shooter.java` |
+| 27 | [R] Live current limits for every mechanism and live gains plus limits for swerve drive/steer through one helper, `TunableTalonFXConfig` (`/Tuning/<name>/Stator Limit`, `Supply Limit`, `Supply Lower Limit`, `Supply Lower Time`; swerve also `Kp`..`Ka`) | `TunableTalonFXConfig.java` (new), `TalonFXSubsystem.java`, `Drivetrain.java` |
+| 28 | CTRE SignalLogger (hoot) off: `enableAutoLogging(false)`, `stop()`; `SignalLogger.start()` and `write*` calls removed | `Robot.java`, `DriveTelemetry.java` |
+| 29 | X-lock while shooting with auto-aim (section 2.6) | `AutoAim.java`, `DriveStates.java`, `Constants.java` |
+| 30 | Startup re-application of unchanged tunable gains removed (defaults recorded at construction) | `VelocitySubsystem.java`, `PositionSubsystem.java` |
 
 Notes:
 
@@ -220,3 +239,25 @@ Notes:
 - `FieldConstants.fieldType` = `WELDED`; set per event field.
 - Phoenix 6 vendordep 26.3.0; TalonFX firmware 26.3.0.0.
 - `Climber` retained, not constructed; climber triggers bound to `Gamepad.kFalse`.
+
+## 8. Tuning telemetry and continuous tuning
+
+- Purpose: every motor's gains and current limits are tuned continuously from logs (laptop tools in `tools/tuning`;
+  system spec in the vault: `Offseason Bot/Continuous Tuning System`). Gain and limit changes need team approval and
+  use only data recorded after the team's mechanical sign-off, from mechanisms working as intended.
+- Writer: `lib/telemetry` (`TuningTelemetry.periodic()` from `Robot.robotPeriodic`), straight to the WPILib DataLog
+  (no DogLog queue, no NT); values rounded and written only on change.
+- Per motor `/Tuning/<Mechanism>/<CAN id>/`: leaders `Voltage`, `Velocity`, `Reference`, `StatorCurrent`,
+  `SupplyCurrent`, `ControlMode`, `Temp` (1 Hz); position leaders add `Position`; followers `Velocity`,
+  `StatorCurrent`, `SupplyCurrent`, `Temp`; swerve motors `Voltage`, `StatorCurrent`, `SupplyCurrent`, `ControlMode`,
+  `Temp`. Mechanism signals requested at 100 Hz, logged at 50 Hz.
+- Per mechanism: `Config` (JSON: gains, ratio, current limits, inversion, neutral mode, tolerance, extras) at 1 Hz
+  and on change; `MechanismOK` from dashboard `Tuning/Mechanism OK/<Mechanism>` (default true; set false while a
+  mechanism is known faulty; resets to true on code restart).
+- Swerve arrays (FL, FR, BL, BR) at 125 Hz on change: `/Tuning/SwerveSteer/Angles`, `Targets` (deg),
+  `/Tuning/SwerveDrive/Speeds`, `TargetSpeeds` (m/s).
+- Heading at 250 Hz while auto-aim runs: `/Tuning/Heading/Target`, `Measured`, `Error` (deg, signed), `Output`
+  (rad/s), `Locked`; `Active` (50 Hz), `Config` (1 Hz).
+- Power at 50 Hz: `/Tuning/Power/BatteryVoltage`, `BrownedOut`, `Enabled`, `Mode`, `PDH/TotalCurrent`, `PDH/Voltage`,
+  `PDH/Currents` (PDH polling stops if no module answers).
+- Cost: `/Tuning/Telemetry Time (ms)` (simulation: median 0.08 ms).

@@ -7,6 +7,7 @@ package org.supurdueper.robot2026;
 import choreo.auto.AutoChooser;
 import choreo.auto.AutoFactory;
 import com.ctre.phoenix6.HootAutoReplay;
+import com.ctre.phoenix6.SignalLogger;
 import dev.doglog.DogLog;
 import dev.doglog.DogLogOptions;
 import edu.wpi.first.net.WebServer;
@@ -21,6 +22,7 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import org.supurdueper.BuildConstants;
 import org.supurdueper.lib.LoggedTunableNumber;
 import org.supurdueper.lib.subsystems.SupurdueperRobot;
+import org.supurdueper.lib.telemetry.TuningTelemetry;
 import org.supurdueper.robot2026.autos.AutoRoutines;
 import org.supurdueper.robot2026.state.RobotStates;
 import org.supurdueper.robot2026.subsystems.Vision;
@@ -74,6 +76,9 @@ public class Robot extends SupurdueperRobot {
 
     @Override
     public void robotInit() {
+        // CTRE hoot logging off: tuning data goes to the .wpilog (/Tuning), and hoot folders filled the rio disk
+        SignalLogger.enableAutoLogging(false);
+        SignalLogger.stop();
         DogLog.setOptions(new DogLogOptions()
                 .withLogExtras(false)
                 .withCaptureDs(false)
@@ -110,6 +115,7 @@ public class Robot extends SupurdueperRobot {
         double endTime = Timer.getFPGATimestamp();
         Threads.setCurrentThreadPriority(false, 0);
         DogLog.log("Loop Time", endTime - startTime);
+        TuningTelemetry.periodic();
         // for bunker hub lights to get match time from network tables
         RobotStates.log();
         if (!DriverStation.isFMSAttached()) {

@@ -47,6 +47,9 @@ public class ShooterHood extends PositionSubsystem implements SupurdueperSubsyst
                         .withPeakForwardVoltage(ShooterHoodConstants.kPeakForwardVoltage)
                         .withPeakReverseVoltage(ShooterHoodConstants.kPeakReverseVoltage));
         configureMotors();
+        telemetry
+                .withExtra("hoodDownThresholdDeg", () -> downThreshold().in(Degrees))
+                .withExtra("stowAngleDeg", () -> stowAngle().in(Degrees));
         Robot.add(this);
         motor.setPosition(ShooterHoodConstants.kZeroPosition);
     }

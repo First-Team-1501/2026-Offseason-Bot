@@ -58,6 +58,12 @@ public final class Constants {
         public static final double headingKi = 0.0;
         // kD 0.2 -> 0.6 from aim step responses in the 2026-10-17 logs (less overshoot, same settle time)
         public static final double headingKd = 0.6;
+        // X-lock while shooting with auto-aim (AutoAim): lock below the enter error when the driver is not translating
+        // and the robot is not turning; unlock above the exit error (re-aim) or when the driver translates
+        public static final double kAimLockEnterDeg = 1.0;
+        public static final double kAimLockExitDeg = 3.0;
+        public static final double kAimLockMaxTranslationMps = 0.2;
+        public static final double kAimLockMaxTurnRateRadPerSec = 0.3;
         public static final double translationKp = 7.0;
         public static final double translationKi = 0;
         public static final double translationKd = 0.1;
