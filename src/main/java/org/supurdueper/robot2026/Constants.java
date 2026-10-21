@@ -99,7 +99,8 @@ public final class Constants {
     }
 
     public class ShooterHoodConstants {
-        public static final double kp = 800.0;
+        // 800 -> 880 from FRC_20261021_222140 (settle p90 0.37 s, target 0.30 s); team approved 2026-10-21
+        public static final double kp = 880.0;
         public static final double ki = 0;
         public static final double kd = 0;
         public static final double ks = 0;
@@ -163,7 +164,8 @@ public final class Constants {
         public static final CurrentLimitsConfigs kCurrentLimit = new CurrentLimitsConfigs()
                 .withStatorCurrentLimit(kMaxAmps)
                 .withStatorCurrentLimitEnable(true)
-                .withSupplyCurrentLimit(40)
+                // 40 -> 36 A from FRC_20261021_222140 (limit reached 0.6% of the time); approved 2026-10-21
+                .withSupplyCurrentLimit(36)
                 .withSupplyCurrentLimitEnable(true);
         public static final Voltage kIntakeVoltage = Volts.of(10);
         public static final Voltage kPurgeVoltage = Volts.of(0);
