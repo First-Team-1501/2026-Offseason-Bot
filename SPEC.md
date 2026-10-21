@@ -109,7 +109,7 @@ Requirement (team, 2026-10-21): the shooter flywheel is never powered while the 
 | Item | Definition |
 |---|---|
 | Fully down | `kReverseSoftLimit` (7 deg; bottom stop 6.837 deg) |
-| Stow angle | `kReverseSoftLimit` + `kStowMarginDeg` (1.5 deg; live `ShooterHood/Stow Margin (Deg)` in tuning mode, clamped 0.5-5) |
+| Stow angle | `kReverseSoftLimit` + `kStowMarginDeg` (2.0 deg since 2026-10-21: at 1.5 deg the hood still hit occasionally while idling, team; live `ShooterHood/Stow Margin (Deg)` in tuning mode, clamped 0.5-5) |
 | Hood down (`ShooterHood.isDown`) | measured angle below `kReverseSoftLimit` + half the stow margin |
 | Interlock (`Shooter`) | while the hood is down, every velocity/voltage request becomes `NeutralOut` (coast); `isAtVelocity` is false, so no feed. Running commands resume when the hood rises. Flywheel only; feeder, uptake and hopper are not interlocked. |
 | Rest angle (`ShooterHood.restAngle`) | auto: fully down (7457 paths pass the trench with it down); teleop: fully down inside a trench zone, else stow |
@@ -190,6 +190,7 @@ Requirement (team, 2026-10-21): while intaking only the intake runs (the shooter
 | 34 | Intake direction: leader `inverted` false. With 7457's true, the intake action pushed balls out on the 1501 robot (team, 2026-10-21), while purge and the 2026-10-17 shooting value (-1700 RPM) pulled in. `kShootVelocity` +1700 keeps the shooting direction physically unchanged; purge now ejects. Intake velocity and voltage signs in logs before this build are opposite | `Intake.java`, `Constants.java` |
 | 35 | [R] Only the intake runs while intaking (section 2.7): hopper agitation (+0.5 V) and uptake reverse (-6 V) on `actionIntake` removed. Feeder: periodic state machine (`FeedState`) replaced by a `feed()` command (shooter setpoint) held while shooting, NeutralOut at the end. 7457 fed on aim or shoot and then idled at 500 RPM indefinitely; its `stop` state built a command in `periodic` and discarded it, so the feeder kept its last request. Unused `FeederConstants` feed, purge and idle velocities removed | `Feeder.java`, `Hopper.java`, `Uptake.java`, `Constants.java` |
 | 36 | From the `FRC_20261021_222140` analysis, first run after the repair sign-off (team approved 2026-10-21; both low confidence): Hopper supply limit 40 -> 36 A (limit reached 0.6% of enabled time, p99 36.7 A, targets pass with 30% margin); ShooterHood kP 800 -> 880 (settle p90 0.37 s against 0.30 s, overshoot p90 0.18 deg) | `Constants.java` |
+| 37 | Stow margin 1.5 -> 2.0 deg (rest angle 9.0 deg, hood-down threshold 8.0 deg): the hood still hit occasionally while idling (team, 2026-10-21) | `Constants.java` |
 
 Notes:
 
