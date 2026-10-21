@@ -54,11 +54,9 @@ public final class Constants {
         public static final int kDriveStickPort = 0;
         public static final int kRotationStickPort = 1;
         public static final int kTestControllerPort = 3;
-        // Driver stick response (DriverControls.shape; 1501 2026 comp bot curve, which used 0.05 and 3.0), tuned with
-        // the
-        // driver; live as /Tuning/Driver/Stick Deadband and Stick Exponent. Deadband 0.01 is just above one DS axis
-        // count
-        // (1/127)
+        // Driver stick response (DriverControls.shape): 1501 2026 comp bot curve (there 0.05 and 3.0), tuned with
+        // the driver; live as /Tuning/Driver/Stick Deadband and Stick Exponent. Deadband 0.01 is just above one DS
+        // axis count (1/127).
         public static final double kStickDeadband = 0.01;
         public static final double kStickExponent = 2.0;
     }
