@@ -135,6 +135,19 @@ off target. 7457's version (lock within 0.25 deg) was commented out.
 | Request | `SwerveDriveBrake` (modules in X, drive output 0) |
 | Telemetry | `AutoAim/X Lock` (DogLog), `/Tuning/Heading/Locked` |
 
+### 2.7 Mechanisms by action
+
+Requirement (team, 2026-10-21): while intaking only the intake runs (the shooter may idle); the feeder and the indexer
+(and the uptake, the main feeder roller) run only while actively shooting.
+
+| Action | Intake | Hopper (indexer) | Uptake | Feeder | Shooter |
+|---|---|---|---|---|---|
+| none | off | off | off | off | idle 700 RPM (unpowered with the hood down) |
+| intake (`actionIntake`, `auto_intake`) | in, 4000 RPM target | off | off | off | idle |
+| aim (`actionAim`) | off | off | off | off | shot speed |
+| shoot (`actionShoot`, `auto_shoot`, `actionSetShot`) | in, 1700 RPM | runs once the shooter is at speed and in range (`auto_shoot`: at once) | shot speed once at speed and in range | shooter setpoint | shot speed |
+| purge (`actionPurge`) | out, -8 V | off | off | off | idle |
+
 ## 3. Software changes vs. 7457
 
 [R] = refactor for maintainability.
@@ -175,6 +188,7 @@ off target. 7457's version (lock within 0.25 deg) was commented out.
 | 32 | Loop-overrun reductions (about 90 overruns/min before; rio CPU saturated): CTRE template module Mechanism2d widgets removed (about 2000 NT writes/s from the odometry thread); NT DriveState and Field2d pose at 50 Hz, Field2d type set once (Limelight orientation stays at 250 Hz for MegaTag2); main thread at real-time priority for all of `robotPeriodic` (was the scheduler only); `HootAutoReplay` removed (hoot logging is off) | `DriveTelemetry.java`, `Robot.java` |
 | 33 | [R] Driver input selected by `kXboxDriver` (section 2.4): Xbox on port 0 or 1501 joysticks on ports 0 and 1, behind abstract `DriverControls` (button map and raw axes per input; one stick curve, live deadband and exponent, now 0.01 and 2.0); 7457 `Driver` (now the test controller only) renamed `TestController`, so its port 3 disconnect alert no longer reads "Driver" | `DriverControls.java`, `DriverXbox.java` (new), `DriverSticks.java`, `TestController.java` (was `Driver.java`), `RobotStates.java`, `RobotContainer.java`, `DriveStates.java`, `Constants.java` |
 | 34 | Intake direction: leader `inverted` false. With 7457's true, the intake action pushed balls out on the 1501 robot (team, 2026-10-21), while purge and the 2026-10-17 shooting value (-1700 RPM) pulled in. `kShootVelocity` +1700 keeps the shooting direction physically unchanged; purge now ejects. Intake velocity and voltage signs in logs before this build are opposite | `Intake.java`, `Constants.java` |
+| 35 | [R] Only the intake runs while intaking (section 2.7): hopper agitation (+0.5 V) and uptake reverse (-6 V) on `actionIntake` removed. Feeder: periodic state machine (`FeedState`) replaced by a `feed()` command (shooter setpoint) held while shooting, NeutralOut at the end. 7457 fed on aim or shoot and then idled at 500 RPM indefinitely; its `stop` state built a command in `periodic` and discarded it, so the feeder kept its last request. Unused `FeederConstants` feed, purge and idle velocities removed | `Feeder.java`, `Hopper.java`, `Uptake.java`, `Constants.java` |
 
 Notes:
 
@@ -238,7 +252,7 @@ Notes:
    unpowered, aim/shoot hold the hood down; auto -> flywheel unpowered whenever the hood is down. Set the stow margin
    live until the team confirms clearance, then copy it to `kStowMarginDeg`.
 9. Intake, hopper, feeder, uptake: verify direction and follower flags (7457 values retained). Intake corrected
-   2026-10-21 (section 3 row 34); hopper agitation and uptake direction while intaking not yet verified.
+   2026-10-21 (section 3 row 34; team confirmed). Hopper and uptake no longer run while intaking (row 35).
 10. LL4: hostname `limelight`, static IP 10.15.1.11; robot-space camera pose (section 2.3, measured from the
     center of the module rectangle); AprilTag pipeline 0 with Full 3D; field map matching the event field
     (`FieldConstants.fieldType`); compare `Vision/limelight Pose (mt2)` and `Distance To Goal` against

@@ -14,7 +14,6 @@ import dev.doglog.DogLog;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
-import lombok.Getter;
 import org.supurdueper.lib.subsystems.SupurdueperSubsystem;
 import org.supurdueper.lib.subsystems.VelocitySubsystem;
 import org.supurdueper.robot2026.CanId;
@@ -26,22 +25,6 @@ import org.supurdueper.robot2026.state.RobotStates;
 public class Feeder extends VelocitySubsystem implements SupurdueperSubsystem {
 
     /** Creates a new Feeder. */
-    public enum FeedState {
-        feed(FeederConstants.feedVelocity),
-        idle(FeederConstants.idleVelocity),
-        purge(FeederConstants.purgeVelocity),
-        stop(RPM.of(0));
-
-        public AngularVelocity velocity;
-
-        FeedState(AngularVelocity velocity) {
-            this.velocity = velocity;
-        }
-    }
-
-    @Getter
-    private FeedState feedState;
-
     public Feeder() {
         config.TorqueCurrent.PeakForwardTorqueCurrent = FeederConstants.kMaxAmps;
         config.TorqueCurrent.PeakReverseTorqueCurrent = 0;
@@ -50,22 +33,13 @@ public class Feeder extends VelocitySubsystem implements SupurdueperSubsystem {
         config.Feedback.SensorToMechanismRatio = FeederConstants.kGearRatio;
         configureMotors();
         Robot.add(this);
-        feedState = FeedState.stop;
     }
 
     @Override
     public void periodic() {
         super.periodic();
-        if (feedState.equals(FeedState.stop)) {
-            run(() -> stop());
-        } else if (feedState.equals(FeedState.feed)) {
-            setVelocity(RobotContainer.getShooter().getSetpoint());
-        } else {
-            setVelocity(feedState.velocity);
-        }
         DogLog.log("Feeder/RPM", getVelocity().in(RPM));
         DogLog.log("Feeder/Target RPM", getSetpoint().in(RPM));
-        DogLog.log("Feeder/State", feedState.name());
         DogLog.log("Feeder/At Velocity", isAtVelocityTrigger().getAsBoolean());
         DogLog.log("Feeder/Current", motor.getTorqueCurrent().getValue().in(Amps));
     }
@@ -74,42 +48,23 @@ public class Feeder extends VelocitySubsystem implements SupurdueperSubsystem {
         runVoltage(Volts.of(2));
     }
 
+    /** Feeds at the shooter setpoint until interrupted, then stops. */
+    public Command feed() {
+        return runEnd(() -> setVelocity(RobotContainer.getShooter().getSetpoint()), this::stop)
+                .withName("Feeder/feed");
+    }
+
     @Override
     public void bindCommands() {
-        RobotStates.actionAim
-                .or(RobotStates.actionShoot)
+        // Only while shooting; stopped otherwise, including while aiming or intaking (team, 2026-10-21)
+        RobotStates.actionShoot
                 .or(RobotStates.auto_shoot)
                 .or(RobotStates.actionSetShot)
-                .onTrue(setState(FeedState.feed));
-        RobotStates.actionAim
-                .or(RobotStates.auto_shoot)
-                .or(RobotStates.actionShoot)
-                .or(RobotStates.actionSetShot)
-                .onFalse(setState(FeedState.idle));
+                .whileTrue(feed());
         RobotStates.testController.B.onTrue(goToVelocity(() -> RPM.of(500)));
         RobotStates.testController.X.onTrue(goToVelocity(() -> RPM.of(1000)));
         RobotStates.testController.Y.onTrue(goToVelocity(() -> RPM.of(2000)));
         RobotStates.testController.A.onTrue(run(this::stop));
-    }
-
-    public Command setState(FeedState velocity) {
-        return runOnce(() -> feedState = velocity);
-    }
-
-    public boolean atFeed() {
-        return feedState.equals(FeedState.feed);
-    }
-
-    public boolean atPurge() {
-        return feedState.equals(FeedState.purge);
-    }
-
-    public boolean atIdle() {
-        return feedState.equals(FeedState.idle);
-    }
-
-    public boolean atStop() {
-        return feedState.equals(FeedState.stop);
     }
 
     @Override

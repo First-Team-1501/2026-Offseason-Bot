@@ -192,9 +192,6 @@ public final class Constants {
                 .withStatorCurrentLimitEnable(true)
                 .withSupplyCurrentLimit(Amps.of(40))
                 .withSupplyCurrentLimitEnable(true);
-        public static final AngularVelocity feedVelocity = RPM.of(2000);
-        public static final AngularVelocity purgeVelocity = RPM.of(-500);
-        public static final AngularVelocity idleVelocity = RPM.of(500);
     }
 
     public class UptakeConstants {

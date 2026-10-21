@@ -100,7 +100,7 @@ public class Hopper extends VelocitySubsystem implements SupurdueperSubsystem {
                 .whileTrue(Commands.waitUntil(RobotStates.infoShooterAtSpeed.and(
                                 RobotStates.infoInRange.or(RobotStates.actionSetShot)))
                         .andThen(runEnd(this::run, this::stop)));
-        RobotStates.actionIntake.whileTrue(runEnd(this::agitate, this::stop));
+        // No agitation while intaking: the indexer runs only while shooting (team, 2026-10-21)
         RobotStates.auto_shoot.whileTrue(runEnd(this::run, this::stop));
     }
 
