@@ -18,8 +18,8 @@ public final class RobotStates {
     public static final Trigger teleop = RobotModeTriggers.teleop();
     public static final Trigger auto = RobotModeTriggers.autonomous();
     public static final Trigger disabled = RobotModeTriggers.disabled();
-    public static final DriverSticks driver = RobotContainer.getDriver();
-    public static final Driver testController = RobotContainer.getTestController();
+    public static final DriverControls driver = RobotContainer.getDriver();
+    public static final TestController testController = RobotContainer.getTestController();
     public static final Shooter shooter = RobotContainer.getShooter();
     public static final ShooterHood hood = RobotContainer.getShooterHood();
 
@@ -63,13 +63,13 @@ public final class RobotStates {
             () -> ShotCalculator.inRange(RobotContainer.getDrivetrain().getState().Pose));
 
     // Actions
-    public static final Trigger rezeroFieldHeading = driver.rezeroHeading.and(teleop);
-    public static final Trigger actionIntake = driver.intake.and(teleop);
-    public static final Trigger actionAim = driver.aim.and(teleop);
-    public static final Trigger actionShoot = driver.shoot.and(teleop);
-    public static final Trigger actionPurge = driver.purge.and(teleop);
-    public static final Trigger actionSetShot = driver.setShot.and(teleop);
-    public static final Trigger actionZeroHood = driver.zeroHood;
+    public static final Trigger rezeroFieldHeading = driver.rezeroHeading().and(teleop);
+    public static final Trigger actionIntake = driver.intake().and(teleop);
+    public static final Trigger actionAim = driver.aim().and(teleop);
+    public static final Trigger actionShoot = driver.shoot().and(teleop);
+    public static final Trigger actionPurge = driver.purge().and(teleop);
+    public static final Trigger actionSetShot = driver.setShot().and(teleop);
+    public static final Trigger actionZeroHood = driver.zeroHood();
 
     public static final Trigger actionClimb = Gamepad.kFalse;
     public static final Trigger actionClimberUp = Gamepad.kFalse;

@@ -20,14 +20,14 @@ import org.supurdueper.lib.LoggedTunableNumber;
 import org.supurdueper.lib.utils.AllianceFlip;
 import org.supurdueper.robot2026.Constants;
 import org.supurdueper.robot2026.RobotContainer;
-import org.supurdueper.robot2026.state.DriverSticks;
+import org.supurdueper.robot2026.state.DriverControls;
 import org.supurdueper.robot2026.subsystems.drive.DriveSysId.SysIdSwerveTranslationCurrent;
 import org.supurdueper.robot2026.subsystems.drive.generated.TunerConstants;
 
 public class DriveStates {
 
     private Drivetrain drivetrain;
-    private DriverSticks driver;
+    private DriverControls driver;
 
     /* Setting up bindings for necessary control of the swerve drive platform */
     private double MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed

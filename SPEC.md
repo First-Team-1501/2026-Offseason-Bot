@@ -5,7 +5,8 @@
 - Base: FRC 7457 suPURDUEper 2026 robot code (`suPURDUEper/2026-Robot-Code`, commit `20d4a19`).
 - Target: FRC 1501 mechanical copy of the 7457 robot. Team number 1501.
 - Hardware deltas vs. 7457: CAN map on two CANivores, Kraken X60 shooter flywheels (7457: X44), SDS MK5n R2
-  swerve, one Limelight 4 (7457: three), 1501 driver joysticks (7457: Xbox), no CANdle, no climber.
+  swerve, one Limelight 4 (7457: three), driver input selectable: Xbox or 1501 joysticks (7457: Xbox), no CANdle,
+  no climber.
 - Toolchain: WPILib 2026.2.1, Phoenix 6 26.3.0 (mechanisms do not need Phoenix Pro), Java 17.
 
 ## 2. Hardware map
@@ -61,28 +62,43 @@ Not present on the 1501 robot: `CANDLE` (29), `CLIMBER` (21). Entries retained b
 - MegaTag2 with external IMU: `SetIMUMode(name, 0)`; heading published to `robot_orientation_set` by
   `DriveTelemetry` and flushed each loop by `Vision`. MT2 frames are rejected above 90 deg/s, when their yaw
   differs from the pose at the frame time by more than 4 deg, off-field, or repeated.
-- Heading: seeded from MegaTag1 while disabled (2+ tags within 4 m, 5 frames within 3 deg); port 0 btn 1 in
-  teleop sets it with the intake pointing away from the driver station; Choreo autos reset it at start.
+- Heading: seeded from MegaTag1 while disabled (2+ tags within 4 m, 5 frames within 3 deg); `rezeroFieldHeading`
+  (section 2.4) in teleop sets it with the intake pointing away from the driver station; Choreo autos reset it at
+  start.
 - Camera names: `Constants.VisionConstants.kLimelightNames`.
 
 ### 2.4 Driver controls
 
-Hold-to-run, 7457 action semantics. Button numbers defined only in `state/DriverSticks.java`.
+Hold-to-run, 7457 action semantics. `Constants.DriverConstants.kXboxDriver` selects one driver input, never both:
+`true` (current) = Xbox controller on DS port 0 (`state/DriverXbox.java`); `false` = 1501 joysticks on DS ports 0
+and 1 (`state/DriverSticks.java`). Both extend `DriverControls`, which applies the stick response; button numbers and
+raw axes are defined only in these two classes.
 
-| Input | Action (`RobotStates`) | 7457 Xbox equivalent |
-|---|---|---|
-| Port 0 drive stick Y / X | translate | left stick |
-| Port 0 btn 1 | `rezeroFieldHeading` | Back |
-| Port 0 btn 16 | `actionIntake` | LB |
-| Port 0 btn 17 | `actionPurge` | LT |
-| Port 0 btn 18 | `actionShoot` (spin up + feed) | RB |
-| Port 1 rotation stick X | rotate (overridden while aiming) | right stick X |
-| Port 1 btn 1 | `actionZeroHood` | D-pad down |
-| Port 1 btn 17 | `actionSetShot` (fixed shot) | Y |
-| Port 1 btn 18 | `actionAim` (aim + spin up) | RT |
-| Port 3 Xbox | test controller (`testController`) | port 2 |
+| Action (`RobotStates`) | Xbox, port 0 | Joysticks, ports 0 and 1 | 7457 Xbox |
+|---|---|---|---|
+| translate | left stick | port 0 stick Y / X | left stick |
+| rotate (overridden while aiming) | right stick X | port 1 stick X | right stick X |
+| `actionIntake` | LT | port 0 btn 16 | LB |
+| `actionAim` (aim + spin up) | A | port 1 btn 18 | RT |
+| `actionShoot` (spin up + feed) | RT | port 0 btn 18 | RB |
+| `actionPurge` | LB | port 0 btn 17 | LT |
+| `actionSetShot` (fixed shot) | Y | port 1 btn 17 | Y |
+| `actionZeroHood` | D-pad down | port 1 btn 1 | D-pad down |
+| `rezeroFieldHeading` | Back | port 0 btn 1 | Back |
 
-- Stick response from 1501 2026 code: deadband 0.05, cubic, then 7457 `kSlowModeScalor` 0.85.
+- Xbox LT, A and RT: team (2026-10-21). LB, Y, D-pad down and Back: defaults pending team confirmation.
+- Driver controller: GameSir in XInput mode; the DS lists it as "Controller (Xbox 360 for Windows Controller)", so
+  the WPILib `XboxController` map applies (A btn 1, LB 5, Back 7; LT / RT axes 2 / 3; right X axis 4; D-pad POV 0).
+- Xbox triggers count as pressed above `kXboxTriggerThreshold` (0.5, WPILib default).
+- Stick response, both inputs, per axis (`DriverControls.shape`; 1501 2026 comp bot curve
+  `DriveSticks.applyExponential`, there deadband 0.05 and exponent 3): 0 below deadband d, else
+  sign(x) * ((|x| - d) / (1 - d))^n; then 7457 `kSlowModeScalor` 0.85. Start values from the driver's preference
+  (2026-10-21): d = 0.02 (`kStickDeadband`), n = 3.0 (`kStickExponent`). Tuning mode: live as
+  `/Tuning/Driver/Stick Deadband` (clamped 0-0.3) and `/Tuning/Driver/Stick Exponent` (clamped 1-5); the driver tunes
+  on the robot, then the final values go to `Constants`.
+- Port 3 Xbox: test controller (`TestController`; 7457 `Driver`, port 2). Bound outside disabled: feeder A stop,
+  B 500, X 1000, Y 2000 RPM; hood open-loop voltage on left stick Y. The DS assigns each USB device the first free
+  port: check the DS USB tab order before enabling.
 - Port 2 (1501 button board) unused.
 
 ### 2.5 Hood and flywheel interlock
@@ -98,7 +114,7 @@ Requirement (team, 2026-10-21): the shooter flywheel is never powered while the 
 | Rest angle (`ShooterHood.restAngle`) | auto: fully down (7457 paths pass the trench with it down); teleop: fully down inside a trench zone, else stow |
 | Trench zone (`FieldCalculations.inTrenchZone`) | robot center within trench depth / 2 + 1.0 m of either hub line in x, and within the trench opening width + 0.2 m of the side wall in y; all four trenches |
 | Teleop in a trench zone | aim, shoot and fixed-shot hood targets are replaced by fully down, so the hood cannot rise under a trench; the interlock then blocks the flywheel |
-| Zeroing (port 1 btn 1) | drives to the stop (interlock active), re-zeroes, returns to the rest angle |
+| Zeroing (`actionZeroHood`) | drives to the stop (interlock active), re-zeroes, returns to the rest angle |
 | Manual shot tuning | `Shot Tuning/Angle (Deg)` minimum is the stow angle |
 | Telemetry | `Shooter/Hood Interlock`, `ShooterHood/Down`, `ShooterHood/In Trench Zone`, `ShooterHood/Rest Angle (Deg)` |
 
@@ -156,6 +172,7 @@ off target. 7457's version (lock within 0.25 deg) was commented out.
 | 30 | Startup re-application of unchanged tunable gains removed (defaults recorded at construction) | `VelocitySubsystem.java`, `PositionSubsystem.java` |
 | 31 | Shooter `kV` 0.171 and idle 700 RPM from the 2026-10-21 log analysis (section 4); follower `Voltage` logged | `Constants.java`, `MotorTelemetry.java` |
 | 32 | Loop-overrun reductions (about 90 overruns/min before; rio CPU saturated): CTRE template module Mechanism2d widgets removed (about 2000 NT writes/s from the odometry thread); NT DriveState and Field2d pose at 50 Hz, Field2d type set once (Limelight orientation stays at 250 Hz for MegaTag2); main thread at real-time priority for all of `robotPeriodic` (was the scheduler only); `HootAutoReplay` removed (hoot logging is off) | `DriveTelemetry.java`, `Robot.java` |
+| 33 | [R] Driver input selected by `kXboxDriver` (section 2.4): Xbox on port 0 or 1501 joysticks on ports 0 and 1, behind abstract `DriverControls` (button map and raw axes per input; one stick curve, live deadband and exponent, start 0.02 and 3.0); 7457 `Driver` (now the test controller only) renamed `TestController`, so its port 3 disconnect alert no longer reads "Driver" | `DriverControls.java`, `DriverXbox.java` (new), `DriverSticks.java`, `TestController.java` (was `Driver.java`), `RobotStates.java`, `RobotContainer.java`, `DriveStates.java`, `Constants.java` |
 
 Notes:
 
@@ -194,7 +211,7 @@ Notes:
    devices produce no output under torque-current requests (fault `UnlicensedFeatureInUse`).
 4. Swerve: measure CANcoder offsets (Tuner X swerve generator or manual zero); update `k*EncoderOffset` in
    `TunerConstants.java`. Verify inversions, gear ratios (MK5n R2: drive 6.0268, steer 26.09, couple 3.857),
-   wheel radius 2 in, module positions. Front = intake end: push the drive stick forward after btn 1 and the
+   wheel radius 2 in, module positions. Front = intake end: translate forward after `rezeroFieldHeading` and the
    robot must move intake-first.
 5. Shooter direction and follower alignment (robot disabled):
    - Tuner X shows identical `MotorOutput.Inverted` on all five shooter TalonFX.
@@ -212,7 +229,7 @@ Notes:
    the table at the current distance; feeding needs at least 1000 RPM). When a shot scores, press
    `Shot Tuning/Record`: the log gets `Shot Tuning/Recorded Point` = [distance m, RPM, deg, forwarding] and the
    console a matching line. Distance is `Shot Tuning/Distance (m)` (robot center to hub center).
-8. Hood: zero with port 1 btn 1; soft limits 7 deg to 41.5 deg (0.115234 mechanism rot, measured top of travel
+8. Hood: zero with `actionZeroHood` (section 2.4); soft limits 7 deg to 41.5 deg (0.115234 mechanism rot, measured top of travel
    on the 1501 hood). Hood angles depend on the hood resting on its bottom stop when robot code starts (or after
    zeroing). Interlock check (section 2.5): teleop enable -> hood at stow, flywheel may idle; zeroing ->
    `Shooter/Hood Interlock` true and flywheel unpowered, then stow; trench zone -> hood fully down, flywheel
@@ -223,7 +240,8 @@ Notes:
     center of the module rectangle); AprilTag pipeline 0 with Full 3D; field map matching the event field
     (`FieldConstants.fieldType`); compare `Vision/limelight Pose (mt2)` and `Distance To Goal` against
     tape-measured positions, standing still and rotating in place.
-11. DS: drive stick in USB slot 0, rotation stick in slot 1; verify buttons per section 2.4.
+11. DS USB tab: `kXboxDriver` true: Xbox in slot 0; false: drive stick in slot 0, rotation stick in slot 1. Verify
+    buttons per section 2.4.
 
 ## 6. Verification status
 
@@ -239,8 +257,8 @@ Notes:
 - Simulation: Phoenix sim keys devices by type and ID only (`PlatformJNI.JNI_SimCreate(type, id)`).
   Upper and lower TalonFX IDs overlap (1, 2, 4, 5, 7, 8, 10, 11), so simulation is valid for startup and NT
   checks only.
-- Alerts: an unplugged test Xbox (port 3) raises "Driver Gamepad Disconnected" (pre-existing in 7457 on
-  port 2). The sticks have no disconnect alert.
+- Alerts: an unplugged test Xbox (port 3) raises "TestController Gamepad Disconnected" (7457: "Driver Gamepad
+  Disconnected", port 2). The driver input (Xbox or joysticks) has no disconnect alert.
 - Distance LUTs are 7457's, scaled by `Shooter/LUT RPM Scale`; the forwarding LUT is an untuned estimate.
 - Choreo `deploy/choreo/Tests.chor` module positions (x 12.375 in, y 9.375 in) are swapped relative to
   `TunerConstants` (x 9.375 in, y 12.375 in); robot mass 143.8 lb (7457). Verify against the 1501 robot

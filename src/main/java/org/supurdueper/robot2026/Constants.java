@@ -38,7 +38,12 @@ public final class Constants {
     public static CANBus rioBus = new CANBus("rio");
 
     public static final class DriverConstants {
-        public static final int kControllerPort = 0;
+        // Driver input: true = Xbox controller on DS port 0 (DriverXbox); false = 1501 joysticks on DS ports 0 and 1
+        // (DriverSticks). Never both.
+        public static final boolean kXboxDriver = true;
+        public static final int kXboxDriverPort = 0;
+        public static final double kXboxTriggerThreshold = 0.5;
+        // 7457 Gamepad settings, used by the test controller (kSlowModeScalor also scales the driver input)
         public static final double kDeadzone = 0.1;
         public static final ExpCurve kLeftStickCurve = new ExpCurve(2.0, 0, 1, kDeadzone);
         public static final ExpCurve kRightStickCurve = new ExpCurve(2.0, 0, 1, kDeadzone);
@@ -49,7 +54,9 @@ public final class Constants {
         public static final int kDriveStickPort = 0;
         public static final int kRotationStickPort = 1;
         public static final int kTestControllerPort = 3;
-        public static final double kStickDeadband = 0.05;
+        // Driver stick response (DriverControls.shape; 1501 2026 comp bot curve, which used 0.05 and 3.0). Start values
+        // from the driver's preference (low deadband); live as /Tuning/Driver/Stick Deadband and Stick Exponent
+        public static final double kStickDeadband = 0.02;
         public static final double kStickExponent = 3.0;
     }
 

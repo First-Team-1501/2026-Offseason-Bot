@@ -8,7 +8,8 @@ import lombok.Getter;
 import lombok.Setter;
 import org.supurdueper.lib.gamepad.Gamepad;
 
-public class Driver extends Gamepad {
+// 7457's driver Xbox class, kept as the test controller (port 3); the driver input is DriverControls
+public class TestController extends Gamepad {
 
     // // Triggers, these would be robot states such as ampReady, intake, visionAim,
     // etc.
@@ -34,8 +35,8 @@ public class Driver extends Gamepad {
     @Setter
     private boolean isTurboMode = false;
 
-    /** Create a new Pilot with the default name and port. */
-    public Driver(int port) {
+    /** Create a new test controller on the given port. */
+    public TestController(int port) {
         super(port, kLeftStickCurve, kDeadzone, kRightStickCurve, kDeadzone, kTriggerCurve, kDeadzone);
         driving = RobotModeTriggers.teleop().and(leftStickX.or(leftStickY));
         steer = RobotModeTriggers.teleop().and(rightStickX.or(rightStickY));

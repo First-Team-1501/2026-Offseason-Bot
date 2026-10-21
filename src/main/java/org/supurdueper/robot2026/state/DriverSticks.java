@@ -6,36 +6,58 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
-public class DriverSticks {
+public class DriverSticks extends DriverControls {
 
     private final Joystick driveStick = new Joystick(kDriveStickPort);
     private final Joystick rotationStick = new Joystick(kRotationStickPort);
 
-    public final Trigger rezeroHeading = new JoystickButton(driveStick, 1);
-    public final Trigger intake = new JoystickButton(driveStick, 16);
-    public final Trigger purge = new JoystickButton(driveStick, 17);
-    public final Trigger shoot = new JoystickButton(driveStick, 18);
-    public final Trigger zeroHood = new JoystickButton(rotationStick, 1);
-    public final Trigger setShot = new JoystickButton(rotationStick, 17);
-    public final Trigger aim = new JoystickButton(rotationStick, 18);
-
-    public double getDriveFwdPositive() {
-        return shape(-driveStick.getY()) * kSlowModeScalor;
+    @Override
+    public Trigger rezeroHeading() {
+        return new JoystickButton(driveStick, 1);
     }
 
-    public double getDriveLeftPositive() {
-        return shape(-driveStick.getX()) * kSlowModeScalor;
+    @Override
+    public Trigger intake() {
+        return new JoystickButton(driveStick, 16);
     }
 
-    public double getDriveCCWPositive() {
-        return shape(-rotationStick.getX()) * kSlowModeScalor;
+    @Override
+    public Trigger purge() {
+        return new JoystickButton(driveStick, 17);
     }
 
-    private static double shape(double input) {
-        double magnitude = Math.abs(input);
-        if (magnitude < kStickDeadband) {
-            return 0.0;
-        }
-        return Math.signum(input) * Math.pow((magnitude - kStickDeadband) / (1.0 - kStickDeadband), kStickExponent);
+    @Override
+    public Trigger shoot() {
+        return new JoystickButton(driveStick, 18);
+    }
+
+    @Override
+    public Trigger aim() {
+        return new JoystickButton(rotationStick, 18);
+    }
+
+    @Override
+    public Trigger setShot() {
+        return new JoystickButton(rotationStick, 17);
+    }
+
+    @Override
+    public Trigger zeroHood() {
+        return new JoystickButton(rotationStick, 1);
+    }
+
+    @Override
+    protected double fwdAxis() {
+        return -driveStick.getY();
+    }
+
+    @Override
+    protected double leftAxis() {
+        return -driveStick.getX();
+    }
+
+    @Override
+    protected double ccwAxis() {
+        return -rotationStick.getX();
     }
 }
