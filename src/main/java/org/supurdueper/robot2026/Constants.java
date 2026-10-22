@@ -122,15 +122,21 @@ public final class Constants {
         public static final Voltage kPeakForwardVoltage = Volts.of(12);
         public static final Voltage kPeakReverseVoltage = Volts.of(-12);
         public static final Angle kZeroPosition = Degrees.of(6.837);
-        // Zeroing (ShooterHood.zero): drive down at kZeroVoltage until the hood is stalled on the bottom stop (|stator|
-        // above kZeroStallCurrentAmps, below the 50 A limit, and |velocity| under kZeroStallVelocityDegPerSec for
-        // kZeroStallTimeSec; the start-up current spike is shorter), at most kZeroTimeoutSec. The stator current is
-        // signed by direction: negative while driving down.
-        public static final Voltage kZeroVoltage = Volts.of(-3);
-        public static final double kZeroStallCurrentAmps = 40.0;
-        public static final double kZeroStallVelocityDegPerSec = 2.0;
-        public static final double kZeroStallTimeSec = 0.2;
-        public static final double kZeroTimeoutSec = 2.5;
+        // Zeroing (ShooterHood.zero). The hood drive slips at the stops instead of stalling (FRC_20261022_231219: at -3
+        // V
+        // the motor kept turning at no-load speed for 68 deg of reading on 5-12 A after reaching the bottom; free
+        // descent drew 0.2-1.4 A). Drive down at kZeroVoltage with the stator limit lowered to kZeroStatorLimitAmps;
+        // on the stop the current rises to the limit (stall or slip). Done when |stator| > kZeroDetectAmps for
+        // kZeroDetectTimeSec (ignored for kZeroBlankingSec after the start: start-up current), or when the reading has
+        // moved down kZeroMaxTravelDeg (more than the full travel, so the hood is down). Neither within
+        // kZeroTimeoutSec: no zero. Stator current is signed: negative while driving down.
+        public static final Voltage kZeroVoltage = Volts.of(-2);
+        public static final double kZeroStatorLimitAmps = 5.0;
+        public static final double kZeroDetectAmps = 4.0;
+        public static final double kZeroDetectTimeSec = 0.2;
+        public static final double kZeroBlankingSec = 0.25;
+        public static final double kZeroMaxTravelDeg = 40.5;
+        public static final double kZeroTimeoutSec = 4.0;
         public static final CurrentLimitsConfigs kCurrentLimit =
                 new CurrentLimitsConfigs().withStatorCurrentLimit(50).withStatorCurrentLimitEnable(true);
         public static final AngularVelocity profileV = RotationsPerSecond.of(0);

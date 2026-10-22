@@ -22,6 +22,7 @@ import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.math.filter.Debouncer.DebounceType;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
@@ -42,9 +43,11 @@ public class ShooterHood extends PositionSubsystem implements SupurdueperSubsyst
             new LoggedTunableNumber("ShooterHood/Stow Margin (Deg)", ShooterHoodConstants.kStowMarginDeg);
 
     private PositionVoltage noMagicMotion = new PositionVoltage(0).withEnableFOC(false);
-    private final Debouncer bottomStall = new Debouncer(ShooterHoodConstants.kZeroStallTimeSec, DebounceType.kRising);
+    private final Debouncer zeroLoad = new Debouncer(ShooterHoodConstants.kZeroDetectTimeSec, DebounceType.kRising);
     private boolean zeroedSinceStart = false;
-    private boolean stallDetected = false;
+    private double zeroStartDeg;
+    private double zeroStartSec;
+    private String zeroResult = "none";
 
     /** Creates a new ShooterHood. */
     public ShooterHood() {
@@ -75,29 +78,60 @@ public class ShooterHood extends PositionSubsystem implements SupurdueperSubsyst
     }
 
     /**
-     * Drives to the bottom stop (the flywheel interlock cuts the shooter there) and re-zeroes; the default command then
-     * returns the hood to rest. Without a detected stall (timeout or interruption) the zero is left unchanged.
+     * Drives down to the bottom stop with a low current limit and re-zeroes there (the flywheel interlock cuts the
+     * shooter while the hood is down); the default command then returns the hood to rest. Ends on load at the stop or
+     * after more than the full travel (ShooterHoodConstants zeroing notes); on a timeout or interruption the zero is
+     * left unchanged. Log: ShooterHood/Zero Result, ShooterHood/Zeroed.
      */
     public Command zero() {
         return startRun(
-                        () -> {
-                            bottomStall.calculate(false);
-                            stallDetected = false;
-                        },
+                        this::startZero,
                         () -> motor.setControl(voltageRequest
                                 .withOutput(ShooterHoodConstants.kZeroVoltage)
                                 .withIgnoreSoftwareLimits(true)))
-                .until(this::stalledOnBottomStop)
+                .until(this::onBottomStop)
                 .withTimeout(ShooterHoodConstants.kZeroTimeoutSec)
-                .finallyDo(() -> motor.setControl(voltageRequest.withOutput(0).withIgnoreSoftwareLimits(false)))
-                .andThen(runOnce(() -> {
-                    if (stallDetected) {
-                        motor.setPosition(ShooterHoodConstants.kZeroPosition);
-                        zeroedSinceStart = true;
-                    }
-                    DogLog.log("ShooterHood/Zeroed", zeroedSinceStart);
-                }))
+                .finallyDo(this::endZero)
                 .withName("ShooterHood/zero");
+    }
+
+    private void startZero() {
+        zeroStartDeg = getPosition().in(Degrees);
+        zeroStartSec = Timer.getFPGATimestamp();
+        zeroLoad.calculate(false);
+        zeroResult = "timeout";
+        motor.getConfigurator()
+                .apply(
+                        new CurrentLimitsConfigs()
+                                .withStatorCurrentLimit(ShooterHoodConstants.kZeroStatorLimitAmps)
+                                .withStatorCurrentLimitEnable(true),
+                        0.05);
+    }
+
+    private boolean onBottomStop() {
+        boolean blanked = Timer.getFPGATimestamp() - zeroStartSec < ShooterHoodConstants.kZeroBlankingSec;
+        double statorAmps = Math.abs(motor.getStatorCurrent().getValueAsDouble());
+        if (zeroLoad.calculate(!blanked && statorAmps > ShooterHoodConstants.kZeroDetectAmps)) {
+            zeroResult = "load";
+            return true;
+        }
+        if (zeroStartDeg - getPosition().in(Degrees) > ShooterHoodConstants.kZeroMaxTravelDeg) {
+            zeroResult = "travel";
+            return true;
+        }
+        return false;
+    }
+
+    private void endZero(boolean interrupted) {
+        motor.setControl(voltageRequest.withOutput(0).withIgnoreSoftwareLimits(false));
+        motor.getConfigurator().apply(config.CurrentLimits, 0.05);
+        if (!interrupted && !zeroResult.equals("timeout")) {
+            motor.setPosition(ShooterHoodConstants.kZeroPosition);
+            zeroedSinceStart = true;
+        }
+        DogLog.log("ShooterHood/Zero Result", interrupted ? "interrupted" : zeroResult);
+        DogLog.log("ShooterHood/Zero Travel (Deg)", zeroStartDeg - getPosition().in(Degrees));
+        DogLog.log("ShooterHood/Zeroed", zeroedSinceStart);
     }
 
     /**
@@ -108,18 +142,6 @@ public class ShooterHood extends PositionSubsystem implements SupurdueperSubsyst
         if (!zeroedSinceStart) {
             CommandScheduler.getInstance().schedule(zero());
         }
-    }
-
-    private boolean isStalledNow() {
-        return Math.abs(motor.getStatorCurrent().getValueAsDouble()) > ShooterHoodConstants.kZeroStallCurrentAmps
-                && Math.abs(motor.getVelocity().getValueAsDouble() * 360.0)
-                        < ShooterHoodConstants.kZeroStallVelocityDegPerSec;
-    }
-
-    /** Latched for the step after the drive-down ends (its output is 0 V by then). */
-    private boolean stalledOnBottomStop() {
-        stallDetected = bottomStall.calculate(isStalledNow());
-        return stallDetected;
     }
 
     @Override
