@@ -322,9 +322,10 @@ public final class Constants {
             addPointToDistanceToShooterAngle(5.25, 22.0);
             addPointToDistanceToShooterAngle(6, 30.0);
 
-            addPointToDistanceToShooterRPM(1.75, 1340);
-            addPointToDistanceToShooterRPM(2.0, 1365);
-            addPointToDistanceToShooterRPM(2.25, 1390);
+            // 1.75-2.25 m about -3% (team, 2026-10-22: 2.0 m volley a little long at x1.21; was 1340, 1365, 1390)
+            addPointToDistanceToShooterRPM(1.75, 1300);
+            addPointToDistanceToShooterRPM(2.0, 1325);
+            addPointToDistanceToShooterRPM(2.25, 1370);
             addPointToDistanceToShooterRPM(2.5, 1415);
             addPointToDistanceToShooterRPM(2.75, 1440);
             addPointToDistanceToShooterRPM(3.0, 1475);

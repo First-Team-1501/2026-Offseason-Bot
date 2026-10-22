@@ -32,6 +32,12 @@ public abstract class DriverControls {
 
     public abstract Trigger zeroHood();
 
+    /** Press: defense mode on/off. */
+    public abstract Trigger defenseToggle();
+
+    /** Hold: hood at its max angle. */
+    public abstract Trigger hoodMax();
+
     /** Raw translation axis, -1 to 1, forward positive. */
     protected abstract double fwdAxis();
 

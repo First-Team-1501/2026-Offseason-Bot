@@ -12,7 +12,6 @@ import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import dev.doglog.DogLog;
 import edu.wpi.first.units.measure.AngularVelocity;
-import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import org.supurdueper.lib.subsystems.SupurdueperSubsystem;
@@ -50,35 +49,13 @@ public class Shooter extends VelocitySubsystem implements SupurdueperSubsystem {
     }
 
     @Override
-    protected void setVelocity(AngularVelocity angularvelocity) {
-        if (hoodInterlock()) {
-            stop();
-            return;
-        }
-        super.setVelocity(angularvelocity);
-    }
-
-    @Override
-    protected void setVelocity(double angularvelocity) {
-        if (hoodInterlock()) {
-            stop();
-            return;
-        }
-        super.setVelocity(angularvelocity);
-    }
-
-    @Override
-    protected void runVoltage(Voltage volts) {
-        if (hoodInterlock()) {
-            stop();
-            return;
-        }
-        super.runVoltage(volts);
+    protected boolean outputInhibited() {
+        return hoodInterlock() || RobotStates.isDefenseMode();
     }
 
     @Override
     protected boolean isAtVelocity() {
-        if (hoodInterlock()) return false;
+        if (outputInhibited()) return false;
         if (getVelocity().lt(RPM.of(1000))) return false;
         return super.isAtVelocity();
     }

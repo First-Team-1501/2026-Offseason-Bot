@@ -5,6 +5,7 @@ import static org.supurdueper.robot2026.Constants.DriverConstants.*;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import org.supurdueper.lib.gamepad.Gamepad;
 
 public class DriverSticks extends DriverControls {
 
@@ -44,6 +45,17 @@ public class DriverSticks extends DriverControls {
     @Override
     public Trigger zeroHood() {
         return new JoystickButton(rotationStick, 1);
+    }
+
+    // Defense toggle and hood-max hold are mapped on the Xbox controller only
+    @Override
+    public Trigger defenseToggle() {
+        return Gamepad.kFalse;
+    }
+
+    @Override
+    public Trigger hoodMax() {
+        return Gamepad.kFalse;
     }
 
     @Override

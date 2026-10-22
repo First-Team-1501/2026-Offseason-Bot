@@ -2,6 +2,7 @@ package org.supurdueper.robot2026.state;
 
 import dev.doglog.DogLog;
 import edu.wpi.first.wpilibj.RobotBase;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import lombok.Getter;
@@ -47,6 +48,17 @@ public final class RobotStates {
     @Setter
     private static boolean autoDropHood = false;
 
+    // Defense mode (driver toggle, teleop; cleared when auto starts): intake, hopper, feeder, uptake and shooter
+    // neutral and their actions off; drive and hood (stow, trench, max-angle hold) keep working
+    @Getter
+    private static boolean defenseMode = false;
+
+    private static final String kDefenseKey = "Defense Mode";
+
+    static {
+        SmartDashboard.putBoolean(kDefenseKey, defenseMode);
+    }
+
     // auto
     public static final Trigger auto_intake = new Trigger(RobotStates::isAutoIntake).and(auto);
     public static final Trigger auto_aim = new Trigger(RobotStates::isAutoAim).and(auto);
@@ -63,13 +75,18 @@ public final class RobotStates {
             () -> ShotCalculator.inRange(RobotContainer.getDrivetrain().getState().Pose));
 
     // Actions
+    public static final Trigger defense = new Trigger(RobotStates::isDefenseMode);
+    private static final Trigger mechanisms = teleop.and(defense.negate());
     public static final Trigger rezeroFieldHeading = driver.rezeroHeading().and(teleop);
-    public static final Trigger actionIntake = driver.intake().and(teleop);
-    public static final Trigger actionAim = driver.aim().and(teleop);
-    public static final Trigger actionShoot = driver.shoot().and(teleop);
-    public static final Trigger actionPurge = driver.purge().and(teleop);
-    public static final Trigger actionSetShot = driver.setShot().and(teleop);
+    public static final Trigger actionIntake = driver.intake().and(mechanisms);
+    public static final Trigger actionAim = driver.aim().and(mechanisms);
+    public static final Trigger actionShoot = driver.shoot().and(mechanisms);
+    public static final Trigger actionPurge = driver.purge().and(mechanisms);
+    public static final Trigger actionSetShot = driver.setShot().and(mechanisms);
     public static final Trigger actionZeroHood = driver.zeroHood();
+    public static final Trigger actionDefenseToggle = driver.defenseToggle().and(teleop);
+    // Hood to its max angle while held, also in defense mode (the trench zone keeps it down)
+    public static final Trigger actionHoodMax = driver.hoodMax().and(teleop);
 
     public static final Trigger actionClimb = Gamepad.kFalse;
     public static final Trigger actionClimberUp = Gamepad.kFalse;
@@ -84,7 +101,15 @@ public final class RobotStates {
         throw new IllegalStateException("Utility class");
     }
 
+    /** Also shown on the dashboard as "Defense Mode". */
+    public static void setDefenseMode(boolean on) {
+        defenseMode = on;
+        SmartDashboard.putBoolean(kDefenseKey, on);
+    }
+
     public static void log() {
+        DogLog.log("States/Defense", defenseMode);
+        DogLog.log("States/ActionHoodMax", actionHoodMax.getAsBoolean());
         DogLog.log("States/AutoIntake", auto_intake.getAsBoolean());
         DogLog.log("States/AutoRev", auto_rev.getAsBoolean());
         DogLog.log("States/AutoAim", auto_aim.getAsBoolean());

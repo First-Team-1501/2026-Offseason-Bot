@@ -75,7 +75,7 @@ public class ShooterHood extends PositionSubsystem implements SupurdueperSubsyst
                 .andThen(runOnce(
                         () -> motor.setControl(voltageRequest.withOutput(0).withIgnoreSoftwareLimits(false))))
                 .andThen(runOnce(() -> motor.setPosition(ShooterHoodConstants.kZeroPosition)))
-                .andThen(goToPosition(this::restAngle));
+                .andThen(goToPosition(() -> withMaxHold(restAngle())));
     }
 
     @Override
@@ -129,6 +129,14 @@ public class ShooterHood extends PositionSubsystem implements SupurdueperSubsyst
     public Angle getShotAngle() {
         return trenchSafe(Degrees.of(
                 ShotCalculator.shotAngleDeg(RobotContainer.getDrivetrain().getState().Pose)));
+    }
+
+    /**
+     * Driver hold (also in defense mode): the max angle replaces any teleop target while held, except near a trench; on
+     * release the active command's own target applies again.
+     */
+    private Angle withMaxHold(Angle angle) {
+        return RobotStates.actionHoodMax.getAsBoolean() ? trenchSafe(ShooterHoodConstants.kForwardSoftLimit) : angle;
     }
 
     @Override
@@ -204,20 +212,20 @@ public class ShooterHood extends PositionSubsystem implements SupurdueperSubsyst
 
     @Override
     public void bindCommands() {
-        RobotStates.teleop.onTrue(goToPosition(this::restAngle));
+        RobotStates.teleop.onTrue(goToPosition(() -> withMaxHold(restAngle())));
         RobotStates.actionAim
                 .or(RobotStates.actionShoot)
                 .or(RobotStates.auto_aim)
                 .or(RobotStates.auto_shoot)
-                .whileTrue(goToPosition(this::getShotAngle));
-        RobotStates.actionSetShot.onTrue(goToPosition(() -> trenchSafe(Degrees.of(19))));
+                .whileTrue(goToPosition(() -> withMaxHold(getShotAngle())));
+        RobotStates.actionSetShot.onTrue(goToPosition(() -> withMaxHold(trenchSafe(Degrees.of(19)))));
         RobotStates.auto_drop_hood.onTrue(goToPosition(() -> ShooterHoodConstants.kReverseSoftLimit));
         RobotStates.actionAim
                 .or(RobotStates.actionShoot)
                 .or(RobotStates.auto_aim)
                 .or(RobotStates.auto_shoot)
                 .or(RobotStates.actionSetShot)
-                .onFalse(goToPosition(this::restAngle));
+                .onFalse(goToPosition(() -> withMaxHold(restAngle())));
         RobotStates.auto_drop_intake.onTrue(releaseIntake());
         RobotStates.actionZeroHood.onTrue(zero());
         RobotStates.testController.leftStickY.whileTrue(

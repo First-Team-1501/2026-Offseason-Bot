@@ -36,12 +36,22 @@ public class DriverXbox extends DriverControls {
 
     @Override
     public Trigger setShot() {
-        return xbox.y();
+        return xbox.x();
     }
 
     @Override
     public Trigger zeroHood() {
         return xbox.povDown();
+    }
+
+    @Override
+    public Trigger defenseToggle() {
+        return xbox.y();
+    }
+
+    @Override
+    public Trigger hoodMax() {
+        return xbox.rightBumper();
     }
 
     @Override

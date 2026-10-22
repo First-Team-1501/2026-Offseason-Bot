@@ -82,11 +82,14 @@ raw axes are defined only in these two classes.
 | `actionAim` (aim + spin up) | A | port 1 btn 18 | RT |
 | `actionShoot` (spin up + feed) | RT | port 0 btn 18 | RB |
 | `actionPurge` | LB | port 0 btn 17 | LT |
-| `actionSetShot` (fixed shot) | Y | port 1 btn 17 | Y |
+| `actionSetShot` (fixed shot) | X (Y until 2026-10-22) | port 1 btn 17 | Y |
 | `actionZeroHood` | D-pad down | port 1 btn 1 | D-pad down |
 | `rezeroFieldHeading` | Back | port 0 btn 1 | Back |
+| `actionDefenseToggle` (press: defense mode on/off, section 2.8) | Y | - | - |
+| `actionHoodMax` (hold: hood at max angle, section 2.8) | RB | - | - |
 
-- Xbox LT, A and RT: team (2026-10-21). LB, Y, D-pad down and Back: defaults pending team confirmation.
+- Xbox LT, A and RT: team (2026-10-21). Y defense toggle, RB hood-max hold, X fixed shot: team (2026-10-22). LB,
+  D-pad down and Back: defaults pending team confirmation.
 - Driver controller: GameSir in XInput mode; the DS lists it as "Controller (Xbox 360 for Windows Controller)", so
   the WPILib `XboxController` map applies (A btn 1, LB 5, Back 7; LT / RT axes 2 / 3; right X axis 4; D-pad POV 0).
 - Xbox triggers count as pressed above `kXboxTriggerThreshold` (0.5, WPILib default).
@@ -111,7 +114,7 @@ Requirement (team, 2026-10-21): the shooter flywheel is never powered while the 
 | Fully down | `kReverseSoftLimit` (7 deg; bottom stop 6.837 deg) |
 | Stow angle | `kReverseSoftLimit` + `kStowMarginDeg` (2.0 deg since 2026-10-21: at 1.5 deg the hood still hit occasionally while idling, team; live `ShooterHood/Stow Margin (Deg)` in tuning mode, clamped 0.5-5) |
 | Hood down (`ShooterHood.isDown`) | measured angle below `kReverseSoftLimit` + half the stow margin |
-| Interlock (`Shooter`) | while the hood is down, every velocity/voltage request becomes `NeutralOut` (coast); `isAtVelocity` is false, so no feed. Running commands resume when the hood rises. Flywheel only; feeder, uptake and hopper are not interlocked. |
+| Interlock (`Shooter.outputInhibited`) | while the hood is down, every velocity/voltage request becomes `NeutralOut` (coast); `isAtVelocity` is false, so no feed. Running commands resume when the hood rises. Flywheel only; feeder, uptake and hopper are not interlocked. Since 2026-10-22 implemented through the `TalonFXSubsystem.outputInhibited` hook shared with defense mode (section 2.8). |
 | Rest angle (`ShooterHood.restAngle`) | auto: fully down (7457 paths pass the trench with it down); teleop: fully down inside a trench zone, else stow |
 | Trench zone (`FieldCalculations.inTrenchZone`) | robot center within trench depth / 2 + 1.0 m of either hub line in x, and within the trench opening width + 0.2 m of the side wall in y; all four trenches |
 | Teleop in a trench zone | aim, shoot and fixed-shot hood targets are replaced by fully down, so the hood cannot rise under a trench; the interlock then blocks the flywheel |
@@ -147,6 +150,19 @@ Requirement (team, 2026-10-21): while intaking only the intake runs (the shooter
 | aim (`actionAim`) | off | off | off | off | shot speed |
 | shoot (`actionShoot`, `auto_shoot`, `actionSetShot`) | in, 1700 RPM | runs once the shooter is at speed and in range (`auto_shoot`: at once) | shot speed once at speed and in range | shooter setpoint | shot speed |
 | purge (`actionPurge`) | out, -8 V | off | off | off | idle |
+
+### 2.8 Defense mode and hood-max hold
+
+Requirement (team, 2026-10-22): a toggle that makes the robot a drive base ("shut off the top CAN bus"), and a hold
+that raises the hood to its max angle, also in defense mode, and returns to normal operation on release.
+
+| Item | Definition |
+|---|---|
+| Toggle | Xbox Y (`actionDefenseToggle`, teleop); state `RobotStates.defenseMode`, dashboard `Defense Mode`, log `States/Defense`. Cleared when auto starts. Not mapped on the joysticks. |
+| Off in defense mode | Intake, Hopper, Feeder, Uptake, Shooter: every request becomes `NeutralOut` (`outputInhibited`, also applied each loop in `TalonFXSubsystem.periodic`). `actionIntake`, `actionAim`, `actionShoot`, `actionPurge`, `actionSetShot` are false, so there is no auto-aim heading control and no X-lock. |
+| Unchanged in defense mode | Drive, hood (stow, fully down in trench zones, zeroing), Limelight. The upper CANivore stays powered and read (software cannot power it off; the hood is on it). |
+| Hood-max hold | Xbox RB (`actionHoodMax`, teleop, also in defense mode): target `kForwardSoftLimit` (41.5 deg) replaces every teleop hood target while held (`ShooterHood.withMaxHold`); on release the running command's own target applies (aim angle while aiming, else rest angle). In a trench zone the hood stays fully down (team). |
+| Shooting while held | not blocked: aim + shoot with RB held fires at the max angle. |
 
 ## 3. Software changes vs. 7457
 
@@ -192,6 +208,8 @@ Requirement (team, 2026-10-21): while intaking only the intake runs (the shooter
 | 36 | From the `FRC_20261021_222140` analysis, first run after the repair sign-off (team approved 2026-10-21; both low confidence): Hopper supply limit 40 -> 36 A (limit reached 0.6% of enabled time, p99 36.7 A, targets pass with 30% margin); ShooterHood kP 800 -> 880 (settle p90 0.37 s against 0.30 s, overshoot p90 0.18 deg) | `Constants.java` |
 | 37 | Stow margin 1.5 -> 2.0 deg (rest angle 9.0 deg, hood-down threshold 8.0 deg): the hood still hit occasionally while idling (team, 2026-10-21) | `Constants.java` |
 | 38 | Shot speeds +10% (team, 2026-10-22: shots short around 3 m): `kLutRpmScale` 1.10 -> 1.21, `kForwardRpmScale` 1.0 -> 1.10, fixed set shot 1425 -> 1570 RPM (inline literal moved to `ShooterConstants.kSetShotRPM`); flywheel `kP` 0.25 -> 0.5 (section 4); hub hood angle at 2.5 m 17.5 -> 16.5 deg (team: angle a little too high on the 2.56 m shot; 2.56 m interpolates to 17.1 deg, was 17.9) | `Constants.java`, `Shooter.java` |
+| 39 | Defense mode (Xbox Y toggle) and hood-max hold (Xbox RB); fixed shot moved Y -> X (section 2.8). Refactor: one `outputInhibited` hook in `TalonFXSubsystem`/`VelocitySubsystem` replaces the three `Shooter` request overrides of the hood interlock and carries defense mode for five subsystems | `TalonFXSubsystem.java`, `VelocitySubsystem.java`, `Shooter.java`, `Intake.java`, `Hopper.java`, `Feeder.java`, `Uptake.java`, `ShooterHood.java`, `RobotStates.java`, `DriverControls.java`, `DriverXbox.java`, `DriverSticks.java`, `RobotContainer.java` |
+| 40 | Hub RPM table 1.75 / 2.0 / 2.25 m: 1340 / 1365 / 1390 -> 1300 / 1325 / 1370 (team, 2026-10-22: with x1.21 the 2.01-2.16 m volley in `FRC_20261022_221806` was a little long; 2.54 m and 2.88-3.02 m good). Effective at 2.0 m 1652 -> 1603 RPM. Analyzer proposal Feeder supply limit 40 -> 36 A (low) declined by the team | `Constants.java` |
 
 Notes:
 

@@ -63,10 +63,18 @@ public abstract class VelocitySubsystem extends TalonFXSubsystem {
     }
 
     protected void setVelocity(AngularVelocity angularvelocity) {
+        if (outputInhibited()) {
+            stop();
+            return;
+        }
         motor.setControl(velocityRequest.withVelocity(angularvelocity));
     }
 
     protected void setVelocity(double angularvelocity) {
+        if (outputInhibited()) {
+            stop();
+            return;
+        }
         motor.setControl(velocityRequest.withVelocity(angularvelocity));
     }
 

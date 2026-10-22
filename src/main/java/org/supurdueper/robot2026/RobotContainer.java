@@ -83,5 +83,9 @@ public class RobotContainer {
         RobotStates.teleop.onTrue(Commands.runOnce(HubShiftUtil::initialize));
         RobotStates.auto.onTrue(Commands.runOnce(HubShiftUtil::initialize));
         RobotStates.disabled.onTrue(Commands.runOnce(HubShiftUtil::initialize).ignoringDisable(true));
+        // Defense mode: toggled by the driver in teleop; autos always start with every mechanism available
+        RobotStates.actionDefenseToggle.onTrue(
+                Commands.runOnce(() -> RobotStates.setDefenseMode(!RobotStates.isDefenseMode())));
+        RobotStates.auto.onTrue(Commands.runOnce(() -> RobotStates.setDefenseMode(false)));
     }
 }

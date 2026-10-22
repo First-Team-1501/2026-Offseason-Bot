@@ -108,6 +108,12 @@ public class Intake extends VelocitySubsystem implements SupurdueperSubsystem {
         DogLog.log("Intake/Current", motor.getTorqueCurrent().getValue().in(Amps));
     }
 
+    /** Defense mode: neutral; the robot is a drive base. */
+    @Override
+    protected boolean outputInhibited() {
+        return RobotStates.isDefenseMode();
+    }
+
     @Override
     public void bindCommands() {
         RobotStates.actionIntake.or(RobotStates.auto_intake).whileTrue(runEnd(this::intake, this::stop));

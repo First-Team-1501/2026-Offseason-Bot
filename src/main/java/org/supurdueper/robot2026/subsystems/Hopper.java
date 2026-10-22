@@ -43,6 +43,12 @@ public class Hopper extends VelocitySubsystem implements SupurdueperSubsystem {
         DogLog.log("Hopper/Current", motor.getTorqueCurrent().getValue().in(Amps));
     }
 
+    /** Defense mode: neutral; the robot is a drive base. */
+    @Override
+    protected boolean outputInhibited() {
+        return RobotStates.isDefenseMode();
+    }
+
     @Override
     public CanId canIdLeader() {
         return CanId.INDEXER;

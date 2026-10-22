@@ -47,6 +47,12 @@ public class Uptake extends VelocitySubsystem implements SupurdueperSubsystem {
         DogLog.log("Uptake/Current", motor.getTorqueCurrent().getValue().in(Amps));
     }
 
+    /** Defense mode: neutral; the robot is a drive base. */
+    @Override
+    protected boolean outputInhibited() {
+        return RobotStates.isDefenseMode();
+    }
+
     public void test() {
         runVoltage(Volts.of(2));
     }

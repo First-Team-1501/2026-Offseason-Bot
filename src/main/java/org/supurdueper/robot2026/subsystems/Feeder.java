@@ -44,6 +44,12 @@ public class Feeder extends VelocitySubsystem implements SupurdueperSubsystem {
         DogLog.log("Feeder/Current", motor.getTorqueCurrent().getValue().in(Amps));
     }
 
+    /** Defense mode: neutral; the robot is a drive base. */
+    @Override
+    protected boolean outputInhibited() {
+        return RobotStates.isDefenseMode();
+    }
+
     public void test() {
         runVoltage(Volts.of(2));
     }

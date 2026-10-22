@@ -50,11 +50,31 @@ public abstract class TalonFXSubsystem extends SubsystemBase {
     }
 
     protected void runVoltage(Voltage volts) {
+        if (outputInhibited()) {
+            stop();
+            return;
+        }
         motor.setControl(voltageRequest.withOutput(volts));
     }
 
     protected void stop() {
         motor.setControl(stopRequest);
+    }
+
+    /**
+     * True while the motors must stay neutral (interlocks, defense mode). Output requests are replaced by NeutralOut;
+     * commands keep running and take effect again when this returns false.
+     */
+    protected boolean outputInhibited() {
+        return false;
+    }
+
+    @Override
+    public void periodic() {
+        // A command that ended leaves its last request active in the Talon
+        if (outputInhibited()) {
+            stop();
+        }
     }
 
     protected void configureMotors() {
