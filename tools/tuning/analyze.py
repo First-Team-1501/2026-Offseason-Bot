@@ -40,7 +40,7 @@ import tuning_paths as P  # noqa: E402
 import velocity as VE  # noqa: E402
 from fitstats import median  # noqa: E402
 
-ANALYZER_VERSION = '1.1.0'
+ANALYZER_VERSION = '1.1.1'
 ELIGIBILITY_JSON = os.path.join(P.TUNING_DIR, 'eligibility.json')
 LOAD_MECHS = ('Shooter', 'Feeder', 'Uptake', 'Hopper')
 
@@ -368,7 +368,8 @@ def pending_logs(all_logs=False):
     if pp and os.path.exists(pp):
         base = P.log_base_name(pp)
         complete = (man.get('files') or {}).get(base + '.wpilog')
-        if not complete:
+        # FRC_TBD_*: written before the DS time sync (wrong rio clock); renamed with its data once the DS connects
+        if not complete and not base.startswith('FRC_TBD_'):
             j = load_json(os.path.join(P.REPORT_JSON_DIR, base + '.json'), None)
             if all_logs or j is None or j.get('log', {}).get('size') != os.path.getsize(pp):
                 out.append(pp)

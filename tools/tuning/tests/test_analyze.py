@@ -16,6 +16,7 @@ sys.path.insert(0, HERE)
 
 import analyze  # noqa: E402
 import make_synthetic_log  # noqa: E402
+import pull  # noqa: E402
 import recommend  # noqa: E402
 import wpilog  # noqa: E402
 
@@ -179,6 +180,30 @@ class Reader(unittest.TestCase):
         self.assertEqual(z.at(3.9), 20)
         self.assertEqual(wpilog.resample([1.0, 2.0], [5, 6], [0.0, 1.0, 1.5, 3.0]), [None, 5, 5, 6])
         self.assertEqual(wpilog.intervals([0, 1, 2, 3], [0, 1, 1, 0], bool), [(1, 3)])
+
+
+class PullActiveLog(unittest.TestCase):
+    """Active-log selection from the two rio listings (name -> (size, mtime))."""
+    DATED = {'FRC_20261021_233824.wpilog': (1261796, 1792625938), 'FRC_20261021_233934.wpilog': (28315325, 1792626842)}
+    TBD = 'FRC_TBD_ed5101f53bdb309e.wpilog'
+    NOW_SYNCED = 1792626850
+    NOW_UNSYNCED = 1734531480   # rio clock 2024-12-18 after a boot without a DS time sync
+
+    def test_growing_tbd_log_with_unsynced_clock_is_active(self):
+        first = dict(self.DATED, **{self.TBD: (19792030, self.NOW_UNSYNCED - 2)})
+        second = dict(self.DATED, **{self.TBD: (19935042, self.NOW_UNSYNCED)})
+        self.assertEqual(pull.pick_active(first, second, self.NOW_UNSYNCED), self.TBD)
+
+    def test_dated_log_with_future_mtime_is_not_recent(self):
+        self.assertIsNone(pull.pick_active(self.DATED, dict(self.DATED), self.NOW_UNSYNCED))
+
+    def test_recent_unchanged_log_is_active(self):
+        self.assertEqual(pull.pick_active(self.DATED, dict(self.DATED), self.NOW_SYNCED), 'FRC_20261021_233934.wpilog')
+        self.assertIsNone(pull.pick_active(self.DATED, dict(self.DATED), self.NOW_SYNCED + 60))
+
+    def test_tbd_log_dated_by_laptop(self):
+        d = os.path.basename(pull.date_dir(self.TBD, self.NOW_UNSYNCED))
+        self.assertEqual(d, pull.dt.datetime.now().strftime('%Y-%m-%d'))
 
 
 if __name__ == '__main__':

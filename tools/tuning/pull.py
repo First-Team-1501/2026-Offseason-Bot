@@ -8,9 +8,11 @@ usage: py -3.14 -I pull.py [--host 10.15.1.2] [--dry-run] [--no-partial]
 3. Every complete file not in the manifest (name + size): adopt an identical local copy (same name and size in
    robot-logs\\<date>\\ or robot-logs-2026-10-17\\) or copy it with scp into robot-logs\\<local date of mtime>\\,
    verify the size, record it in manifest.json.
-4. The newest file, if still growing (size change between the listings or modified < 15 s ago), is the active
-   log: it is copied only as <name>.partial (updated each run by appending the new bytes; full copy on any
-   inconsistency) and never recorded as complete.
+4. The active log (size change between the listings, else modified 0-15 s before the rio clock) is copied only as
+   <name>.partial (updated each run by appending the new bytes; full copy on any inconsistency) and never recorded
+   as complete. After a boot without a DS time sync the rio clock is wrong (e.g. 2024-12-18) and DataLogManager
+   writes FRC_TBD_<hex>.wpilog, older by mtime than the dated logs; it renames the file once the DS syncs the time,
+   and the .partial of the old name is then removed.
 5. df -k use above 75% prints a warning (pulls continue).
 No command removes or modifies anything on the robot.
 Exit codes: 0 copied / nothing new, 2 robot unreachable, 1 error.
@@ -139,9 +141,22 @@ def save_manifest(m):
     P.atomic_write(P.MANIFEST, json.dumps(m, indent=1, sort_keys=True))
 
 
+def pick_active(first, second, rio_now):
+    """Name of the log being written, or None: a size change between the listings (newest mtime first), else the
+    newest file modified 0 to ACTIVE_AGE_S s before the rio clock. Negative ages (files written before the rio lost
+    its time) never count as recent."""
+    growing = [n for n, (size, _) in second.items() if first.get(n, (None, None))[0] != size]
+    if not growing and rio_now is not None:
+        growing = [n for n, (_, mtime) in second.items() if 0 <= rio_now - mtime < ACTIVE_AGE_S]
+    return max(growing, key=lambda n: second[n][1]) if growing else None
+
+
 def date_dir(name, mtime):
-    """robot-logs\\<YYYY-MM-DD> from the file mtime (local time); log name (UTC) or 'undated' as fallbacks."""
-    if mtime and mtime > 1.6e9:
+    """robot-logs\\<YYYY-MM-DD> from the file mtime (local time); log name (UTC) or 'undated' as fallbacks.
+    FRC_TBD_* logs were written without a time sync (mtime from the wrong rio clock): laptop date of the pull."""
+    if os.path.basename(name).startswith('FRC_TBD_'):
+        d = dt.datetime.now().strftime('%Y-%m-%d')
+    elif mtime and mtime > 1.6e9:
         d = dt.datetime.fromtimestamp(mtime).strftime('%Y-%m-%d')
     else:
         u = P.name_utc(name)
@@ -241,16 +256,18 @@ def main(argv=None):
         print('%s pull: WARNING rio disk %d%% used (> %d%%):\n%s' % (stamp, use, DISK_WARN_PCT, df_text))
     man = load_manifest()
     idx = local_index()
-    newest = max(second.items(), key=lambda kv: kv[1][1])[0] if second else None
-    active = None
-    if newest is not None:
-        s1 = first.get(newest, (None, None))[0]
-        s2, m2 = second[newest]
-        recent = rio_now is not None and rio_now - m2 < ACTIVE_AGE_S
-        if s1 != s2 or recent:
-            active = newest
+    active = pick_active(first, second, rio_now)
     copied = adopted = errors = 0
     partial_state = 'none'
+    old = man.get('partial') or {}
+    if old.get('name') and old['name'] not in second and old['name'] not in man['files']:
+        # renamed on the rio (FRC_TBD_* after the DS time sync): the new name is pulled in full or as the new .partial
+        print('%s pull: %s %s (no longer on the rio)' % (stamp, 'would remove' if a.dry_run else 'removed',
+                                                          old.get('path')))
+        if not a.dry_run:
+            _rm(old.get('path', ''))
+            man['partial'] = None
+            save_manifest(man)
     for name in sorted(second):
         size, mtime = second[name]
         if name == active:
