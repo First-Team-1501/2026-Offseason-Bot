@@ -139,8 +139,9 @@ public final class Constants {
                 .withSupplyCurrentLimitEnable(true);
         // VelocityVoltage gains, volts per mechanism rotation/sec. kS/kV fitted from the 2026-10-21 post-sign-off log
         // (FRC_20261021_211040, 913-1622 RPM, R^2 >= 0.995): kS 0.198-0.212, kV 0.1705-0.1713. kV 0.18 ran the flywheel
-        // 18-37 RPM fast. kP unchanged (per-ball recovery to within 25 RPM in 0.02-0.10 s; not current-limited).
-        public static final double kP = 0.25;
+        // 18-37 RPM fast. kP 0.25 -> 0.5 (2026-10-22, team): in the FRC_20261022_220137 volley the flywheel dipped
+        // 7-14% per ball while the loop applied only 4.6-5.0 V (stator peak 47 A of 50 A); shots came up short.
+        public static final double kP = 0.5;
         public static final double kS = 0.2;
         public static final double kV = 0.171;
         public static final double shooterGearRatio = 36.0 / 24.0;
@@ -150,11 +151,15 @@ public final class Constants {
         // 1.0 s target (2026-10-21). Verify spin-up and idle current in the next log.
         public static final AngularVelocity kIdleRPM = RPM.of(700);
         public static final AngularVelocity kRevRpm = RPM.of(1200);
+        // Shot speeds +10% on 2026-10-22 (team: shots short around 3 m): LUT scale 1.10 -> 1.21, forwarding scale
+        // 1.0 -> 1.10, fixed set shot 1425 -> 1570 RPM.
         // Multiplier on LookupTables.distanceToShooterRPM; adjustable live as SmartDashboard "Shooter/LUT RPM Scale".
-        public static final double kLutRpmScale = 1.10;
+        public static final double kLutRpmScale = 1.21;
         // Multiplier on LookupTables.distanceToForwardRPM; adjustable live as SmartDashboard "Shooter/Forward RPM
         // Scale".
-        public static final double kForwardRpmScale = 1.0;
+        public static final double kForwardRpmScale = 1.10;
+        // Fixed set shot (RobotStates.actionSetShot)
+        public static final AngularVelocity kSetShotRPM = RPM.of(1570);
         // Hub shots (drive stick 18) do not feed from farther than this; set from shot testing
         public static final double kMaxHubShotDistanceMeters = 4.0;
     }
@@ -302,7 +307,8 @@ public final class Constants {
             addPointToDistanceToShooterAngle(1.75, 13.5);
             addPointToDistanceToShooterAngle(2.0, 15.0);
             addPointToDistanceToShooterAngle(2.25, 16.5);
-            addPointToDistanceToShooterAngle(2.5, 17.5);
+            // 17.5 -> 16.5 (team, 2026-10-22: hood angle a little too high on the 2.56 m shot)
+            addPointToDistanceToShooterAngle(2.5, 16.5);
             addPointToDistanceToShooterAngle(2.75, 19.0);
             addPointToDistanceToShooterAngle(3.0, 21.0);
             addPointToDistanceToShooterAngle(3.25, 21.0);

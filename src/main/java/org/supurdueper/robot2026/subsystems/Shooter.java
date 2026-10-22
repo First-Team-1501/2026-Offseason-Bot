@@ -157,7 +157,7 @@ public class Shooter extends VelocitySubsystem implements SupurdueperSubsystem {
                 .or(RobotStates.actionShoot)
                 .or(RobotStates.actionSetShot)
                 .onFalse(goToVelocity(() -> ShooterConstants.kIdleRPM));
-        RobotStates.actionSetShot.whileTrue(goToVelocity(() -> RPM.of(1425)));
+        RobotStates.actionSetShot.whileTrue(goToVelocity(() -> ShooterConstants.kSetShotRPM));
         // RobotStates.testController.B.onTrue(goToVelocity(() -> RPM.of(500)));
         // RobotStates.testController.X.onTrue(goToVelocity(() -> RPM.of(1000)));
         // RobotStates.testController.Y.onTrue(goToVelocity(() -> RPM.of(2000)));

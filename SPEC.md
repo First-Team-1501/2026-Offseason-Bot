@@ -168,7 +168,7 @@ Requirement (team, 2026-10-21): while intaking only the intake runs (the shooter
 | 12 | Front = intake end; offsets measured in Tuner X with the shooter end as front, each kept with its module | `CanId.java`, `TunerConstants.java` |
 | 13 | Auto-aim heading in field frame (`TargetDirectionPerspective.BlueAlliance`); `AutoAim/Error` correct on red | `AutoAim.java` |
 | 14 | Forwarding: outside our zone, aim at a point in our zone and use `distanceToForwardRPM` / `Angle` (untuned) and uptake 2000 RPM | `FieldCalculations.java`, `AutoAim.java`, `Shooter.java`, `ShooterHood.java`, `Uptake.java`, `Constants.java` |
-| 15 | Live RPM multipliers: SmartDashboard `Shooter/LUT RPM Scale` (default 1.10 since `3832fc4`; 1.20 before), `Shooter/Forward RPM Scale` (1.0) | `Shooter.java`, `Constants.java` |
+| 15 | Live RPM multipliers: SmartDashboard `Shooter/LUT RPM Scale` (default 1.21 since row 38; 1.10 since `3832fc4`; 1.20 before), `Shooter/Forward RPM Scale` (1.10 since row 38; 1.0 before) | `Shooter.java`, `Constants.java` |
 | 16 | Vision: NT flush, MT2 gates, MegaTag1 heading seed while disabled, camera-pose check, telemetry; disabled throttle 50 | `Vision.java`, `Robot.java` |
 | 17 | Intake runs inward at 1700 RPM while shooting (7457: full intake speed); sign corrected in row 34 | `Intake.java`, `Constants.java` |
 | 18 | Build info logged 1 s into the main loop and on auto/teleop init (the data log is paused during the >10 s robot construction, so robotInit values never reached it) | `Robot.java` |
@@ -191,6 +191,7 @@ Requirement (team, 2026-10-21): while intaking only the intake runs (the shooter
 | 35 | [R] Only the intake runs while intaking (section 2.7): hopper agitation (+0.5 V) and uptake reverse (-6 V) on `actionIntake` removed. Feeder: periodic state machine (`FeedState`) replaced by a `feed()` command (shooter setpoint) held while shooting, NeutralOut at the end. 7457 fed on aim or shoot and then idled at 500 RPM indefinitely; its `stop` state built a command in `periodic` and discarded it, so the feeder kept its last request. Unused `FeederConstants` feed, purge and idle velocities removed | `Feeder.java`, `Hopper.java`, `Uptake.java`, `Constants.java` |
 | 36 | From the `FRC_20261021_222140` analysis, first run after the repair sign-off (team approved 2026-10-21; both low confidence): Hopper supply limit 40 -> 36 A (limit reached 0.6% of enabled time, p99 36.7 A, targets pass with 30% margin); ShooterHood kP 800 -> 880 (settle p90 0.37 s against 0.30 s, overshoot p90 0.18 deg) | `Constants.java` |
 | 37 | Stow margin 1.5 -> 2.0 deg (rest angle 9.0 deg, hood-down threshold 8.0 deg): the hood still hit occasionally while idling (team, 2026-10-21) | `Constants.java` |
+| 38 | Shot speeds +10% (team, 2026-10-22: shots short around 3 m): `kLutRpmScale` 1.10 -> 1.21, `kForwardRpmScale` 1.0 -> 1.10, fixed set shot 1425 -> 1570 RPM (inline literal moved to `ShooterConstants.kSetShotRPM`); flywheel `kP` 0.25 -> 0.5 (section 4); hub hood angle at 2.5 m 17.5 -> 16.5 deg (team: angle a little too high on the 2.56 m shot; 2.56 m interpolates to 17.1 deg, was 17.9) | `Constants.java`, `Shooter.java` |
 
 Notes:
 
@@ -204,7 +205,11 @@ Notes:
 ## 4. Kraken X60 flywheel gains
 
 - Control: `VelocityVoltage`, FOC off (7457: `VelocityTorqueCurrentFOC` bang-bang, `kP` 99999). Gains in V
-  per mechanism rot/s: `kP` 0.25, `kS` 0.2, `kV` 0.171.
+  per mechanism rot/s: `kP` 0.5 (0.25 until 2026-10-22), `kS` 0.2, `kV` 0.171.
+- 2026-10-22 `kP` 0.25 -> 0.5 (team approved): in the `FRC_20261022_220137` volley (2.56 m, 1563 RPM, 10 balls) the
+  flywheel dipped 7-14% per ball, 90% recovery p90 0.42 s, while the loop applied only 4.6-5.0 V (stator peak 47 A of
+  50 A; battery 7.2-10 V). Closed-loop time constant with `kA` 0.0214: about 32 ms. Verify dips, recovery, stator-limit
+  time and battery minimum in the next volley log.
 - 2026-10-21 refit (first post-sign-off log `FRC_20261021_211040`, 913-1622 RPM, two independent fits, R^2 >= 0.995):
   `kS` 0.198-0.212 (unchanged), `kV` 0.1705-0.1713 (was 0.18; the flywheel ran 18-37 RPM fast). `kP` unchanged:
   per-ball dips of 55-203 RPM recovered to within 25 RPM in 0.02-0.10 s, stator limit reached in under 2% of feeding.
@@ -218,7 +223,7 @@ Notes:
 - Feeding waits for `Shooter/At Velocity`: at least 1000 RPM and within 100 RPM of target.
 - Unchanged: `kMaxAmps` 50 A stator limit, supply limit 40 A, ratio 36:24, distance LUTs (7457 values).
 - X60 free speed approx. 6000 RPM -> flywheel limit approx. 4000 RPM at 1.5:1; LUT maximum 2075 RPM
-  (2283 RPM with the 1.10 multiplier).
+  (2511 RPM with the 1.21 multiplier).
 
 ## 5. Bring-up checklist
 
