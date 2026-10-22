@@ -210,6 +210,7 @@ that raises the hood to its max angle, also in defense mode, and returns to norm
 | 38 | Shot speeds +10% (team, 2026-10-22: shots short around 3 m): `kLutRpmScale` 1.10 -> 1.21, `kForwardRpmScale` 1.0 -> 1.10, fixed set shot 1425 -> 1570 RPM (inline literal moved to `ShooterConstants.kSetShotRPM`); flywheel `kP` 0.25 -> 0.5 (section 4); hub hood angle at 2.5 m 17.5 -> 16.5 deg (team: angle a little too high on the 2.56 m shot; 2.56 m interpolates to 17.1 deg, was 17.9) | `Constants.java`, `Shooter.java` |
 | 39 | Defense mode (Xbox Y toggle) and hood-max hold (Xbox RB); fixed shot moved Y -> X (section 2.8). Refactor: one `outputInhibited` hook in `TalonFXSubsystem`/`VelocitySubsystem` replaces the three `Shooter` request overrides of the hood interlock and carries defense mode for five subsystems | `TalonFXSubsystem.java`, `VelocitySubsystem.java`, `Shooter.java`, `Intake.java`, `Hopper.java`, `Feeder.java`, `Uptake.java`, `ShooterHood.java`, `RobotStates.java`, `DriverControls.java`, `DriverXbox.java`, `DriverSticks.java`, `RobotContainer.java` |
 | 40 | Hub RPM table 1.75 / 2.0 / 2.25 m: 1340 / 1365 / 1390 -> 1300 / 1325 / 1370 (team, 2026-10-22: with x1.21 the 2.01-2.16 m volley in `FRC_20261022_221806` was a little long; 2.54 m and 2.88-3.02 m good). Effective at 2.0 m 1652 -> 1603 RPM. Analyzer proposal Feeder supply limit 40 -> 36 A (low) declined by the team | `Constants.java` |
+| 41 | From `FRC_20261022_222753` (485ecea; team feedback and team approval of the run's gain proposals except the Intake, 2026-10-22): hub RPM table 1.75 / 2.0 m 1300 / 1325 -> 1280 / 1305 (1.70 m, the closest shot, and 2.0 m still a little long); hood angle 2.5 m 16.5 -> 17.5, 3.0-4.75 m 21.0 -> 22.5 (5.0-5.25 m stay 22.0, 6.0 m 30.0; 1.75-2.25 m confirmed good); swerve drive `driveGains` kS 0 -> 0.2117 (low, CI +/- 0.047), kV 0.124 -> 0.1135 (medium, CI +/- 0.0026), closed-loop drive only (autos, DriveToPose). Current-limit proposals of that run (Feeder 40 -> 36 A, Hopper 36 -> 32.4 A) not applied | `Constants.java`, `TunerConstants.java` |
 
 Notes:
 
@@ -308,6 +309,13 @@ Notes:
 - `FieldConstants.fieldType` = `WELDED`; set per event field.
 - Phoenix 6 vendordep 26.3.0; TalonFX firmware 26.3.0.0.
 - `Climber` retained, not constructed; climber triggers bound to `Gamepad.kFalse`.
+- Intake output dropout (`FRC_20261022_222753`, 2026-10-22): at log t 236.8-242.5 s and from 250 s, leader 6 (and
+  follower 7) reported 0 V, 0 A and 0 RPM while the device reported `VelocityVoltage` (4000 RPM) or `VoltageOut`
+  (purge, -8 V); at 242.6-249.8 s it ran normally. No robot-code path cuts the output and the console has no CTRE
+  error; Talon fault signals are not logged. Before it: repeated stalls at the 70 A stator limit (motor 6 to 66 C,
+  one -167.9 A stator sample). Cause open: check motor 6 sticky faults in Tuner X.
+- The intake runs inward at 1700 RPM while shooting (section 2.7); in `FRC_20261022_222753` it was stalled for 10.0 s
+  of 15.1 s of shooting (mean 57.5 A) and 18 s of 83 s of intaking.
 
 ## 8. Tuning telemetry and continuous tuning
 

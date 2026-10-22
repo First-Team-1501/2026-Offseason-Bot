@@ -307,24 +307,26 @@ public final class Constants {
             addPointToDistanceToShooterAngle(1.75, 13.5);
             addPointToDistanceToShooterAngle(2.0, 15.0);
             addPointToDistanceToShooterAngle(2.25, 16.5);
-            // 17.5 -> 16.5 (team, 2026-10-22: hood angle a little too high on the 2.56 m shot)
-            addPointToDistanceToShooterAngle(2.5, 16.5);
+            // Team, 2026-10-22 (1.75-2.0 m angles confirmed good): 2.5 m 17.5 -> 16.5 (a little high on the 2.56 m
+            // shot), then 17.5 (a little low at 2.52-2.57 m); 3.0-4.75 m 21.0 -> 22.5 (3.0 m needs more angle)
+            addPointToDistanceToShooterAngle(2.5, 17.5);
             addPointToDistanceToShooterAngle(2.75, 19.0);
-            addPointToDistanceToShooterAngle(3.0, 21.0);
-            addPointToDistanceToShooterAngle(3.25, 21.0);
-            addPointToDistanceToShooterAngle(3.5, 21.0);
-            addPointToDistanceToShooterAngle(3.75, 21.0);
-            addPointToDistanceToShooterAngle(4.0, 21.0);
-            addPointToDistanceToShooterAngle(4.25, 21.0);
-            addPointToDistanceToShooterAngle(4.5, 21.0);
-            addPointToDistanceToShooterAngle(4.75, 21.0);
+            addPointToDistanceToShooterAngle(3.0, 22.5);
+            addPointToDistanceToShooterAngle(3.25, 22.5);
+            addPointToDistanceToShooterAngle(3.5, 22.5);
+            addPointToDistanceToShooterAngle(3.75, 22.5);
+            addPointToDistanceToShooterAngle(4.0, 22.5);
+            addPointToDistanceToShooterAngle(4.25, 22.5);
+            addPointToDistanceToShooterAngle(4.5, 22.5);
+            addPointToDistanceToShooterAngle(4.75, 22.5);
             addPointToDistanceToShooterAngle(5, 22.0);
             addPointToDistanceToShooterAngle(5.25, 22.0);
             addPointToDistanceToShooterAngle(6, 30.0);
 
-            // 1.75-2.25 m about -3% (team, 2026-10-22: 2.0 m volley a little long at x1.21; was 1340, 1365, 1390)
-            addPointToDistanceToShooterRPM(1.75, 1300);
-            addPointToDistanceToShooterRPM(2.0, 1325);
+            // Team, 2026-10-22, at x1.21: 1.75-2.25 m about -3% (2.0 m volley a little long; was 1340, 1365, 1390),
+            // then 1.75 and 2.0 m -1.5% (1.70 m, the closest shot, and 2.0 m still a little long; were 1300, 1325)
+            addPointToDistanceToShooterRPM(1.75, 1280);
+            addPointToDistanceToShooterRPM(2.0, 1305);
             addPointToDistanceToShooterRPM(2.25, 1370);
             addPointToDistanceToShooterRPM(2.5, 1415);
             addPointToDistanceToShooterRPM(2.75, 1440);

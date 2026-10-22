@@ -35,8 +35,10 @@ public class TunerConstants {
     // output type specified by SwerveModuleConstants.DriveMotorClosedLoopOutput
 
     // TODO: Retune for TorqueCurrentFOC. Should only need kP and kS
+    // kS 0 -> 0.2117 (low confidence, CI +/- 0.047), kV 0.124 -> 0.1135 (medium, CI +/- 0.0026): pooled drive FF fit
+    // from FRC_20261022_222753, 9 windows, -446 to 1607 rotor RPM, R^2 0.9995 (team approved 2026-10-22)
     private static final Slot0Configs driveGains =
-            new Slot0Configs().withKP(0.1).withKI(0).withKD(0).withKS(0).withKV(0.124);
+            new Slot0Configs().withKP(0.1).withKI(0).withKD(0).withKS(0.2117).withKV(0.1135);
 
     // The closed-loop output type to use for the steer motors;
     // This affects the PID/FF gains for the steer motors
