@@ -160,8 +160,8 @@ public final class Constants {
         public static final double kForwardRpmScale = 1.10;
         // Fixed set shot (RobotStates.actionSetShot)
         public static final AngularVelocity kSetShotRPM = RPM.of(1570);
-        // Hub shots (drive stick 18) do not feed from farther than this; set from shot testing
-        public static final double kMaxHubShotDistanceMeters = 4.0;
+        // Hub shots do not feed from farther than this (4.0 placeholder until 2026-10-22; team: 5.0 m max shot)
+        public static final double kMaxHubShotDistanceMeters = 5.0;
     }
 
     public class HopperConstants {
@@ -307,28 +307,30 @@ public final class Constants {
             addPointToDistanceToShooterAngle(1.75, 13.5);
             addPointToDistanceToShooterAngle(2.0, 15.0);
             addPointToDistanceToShooterAngle(2.25, 16.5);
-            // Team, 2026-10-22 (1.75-2.0 m angles confirmed good): 2.5 m 17.5 -> 16.5 (a little high on the 2.56 m
-            // shot), then 17.5 (a little low at 2.52-2.57 m); 3.0-4.75 m 21.0 -> 22.5 (3.0 m needs more angle)
+            // Team, 2026-10-22 (1.75-2.5 m angles confirmed good): 2.5 m 17.5 -> 16.5 -> 17.5; 3.0 m 21.0 -> 22.5 ->
+            // 24.0 (still needs more), 3.5 m 21.0 -> 22.5 -> 26.5 (needs a lot more), 5.0 m (max hub shot) fully
+            // extended; 3.25 m and 3.75-4.75 m linear between them (untested)
             addPointToDistanceToShooterAngle(2.5, 17.5);
             addPointToDistanceToShooterAngle(2.75, 19.0);
-            addPointToDistanceToShooterAngle(3.0, 22.5);
-            addPointToDistanceToShooterAngle(3.25, 22.5);
-            addPointToDistanceToShooterAngle(3.5, 22.5);
-            addPointToDistanceToShooterAngle(3.75, 22.5);
-            addPointToDistanceToShooterAngle(4.0, 22.5);
-            addPointToDistanceToShooterAngle(4.25, 22.5);
-            addPointToDistanceToShooterAngle(4.5, 22.5);
-            addPointToDistanceToShooterAngle(4.75, 22.5);
-            addPointToDistanceToShooterAngle(5, 22.0);
+            addPointToDistanceToShooterAngle(3.0, 24.0);
+            addPointToDistanceToShooterAngle(3.25, 25.25);
+            addPointToDistanceToShooterAngle(3.5, 26.5);
+            addPointToDistanceToShooterAngle(3.75, 29.0);
+            addPointToDistanceToShooterAngle(4.0, 31.5);
+            addPointToDistanceToShooterAngle(4.25, 34.0);
+            addPointToDistanceToShooterAngle(4.5, 36.5);
+            addPointToDistanceToShooterAngle(4.75, 39.0);
+            addPointToDistanceToShooterAngle(5, ShooterHoodConstants.kForwardSoftLimit.in(Degrees));
             addPointToDistanceToShooterAngle(5.25, 22.0);
             addPointToDistanceToShooterAngle(6, 30.0);
 
-            // Team, 2026-10-22, at x1.21: 1.75-2.25 m about -3% (2.0 m volley a little long; was 1340, 1365, 1390),
-            // then 1.75 and 2.0 m -1.5% (1.70 m, the closest shot, and 2.0 m still a little long; were 1300, 1325)
-            addPointToDistanceToShooterRPM(1.75, 1280);
-            addPointToDistanceToShooterRPM(2.0, 1305);
-            addPointToDistanceToShooterRPM(2.25, 1370);
-            addPointToDistanceToShooterRPM(2.5, 1415);
+            // Team, 2026-10-22, at x1.21 (7457 values 1340, 1365, 1390, 1415): 1.75-2.25 m -3% (2.0 m long), 1.75 and
+            // 2.0 m -1.5% (1.70 and 2.0 m a little long), then 1.75 m -1%, 2.0 m -1.5%, 2.25 m -3% (2.28 m: about 30%
+            // of the balls long), 2.5 m -1.5% (2.48 m a little long)
+            addPointToDistanceToShooterRPM(1.75, 1267);
+            addPointToDistanceToShooterRPM(2.0, 1285);
+            addPointToDistanceToShooterRPM(2.25, 1330);
+            addPointToDistanceToShooterRPM(2.5, 1395);
             addPointToDistanceToShooterRPM(2.75, 1440);
             addPointToDistanceToShooterRPM(3.0, 1475);
             addPointToDistanceToShooterRPM(3.25, 1550);
