@@ -321,8 +321,9 @@ public final class Constants {
             addPointToDistanceToShooterAngle(4.5, 36.5);
             addPointToDistanceToShooterAngle(4.75, 39.0);
             addPointToDistanceToShooterAngle(5, ShooterHoodConstants.kForwardSoftLimit.in(Degrees));
-            addPointToDistanceToShooterAngle(5.25, 22.0);
-            addPointToDistanceToShooterAngle(6, 30.0);
+            // Beyond the max hub shot (aim tracking, auto, manual): fully extended (were 22.0 and 30.0)
+            addPointToDistanceToShooterAngle(5.25, ShooterHoodConstants.kForwardSoftLimit.in(Degrees));
+            addPointToDistanceToShooterAngle(6, ShooterHoodConstants.kForwardSoftLimit.in(Degrees));
 
             // Team, 2026-10-22, at x1.21 (7457 values 1340, 1365, 1390, 1415): 1.75-2.25 m -3% (2.0 m long), 1.75 and
             // 2.0 m -1.5% (1.70 and 2.0 m a little long), then 1.75 m -1%, 2.0 m -1.5%, 2.25 m -3% (2.28 m: about 30%
