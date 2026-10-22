@@ -115,8 +115,10 @@ public final class Constants {
         // The flywheel must not be powered with the hood fully down. Rest (stow) angle is kReverseSoftLimit plus this
         // margin; below kReverseSoftLimit plus half the margin the hood counts as down and the flywheel is unpowered
         // (ShooterHood.isDown). Adjustable live in tuning mode as "ShooterHood/Stow Margin (Deg)", clamped below.
-        // 1.5 -> 2.0: the hood still hit occasionally while idling (team, 2026-10-21)
-        public static final double kStowMarginDeg = 2.0;
+        // 1.5 -> 2.0: the hood still hit occasionally while idling (team, 2026-10-21). 2.0 -> 4.0: with the zero
+        // against the bottom stop (row 44 of SPEC section 3) the hood rubs at 2.0 (team, 2026-10-22; idle follower
+        // current 11.9 A vs 6.5 A); earlier the boot zero left the real stow higher than the reading
+        public static final double kStowMarginDeg = 4.0;
         public static final double kMinStowMarginDeg = 0.5;
         public static final double kMaxStowMarginDeg = 5.0;
         public static final Voltage kPeakForwardVoltage = Volts.of(12);
