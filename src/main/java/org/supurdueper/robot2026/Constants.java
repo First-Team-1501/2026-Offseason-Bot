@@ -122,6 +122,15 @@ public final class Constants {
         public static final Voltage kPeakForwardVoltage = Volts.of(12);
         public static final Voltage kPeakReverseVoltage = Volts.of(-12);
         public static final Angle kZeroPosition = Degrees.of(6.837);
+        // Zeroing (ShooterHood.zero): drive down at kZeroVoltage until the hood is stalled on the bottom stop (|stator|
+        // above kZeroStallCurrentAmps, below the 50 A limit, and |velocity| under kZeroStallVelocityDegPerSec for
+        // kZeroStallTimeSec; the start-up current spike is shorter), at most kZeroTimeoutSec. The stator current is
+        // signed by direction: negative while driving down.
+        public static final Voltage kZeroVoltage = Volts.of(-3);
+        public static final double kZeroStallCurrentAmps = 40.0;
+        public static final double kZeroStallVelocityDegPerSec = 2.0;
+        public static final double kZeroStallTimeSec = 0.2;
+        public static final double kZeroTimeoutSec = 2.5;
         public static final CurrentLimitsConfigs kCurrentLimit =
                 new CurrentLimitsConfigs().withStatorCurrentLimit(50).withStatorCurrentLimitEnable(true);
         public static final AngularVelocity profileV = RotationsPerSecond.of(0);

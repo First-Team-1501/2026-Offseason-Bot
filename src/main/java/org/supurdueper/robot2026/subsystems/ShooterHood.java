@@ -18,9 +18,12 @@ import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.signals.GravityTypeValue;
 import dev.doglog.DogLog;
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.filter.Debouncer;
+import edu.wpi.first.math.filter.Debouncer.DebounceType;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import org.supurdueper.lib.LoggedTunableNumber;
 import org.supurdueper.lib.subsystems.PositionSubsystem;
@@ -39,6 +42,9 @@ public class ShooterHood extends PositionSubsystem implements SupurdueperSubsyst
             new LoggedTunableNumber("ShooterHood/Stow Margin (Deg)", ShooterHoodConstants.kStowMarginDeg);
 
     private PositionVoltage noMagicMotion = new PositionVoltage(0).withEnableFOC(false);
+    private final Debouncer bottomStall = new Debouncer(ShooterHoodConstants.kZeroStallTimeSec, DebounceType.kRising);
+    private boolean zeroedSinceStart = false;
+    private boolean stallDetected = false;
 
     /** Creates a new ShooterHood. */
     public ShooterHood() {
@@ -68,14 +74,52 @@ public class ShooterHood extends PositionSubsystem implements SupurdueperSubsyst
         return goToPosition(() -> Degrees.of(20));
     }
 
-    /** Drives to the bottom stop (the flywheel interlock cuts the shooter there), re-zeroes, then returns to rest. */
+    /**
+     * Drives to the bottom stop (the flywheel interlock cuts the shooter there) and re-zeroes; the default command then
+     * returns the hood to rest. Without a detected stall (timeout or interruption) the zero is left unchanged.
+     */
     public Command zero() {
-        return run(() -> motor.setControl(voltageRequest.withOutput(-3).withIgnoreSoftwareLimits(true)))
-                .until(() -> motor.getStatorCurrent().getValueAsDouble() > 50.0)
-                .andThen(runOnce(
-                        () -> motor.setControl(voltageRequest.withOutput(0).withIgnoreSoftwareLimits(false))))
-                .andThen(runOnce(() -> motor.setPosition(ShooterHoodConstants.kZeroPosition)))
-                .andThen(goToPosition(() -> withMaxHold(restAngle())));
+        return startRun(
+                        () -> {
+                            bottomStall.calculate(false);
+                            stallDetected = false;
+                        },
+                        () -> motor.setControl(voltageRequest
+                                .withOutput(ShooterHoodConstants.kZeroVoltage)
+                                .withIgnoreSoftwareLimits(true)))
+                .until(this::stalledOnBottomStop)
+                .withTimeout(ShooterHoodConstants.kZeroTimeoutSec)
+                .finallyDo(() -> motor.setControl(voltageRequest.withOutput(0).withIgnoreSoftwareLimits(false)))
+                .andThen(runOnce(() -> {
+                    if (stallDetected) {
+                        motor.setPosition(ShooterHoodConstants.kZeroPosition);
+                        zeroedSinceStart = true;
+                    }
+                    DogLog.log("ShooterHood/Zeroed", zeroedSinceStart);
+                }))
+                .withName("ShooterHood/zero");
+    }
+
+    /**
+     * The constructor zero assumes the hood rests on its bottom stop when the code starts (deploy, reboot); a deploy
+     * with the hood raised offsets every angle. The first enable after a start zeroes against the stop.
+     */
+    public void zeroIfNeeded() {
+        if (!zeroedSinceStart) {
+            CommandScheduler.getInstance().schedule(zero());
+        }
+    }
+
+    private boolean isStalledNow() {
+        return Math.abs(motor.getStatorCurrent().getValueAsDouble()) > ShooterHoodConstants.kZeroStallCurrentAmps
+                && Math.abs(motor.getVelocity().getValueAsDouble() * 360.0)
+                        < ShooterHoodConstants.kZeroStallVelocityDegPerSec;
+    }
+
+    /** Latched for the step after the drive-down ends (its output is 0 V by then). */
+    private boolean stalledOnBottomStop() {
+        stallDetected = bottomStall.calculate(isStalledNow());
+        return stallDetected;
     }
 
     @Override
@@ -212,7 +256,9 @@ public class ShooterHood extends PositionSubsystem implements SupurdueperSubsyst
 
     @Override
     public void bindCommands() {
-        RobotStates.teleop.onTrue(goToPosition(() -> withMaxHold(restAngle())));
+        // Default command, not teleop.onTrue: bindings are re-created in teleopInit while teleop is already true, so an
+        // onTrue on the mode never fired and the hood stayed where it booted until the first aim
+        setDefaultCommand(goToPosition(() -> withMaxHold(restAngle())).withName("ShooterHood/rest"));
         RobotStates.actionAim
                 .or(RobotStates.actionShoot)
                 .or(RobotStates.auto_aim)

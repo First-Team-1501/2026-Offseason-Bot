@@ -28,7 +28,6 @@ import org.supurdueper.robot2026.subsystems.Vision;
 import org.supurdueper.robot2026.utils.FieldConstants;
 
 public class Robot extends SupurdueperRobot {
-    @SuppressWarnings("unused")
     private final RobotContainer m_robotContainer;
 
     /* Path follower */
@@ -170,6 +169,7 @@ public class Robot extends SupurdueperRobot {
         Vision.setEnabled();
         Vision.setAprilTagFilter();
         Vision.updateIMUMode();
+        RobotContainer.getShooterHood().zeroIfNeeded();
         autoChooser.selectedCommandScheduler().schedule();
     }
 
@@ -186,6 +186,7 @@ public class Robot extends SupurdueperRobot {
         Vision.setEnabled();
         Vision.setAprilTagFilter();
         Vision.updateIMUMode();
+        RobotContainer.getShooterHood().zeroIfNeeded();
     }
 
     @Override
@@ -219,5 +220,7 @@ public class Robot extends SupurdueperRobot {
 
         // Bind Triggers for all subsystems
         bindCommands();
+        // RobotContainer bindings (defense toggle, hub shift reset) live in the same loop and were lost here before
+        m_robotContainer.configureBindings();
     }
 }
