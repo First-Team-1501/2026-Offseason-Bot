@@ -318,6 +318,11 @@ Notes:
   (purge, -8 V); at 242.6-249.8 s it ran normally. No robot-code path cuts the output and the console has no CTRE
   error; Talon fault signals are not logged. Before it: repeated stalls at the 70 A stator limit (motor 6 to 66 C,
   one -167.9 A stator sample). Cause open: check motor 6 sticky faults in Tuner X.
+- Hood drive is a belt (team, 2026-10-22); the only position sensor is the motor's rotor encoder, before the belt.
+  A belt skip (driving into a stop: `FRC_20261022_231219`; possibly the 1.81 m incident in `FRC_20261022_225552`)
+  shifts the real angle against the reading without any sign in the logs. The normal stator limit (50 A) is enough
+  to skip it against a stop. Zeroing (row 44) uses a 5 A limit. Remedy without zeroing: an absolute sensor on the
+  hood pivot (CANcoder as `RemoteCANcoder` feedback, no Phoenix Pro needed) measures the hood after the belt.
 - Trigger bindings are re-created in `teleopInit` and `testInit` (`resetCommandsAndButtons`). WPILib 2026 `Trigger`
   reads the condition when a binding is created, so `onTrue`/`whileTrue` on a condition already true at that moment
   (for example `RobotStates.teleop`, or a button held through the mode change) does not fire. Use default commands or
