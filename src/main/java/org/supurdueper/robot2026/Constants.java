@@ -321,22 +321,26 @@ public final class Constants {
         }
 
         static {
-            addPointToDistanceToShooterAngle(1.75, 13.5);
-            addPointToDistanceToShooterAngle(2.0, 15.0);
-            addPointToDistanceToShooterAngle(2.25, 16.5);
-            // Team, 2026-10-22 (1.75-2.5 m angles confirmed good): 2.5 m 17.5 -> 16.5 -> 17.5; 3.0 m 21.0 -> 22.5 ->
-            // 24.0 (still needs more), 3.5 m 21.0 -> 22.5 -> 26.5 (needs a lot more), 5.0 m (max hub shot) fully
-            // extended; 3.25 m and 3.75-4.75 m linear between them (untested)
-            addPointToDistanceToShooterAngle(2.5, 17.5);
-            addPointToDistanceToShooterAngle(2.75, 19.0);
-            addPointToDistanceToShooterAngle(3.0, 24.0);
-            addPointToDistanceToShooterAngle(3.25, 25.25);
-            addPointToDistanceToShooterAngle(3.5, 26.5);
-            addPointToDistanceToShooterAngle(3.75, 29.0);
-            addPointToDistanceToShooterAngle(4.0, 31.5);
-            addPointToDistanceToShooterAngle(4.25, 34.0);
-            addPointToDistanceToShooterAngle(4.5, 36.5);
-            addPointToDistanceToShooterAngle(4.75, 39.0);
+            // 2026-10-23: the 2026-10-22 angles were tuned with an inconsistent boot zero (real angle above the
+            // reading by an unknown, varying amount). With the bottom-stop zero (SPEC row 44) the whole table shifts
+            // by one offset; the 1.8 m shot wants basically no hood (team), so 1.75 m is the stow angle (11.0 =
+            // kReverseSoftLimit + kStowMarginDeg) and every tuned point moves -2.5 deg (best guess: verify per
+            // station). 3.75-4.75 m re-derived as a linear ramp from 3.5 m to fully extended at 5.0 m (untested).
+            addPointToDistanceToShooterAngle(1.75, 11.0);
+            addPointToDistanceToShooterAngle(2.0, 12.5);
+            addPointToDistanceToShooterAngle(2.25, 14.0);
+            // Team, 2026-10-22 (before the -2.5 shift): 2.5 m 17.5 -> 16.5 -> 17.5; 3.0 m 21.0 -> 22.5 -> 24.0 (still
+            // needs more), 3.5 m 21.0 -> 22.5 -> 26.5 (needs a lot more), 5.0 m (max hub shot) fully extended
+            addPointToDistanceToShooterAngle(2.5, 15.0);
+            addPointToDistanceToShooterAngle(2.75, 16.5);
+            addPointToDistanceToShooterAngle(3.0, 21.5);
+            addPointToDistanceToShooterAngle(3.25, 22.75);
+            addPointToDistanceToShooterAngle(3.5, 24.0);
+            addPointToDistanceToShooterAngle(3.75, 26.9);
+            addPointToDistanceToShooterAngle(4.0, 29.8);
+            addPointToDistanceToShooterAngle(4.25, 32.7);
+            addPointToDistanceToShooterAngle(4.5, 35.7);
+            addPointToDistanceToShooterAngle(4.75, 38.6);
             addPointToDistanceToShooterAngle(5, ShooterHoodConstants.kForwardSoftLimit.in(Degrees));
             // Beyond the max hub shot (aim tracking, auto, manual): fully extended (were 22.0 and 30.0)
             addPointToDistanceToShooterAngle(5.25, ShooterHoodConstants.kForwardSoftLimit.in(Degrees));
