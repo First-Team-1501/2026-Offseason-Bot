@@ -109,8 +109,9 @@ public final class Constants {
         public static final double kg = 0;
         public static final double profileKa = 0;
         public static final double profileKv = 0;
-        // Measured top of travel on the 1501 hood (Tuner X position, current conversion): 0.115234 rot = 41.5 deg
-        public static final Angle kForwardSoftLimit = Rotations.of(0.115234);
+        // Top of travel on the 1501 hood, measured 2026-10-23 after the bottom-stop zero (team): 0.111572 rot =
+        // 40.17 deg. The earlier 0.115234 rot (41.48 deg) was read with an unknown zero and sat above the stop.
+        public static final Angle kForwardSoftLimit = Rotations.of(0.111572);
         public static final Angle kReverseSoftLimit = Degrees.of(7);
         // The flywheel must not be powered with the hood fully down. Rest (stow) angle is kReverseSoftLimit plus this
         // margin; below kReverseSoftLimit plus half the margin the hood counts as down and the flywheel is unpowered
@@ -327,7 +328,8 @@ public final class Constants {
             // reading by an unknown, varying amount). With the bottom-stop zero (SPEC row 44) the whole table shifts
             // by one offset; the 1.8 m shot wants basically no hood (team), so 1.75 m is the stow angle (11.0 =
             // kReverseSoftLimit + kStowMarginDeg) and every tuned point moves -2.5 deg (best guess: verify per
-            // station). 3.75-4.75 m re-derived as a linear ramp from 3.5 m to fully extended at 5.0 m (untested).
+            // station). 3.75-4.75 m re-derived as a linear ramp from 3.5 m to fully extended (40.17) at 5.0 m
+            // (untested).
             addPointToDistanceToShooterAngle(1.75, 11.0);
             addPointToDistanceToShooterAngle(2.0, 12.5);
             addPointToDistanceToShooterAngle(2.25, 14.0);
@@ -338,11 +340,11 @@ public final class Constants {
             addPointToDistanceToShooterAngle(3.0, 21.5);
             addPointToDistanceToShooterAngle(3.25, 22.75);
             addPointToDistanceToShooterAngle(3.5, 24.0);
-            addPointToDistanceToShooterAngle(3.75, 26.9);
-            addPointToDistanceToShooterAngle(4.0, 29.8);
-            addPointToDistanceToShooterAngle(4.25, 32.7);
-            addPointToDistanceToShooterAngle(4.5, 35.7);
-            addPointToDistanceToShooterAngle(4.75, 38.6);
+            addPointToDistanceToShooterAngle(3.75, 26.7);
+            addPointToDistanceToShooterAngle(4.0, 29.4);
+            addPointToDistanceToShooterAngle(4.25, 32.1);
+            addPointToDistanceToShooterAngle(4.5, 34.8);
+            addPointToDistanceToShooterAngle(4.75, 37.5);
             addPointToDistanceToShooterAngle(5, ShooterHoodConstants.kForwardSoftLimit.in(Degrees));
             // Beyond the max hub shot (aim tracking, auto, manual): fully extended (were 22.0 and 30.0)
             addPointToDistanceToShooterAngle(5.25, ShooterHoodConstants.kForwardSoftLimit.in(Degrees));

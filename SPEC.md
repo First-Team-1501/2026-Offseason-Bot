@@ -162,7 +162,7 @@ that raises the hood to its max angle, also in defense mode, and returns to norm
 | Toggle | Xbox Y (`actionDefenseToggle`, teleop); state `RobotStates.defenseMode`, dashboard `Defense Mode`, log `States/Defense`. Cleared when auto starts. Not mapped on the joysticks. |
 | Off in defense mode | Intake, Hopper, Feeder, Uptake, Shooter: every request becomes `NeutralOut` (`outputInhibited`, also applied each loop in `TalonFXSubsystem.periodic`). `actionIntake`, `actionAim`, `actionShoot`, `actionPurge`, `actionSetShot` are false, so there is no auto-aim heading control and no X-lock. |
 | Unchanged in defense mode | Drive, hood (stow, fully down in trench zones, zeroing), Limelight. The upper CANivore stays powered and read (software cannot power it off; the hood is on it). |
-| Hood-max hold | Xbox RB (`actionHoodMax`, teleop, also in defense mode): target `kForwardSoftLimit` (41.5 deg) replaces every teleop hood target while held (`ShooterHood.withMaxHold`); on release the running command's own target applies (aim angle while aiming, else rest angle). In a trench zone the hood stays fully down (team). |
+| Hood-max hold | Xbox RB (`actionHoodMax`, teleop, also in defense mode): target `kForwardSoftLimit` (40.17 deg) replaces every teleop hood target while held (`ShooterHood.withMaxHold`); on release the running command's own target applies (aim angle while aiming, else rest angle). In a trench zone the hood stays fully down (team). |
 | Shooting while held | not blocked: aim + shoot with RB held fires at the max angle. |
 
 ## 3. Software changes vs. 7457
@@ -218,6 +218,7 @@ that raises the hood to its max angle, also in defense mode, and returns to norm
 | 45 | Stow margin 2.0 -> 4.0 deg (stow 11.0 deg, hood counts as down below 9.0 deg): with the bottom-stop zero the hood rubbed at 2.0 (team, 2026-10-22; idle 700 RPM follower 1 stator 11.9 A vs 6.5 A in earlier runs, leader 17.6 vs 14.7 A). Before row 44 the boot zero left the real stow above the reading by an unknown amount | `Constants.java` |
 | 46 | Hood angle table -2.5 deg (team, 2026-10-23, best guess before retuning): the row 42 angles were tuned with the inconsistent boot zero; with the bottom-stop zero the 1.8 m shot wants basically no hood, so 1.75 m = stow (13.5 -> 11.0) and 2.0-3.5 m move -2.5 (15.0 / 16.5 / 17.5 / 19.0 / 24.0 / 25.25 / 26.5 -> 12.5 / 14.0 / 15.0 / 16.5 / 21.5 / 22.75 / 24.0); 3.75-4.75 m re-derived as a linear ramp 26.9 / 29.8 / 32.7 / 35.7 / 38.6 to fully extended at 5.0 m (untested). RPM unchanged. Verify every station | `Constants.java` |
 | 47 | Hood top-of-travel search (team, 2026-10-23: `kForwardSoftLimit` 41.48 deg was measured in Tuner X with an unknown zero; a soft limit above the physical stop would drive the belt into the stop and skip it). `ShooterHood.findTop`: dashboard `ShooterHood/Find Top` (teleop, after the first-enable zero) drives up at +2 V with the 5 A zero limit, soft limits ignored, until load (4 A for 0.2 s) or 40.5 deg of travel, 6 s timeout; logs `ShooterHood/Top Result`, `Top Found (Deg)` (dashboard too, on `load` only), `Top Search Peak Amps`, and a console line; changes neither the zero nor the soft limit (set `kForwardSoftLimit` from the result by hand). "not zeroed" without a zero since the code start | `ShooterHood.java`, `Constants.java` |
+| 48 | `kForwardSoftLimit` 0.115234 -> 0.111572 rot (41.48 -> 40.17 deg): top of travel measured by the team 2026-10-23 with the bottom-stop zero; the old value sat 1.3 deg above the physical stop (belt-skip risk). Hub table 5.0 m+ follows the constant; 3.75-4.75 m ramp re-derived 26.7 / 29.4 / 32.1 / 34.8 / 37.5 | `Constants.java` |
 
 Notes:
 
@@ -278,7 +279,7 @@ Notes:
    the table at the current distance; feeding needs at least 1000 RPM). When a shot scores, press
    `Shot Tuning/Record`: the log gets `Shot Tuning/Recorded Point` = [distance m, RPM, deg, forwarding] and the
    console a matching line. Distance is `Shot Tuning/Distance (m)` (robot center to hub center).
-8. Hood: zero with `actionZeroHood` (section 2.4); soft limits 7 deg to 41.5 deg (0.115234 mechanism rot, measured top of travel
+8. Hood: zero with `actionZeroHood` (section 2.4); soft limits 7 deg to 40.17 deg (0.111572 mechanism rot, measured top of travel
    on the 1501 hood). Hood angles depend on the hood resting on its bottom stop when robot code starts (or after
    zeroing). Interlock check (section 2.5): teleop enable -> hood at stow, flywheel may idle; zeroing ->
    `Shooter/Hood Interlock` true and flywheel unpowered, then stow; trench zone -> hood fully down, flywheel
