@@ -21,10 +21,13 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.math.filter.Debouncer.DebounceType;
 import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import org.supurdueper.lib.LoggedTunableNumber;
 import org.supurdueper.lib.subsystems.PositionSubsystem;
@@ -48,6 +51,13 @@ public class ShooterHood extends PositionSubsystem implements SupurdueperSubsyst
     private double zeroStartDeg;
     private double zeroStartSec;
     private String zeroResult = "none";
+    private final Debouncer topLoad = new Debouncer(ShooterHoodConstants.kZeroDetectTimeSec, DebounceType.kRising);
+    private double topStartDeg;
+    private double topStartSec;
+    private double topPeakAmps;
+    private String topResult = "none";
+    private static final String kFindTopKey = "ShooterHood/Find Top";
+    private static final String kTopFoundKey = "ShooterHood/Top Found (Deg)";
 
     /** Creates a new ShooterHood. */
     public ShooterHood() {
@@ -132,6 +142,75 @@ public class ShooterHood extends PositionSubsystem implements SupurdueperSubsyst
         DogLog.log("ShooterHood/Zero Result", interrupted ? "interrupted" : zeroResult);
         DogLog.log("ShooterHood/Zero Travel (Deg)", zeroStartDeg - getPosition().in(Degrees));
         DogLog.log("ShooterHood/Zeroed", zeroedSinceStart);
+    }
+
+    /**
+     * Measures the top of travel: drives up at the zero voltage (reversed) with the zero current limit, ignoring the
+     * soft limits, until load at the top stop or more than the full travel; logs the reading at the top
+     * (ShooterHood/Top Found (Deg), also on the dashboard) and changes neither the zero nor the soft limit. Does
+     * nothing (result "not zeroed") without a zero since the code start; the default command then returns the hood to
+     * rest. Trigger: dashboard "ShooterHood/Find Top" (reset when the command ends).
+     */
+    public Command findTop() {
+        return startRun(this::startFindTop, () -> {
+                    if (zeroedSinceStart) {
+                        motor.setControl(voltageRequest
+                                .withOutput(ShooterHoodConstants.kZeroVoltage.unaryMinus())
+                                .withIgnoreSoftwareLimits(true));
+                    }
+                })
+                .until(this::onTopStop)
+                .withTimeout(ShooterHoodConstants.kTopSearchTimeoutSec)
+                .finallyDo(this::endFindTop)
+                .withName("ShooterHood/findTop");
+    }
+
+    private void startFindTop() {
+        topStartDeg = getPosition().in(Degrees);
+        topStartSec = Timer.getFPGATimestamp();
+        topPeakAmps = 0;
+        topLoad.calculate(false);
+        topResult = zeroedSinceStart ? "timeout" : "not zeroed";
+        if (!zeroedSinceStart) return;
+        motor.getConfigurator()
+                .apply(
+                        new CurrentLimitsConfigs()
+                                .withStatorCurrentLimit(ShooterHoodConstants.kZeroStatorLimitAmps)
+                                .withStatorCurrentLimitEnable(true),
+                        0.05);
+    }
+
+    private boolean onTopStop() {
+        if (topResult.equals("not zeroed")) return true;
+        boolean blanked = Timer.getFPGATimestamp() - topStartSec < ShooterHoodConstants.kZeroBlankingSec;
+        double statorAmps = Math.abs(motor.getStatorCurrent().getValueAsDouble());
+        if (!blanked) topPeakAmps = Math.max(topPeakAmps, statorAmps);
+        if (topLoad.calculate(!blanked && statorAmps > ShooterHoodConstants.kZeroDetectAmps)) {
+            topResult = "load";
+            return true;
+        }
+        if (getPosition().in(Degrees) - topStartDeg > ShooterHoodConstants.kZeroMaxTravelDeg) {
+            topResult = "travel";
+            return true;
+        }
+        return false;
+    }
+
+    private void endFindTop(boolean interrupted) {
+        motor.setControl(voltageRequest.withOutput(0).withIgnoreSoftwareLimits(false));
+        motor.getConfigurator().apply(config.CurrentLimits, 0.05);
+        double topDeg = getPosition().in(Degrees);
+        String result = interrupted ? "interrupted" : topResult;
+        if (result.equals("load")) {
+            SmartDashboard.putNumber(kTopFoundKey, topDeg);
+        }
+        SmartDashboard.putBoolean(kFindTopKey, false);
+        DogLog.log("ShooterHood/Top Result", result);
+        DogLog.log("ShooterHood/Top Found (Deg)", topDeg);
+        DogLog.log("ShooterHood/Top Search Peak Amps", topPeakAmps);
+        DataLogManager.log(String.format(
+                "Hood top search: %s at %.2f deg (soft limit %.2f), peak %.1f A",
+                result, topDeg, ShooterHoodConstants.kForwardSoftLimit.in(Degrees), topPeakAmps));
     }
 
     /**
@@ -296,6 +375,10 @@ public class ShooterHood extends PositionSubsystem implements SupurdueperSubsyst
                 .onFalse(goToPosition(() -> withMaxHold(restAngle())));
         RobotStates.auto_drop_intake.onTrue(releaseIntake());
         RobotStates.actionZeroHood.onTrue(zero());
+        SmartDashboard.putBoolean(kFindTopKey, false);
+        new Trigger(() -> SmartDashboard.getBoolean(kFindTopKey, false))
+                .and(RobotStates.teleop)
+                .onTrue(findTop());
         RobotStates.testController.leftStickY.whileTrue(
                 runEnd(() -> runVoltage(Volts.of(6 * RobotStates.testController.getDriveFwdPositive())), this::stop));
         // RobotStates.actionTestA.onTrue(run(() -> stop()).withName("stop"));

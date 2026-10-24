@@ -139,6 +139,8 @@ public final class Constants {
         public static final double kZeroBlankingSec = 0.25;
         public static final double kZeroMaxTravelDeg = 40.5;
         public static final double kZeroTimeoutSec = 4.0;
+        // ShooterHood.findTop: full travel upward at the zero voltage (about 2 s expected) plus margin
+        public static final double kTopSearchTimeoutSec = 6.0;
         public static final CurrentLimitsConfigs kCurrentLimit =
                 new CurrentLimitsConfigs().withStatorCurrentLimit(50).withStatorCurrentLimitEnable(true);
         public static final AngularVelocity profileV = RotationsPerSecond.of(0);
