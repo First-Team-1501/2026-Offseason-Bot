@@ -330,20 +330,22 @@ public final class Constants {
             // FRC_20261024_013741 (team): 1.92 m at 15.3 deg good; 2.17 m at 16.9 needs more; 2.52 m at 18.5 needs a
             // lot more; above 2.5 m assumed to need more too (team). 2.25 m 17.5 -> 19.5, 2.5 m 18.5 -> 22.0, 2.75-3.5
             // m +2.5 to +4.5 over the previous values with a smooth rise, 3.75-4.75 m a linear ramp to fully extended
-            // (40.17) at 5.0 m. Untested beyond 2.52 m.
-            addPointToDistanceToShooterAngle(1.75, 14.5);
-            addPointToDistanceToShooterAngle(2.0, 16.0);
-            addPointToDistanceToShooterAngle(2.25, 19.5);
-            addPointToDistanceToShooterAngle(2.5, 22.0);
-            addPointToDistanceToShooterAngle(2.75, 24.5);
-            addPointToDistanceToShooterAngle(3.0, 27.5);
-            addPointToDistanceToShooterAngle(3.25, 29.25);
-            addPointToDistanceToShooterAngle(3.5, 31.0);
-            addPointToDistanceToShooterAngle(3.75, 32.5);
-            addPointToDistanceToShooterAngle(4.0, 34.1);
-            addPointToDistanceToShooterAngle(4.25, 35.6);
-            addPointToDistanceToShooterAngle(4.5, 37.1);
-            addPointToDistanceToShooterAngle(4.75, 38.6);
+            // (40.17) at 5.0 m. Then FRC_20261024_015134 (team): 1.82 m at 14.6 a little more; 2.33 m at 20.2 maybe a
+            // bit more; 3.00 m at 27.3 a little more: 1.75-3.5 m +0.75 to +1.0, 3.75-4.75 m re-ramped. 3.5 m+ cannot be
+            // tested in the shop (team).
+            addPointToDistanceToShooterAngle(1.75, 15.5);
+            addPointToDistanceToShooterAngle(2.0, 17.0);
+            addPointToDistanceToShooterAngle(2.25, 20.25);
+            addPointToDistanceToShooterAngle(2.5, 22.75);
+            addPointToDistanceToShooterAngle(2.75, 25.5);
+            addPointToDistanceToShooterAngle(3.0, 28.5);
+            addPointToDistanceToShooterAngle(3.25, 30.25);
+            addPointToDistanceToShooterAngle(3.5, 32.0);
+            addPointToDistanceToShooterAngle(3.75, 33.4);
+            addPointToDistanceToShooterAngle(4.0, 34.7);
+            addPointToDistanceToShooterAngle(4.25, 36.1);
+            addPointToDistanceToShooterAngle(4.5, 37.4);
+            addPointToDistanceToShooterAngle(4.75, 38.8);
             addPointToDistanceToShooterAngle(5, ShooterHoodConstants.kForwardSoftLimit.in(Degrees));
             // Beyond the max hub shot (aim tracking, auto, manual): fully extended (were 22.0 and 30.0)
             addPointToDistanceToShooterAngle(5.25, ShooterHoodConstants.kForwardSoftLimit.in(Degrees));
@@ -353,12 +355,14 @@ public final class Constants {
             // 2.0 m -1.5% (1.70 and 2.0 m a little long), then 1.75 m -1%, 2.0 m -1.5%, 2.25 m -3% (2.28 m: about 30%
             // of the balls long), 2.5 m -1.5% (2.48 m a little long)
             // 2026-10-23, FRC_20261024_013741 (team): 1.92, 2.17 m more power (+3%), 2.52 m more juice (+4%); 2.75 m
-            // raised to stay above 2.5 m. Table values are still multiplied by kLutRpmScale 1.21.
-            addPointToDistanceToShooterRPM(1.75, 1305);
-            addPointToDistanceToShooterRPM(2.0, 1324);
-            addPointToDistanceToShooterRPM(2.25, 1370);
-            addPointToDistanceToShooterRPM(2.5, 1451);
-            addPointToDistanceToShooterRPM(2.75, 1465);
+            // raised to stay above 2.5 m. Then FRC_20261024_015134 (team): 1.82 m a little more (+2%), 2.33 m more
+            // (+2.5%), 3.00 m good (1475 kept); 2.5 and 2.75 m held at the 3.0 m value. Table values are still
+            // multiplied by kLutRpmScale 1.21.
+            addPointToDistanceToShooterRPM(1.75, 1331);
+            addPointToDistanceToShooterRPM(2.0, 1357);
+            addPointToDistanceToShooterRPM(2.25, 1411);
+            addPointToDistanceToShooterRPM(2.5, 1475);
+            addPointToDistanceToShooterRPM(2.75, 1475);
             addPointToDistanceToShooterRPM(3.0, 1475);
             addPointToDistanceToShooterRPM(3.25, 1550);
             addPointToDistanceToShooterRPM(3.5, 1675);
