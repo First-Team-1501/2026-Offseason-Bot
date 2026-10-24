@@ -325,27 +325,25 @@ public final class Constants {
         }
 
         static {
-            // 2026-10-23: the 2026-10-22 angles (13.5 / 15.0 / 16.5 / 17.5 / 19.0 / 24.0 / 25.25 / 26.5, then a ramp to
-            // fully extended at 5.0 m) were tuned with an inconsistent boot zero, so the whole table shifts by one
-            // offset. First guess -2.5 (1.8 m "basically no hood"): on the robot 1.8 m needed more at 11.2 and again
-            // at 12.7 deg. The old soft limit sat 1.3 deg above the top stop, so belt skips at the top left the
-            // readings above the real angle: the shift goes up. Now old + 1.0 (1.75 m 14.5; verify per station);
-            // 3.75-4.75 m a linear ramp from 3.5 m to fully extended (40.17) at 5.0 m (untested).
+            // 2026-10-23: the 2026-10-22 angles were tuned with an inconsistent boot zero (belt skips at the top under
+            // the old soft limit, which sat 1.3 deg above the stop). On the robot with the bottom-stop zero, from
+            // FRC_20261024_013741 (team): 1.92 m at 15.3 deg good; 2.17 m at 16.9 needs more; 2.52 m at 18.5 needs a
+            // lot more; above 2.5 m assumed to need more too (team). 2.25 m 17.5 -> 19.5, 2.5 m 18.5 -> 22.0, 2.75-3.5
+            // m +2.5 to +4.5 over the previous values with a smooth rise, 3.75-4.75 m a linear ramp to fully extended
+            // (40.17) at 5.0 m. Untested beyond 2.52 m.
             addPointToDistanceToShooterAngle(1.75, 14.5);
             addPointToDistanceToShooterAngle(2.0, 16.0);
-            addPointToDistanceToShooterAngle(2.25, 17.5);
-            // Team, 2026-10-22 (before the shift): 2.5 m 17.5 -> 16.5 -> 17.5; 3.0 m 21.0 -> 22.5 -> 24.0 (still
-            // needs more), 3.5 m 21.0 -> 22.5 -> 26.5 (needs a lot more), 5.0 m (max hub shot) fully extended
-            addPointToDistanceToShooterAngle(2.5, 18.5);
-            addPointToDistanceToShooterAngle(2.75, 20.0);
-            addPointToDistanceToShooterAngle(3.0, 25.0);
-            addPointToDistanceToShooterAngle(3.25, 26.25);
-            addPointToDistanceToShooterAngle(3.5, 27.5);
-            addPointToDistanceToShooterAngle(3.75, 29.6);
-            addPointToDistanceToShooterAngle(4.0, 31.7);
-            addPointToDistanceToShooterAngle(4.25, 33.8);
-            addPointToDistanceToShooterAngle(4.5, 35.9);
-            addPointToDistanceToShooterAngle(4.75, 38.1);
+            addPointToDistanceToShooterAngle(2.25, 19.5);
+            addPointToDistanceToShooterAngle(2.5, 22.0);
+            addPointToDistanceToShooterAngle(2.75, 24.5);
+            addPointToDistanceToShooterAngle(3.0, 27.5);
+            addPointToDistanceToShooterAngle(3.25, 29.25);
+            addPointToDistanceToShooterAngle(3.5, 31.0);
+            addPointToDistanceToShooterAngle(3.75, 32.5);
+            addPointToDistanceToShooterAngle(4.0, 34.1);
+            addPointToDistanceToShooterAngle(4.25, 35.6);
+            addPointToDistanceToShooterAngle(4.5, 37.1);
+            addPointToDistanceToShooterAngle(4.75, 38.6);
             addPointToDistanceToShooterAngle(5, ShooterHoodConstants.kForwardSoftLimit.in(Degrees));
             // Beyond the max hub shot (aim tracking, auto, manual): fully extended (were 22.0 and 30.0)
             addPointToDistanceToShooterAngle(5.25, ShooterHoodConstants.kForwardSoftLimit.in(Degrees));
@@ -354,11 +352,13 @@ public final class Constants {
             // Team, 2026-10-22, at x1.21 (7457 values 1340, 1365, 1390, 1415): 1.75-2.25 m -3% (2.0 m long), 1.75 and
             // 2.0 m -1.5% (1.70 and 2.0 m a little long), then 1.75 m -1%, 2.0 m -1.5%, 2.25 m -3% (2.28 m: about 30%
             // of the balls long), 2.5 m -1.5% (2.48 m a little long)
-            addPointToDistanceToShooterRPM(1.75, 1267);
-            addPointToDistanceToShooterRPM(2.0, 1285);
-            addPointToDistanceToShooterRPM(2.25, 1330);
-            addPointToDistanceToShooterRPM(2.5, 1395);
-            addPointToDistanceToShooterRPM(2.75, 1440);
+            // 2026-10-23, FRC_20261024_013741 (team): 1.92, 2.17 m more power (+3%), 2.52 m more juice (+4%); 2.75 m
+            // raised to stay above 2.5 m. Table values are still multiplied by kLutRpmScale 1.21.
+            addPointToDistanceToShooterRPM(1.75, 1305);
+            addPointToDistanceToShooterRPM(2.0, 1324);
+            addPointToDistanceToShooterRPM(2.25, 1370);
+            addPointToDistanceToShooterRPM(2.5, 1451);
+            addPointToDistanceToShooterRPM(2.75, 1465);
             addPointToDistanceToShooterRPM(3.0, 1475);
             addPointToDistanceToShooterRPM(3.25, 1550);
             addPointToDistanceToShooterRPM(3.5, 1675);
