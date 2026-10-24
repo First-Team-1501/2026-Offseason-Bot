@@ -325,29 +325,27 @@ public final class Constants {
         }
 
         static {
-            // 2026-10-23: the 2026-10-22 angles were tuned with an inconsistent boot zero (real angle above the
-            // reading by an unknown, varying amount). With the bottom-stop zero (SPEC row 44) the whole table shifts
-            // by one offset; the 1.8 m shot wants basically no hood (team), so 1.75 m went to the stow angle (11.0)
-            // and every tuned point moved -2.5 deg (best guess: verify per station). Then (team, 2026-10-23, on the
-            // robot): 1.8 m needed a little hood: 1.75 m 11.0 -> 12.5 (stow is 11.5), 2.0 m 12.5 -> 13.5 to keep the
-            // table rising (2.0 m not yet tested). 3.75-4.75 m re-derived as a linear ramp from 3.5 m to fully extended
-            // (40.17) at 5.0 m
-            // (untested).
-            addPointToDistanceToShooterAngle(1.75, 12.5);
-            addPointToDistanceToShooterAngle(2.0, 13.5);
-            addPointToDistanceToShooterAngle(2.25, 14.0);
-            // Team, 2026-10-22 (before the -2.5 shift): 2.5 m 17.5 -> 16.5 -> 17.5; 3.0 m 21.0 -> 22.5 -> 24.0 (still
+            // 2026-10-23: the 2026-10-22 angles (13.5 / 15.0 / 16.5 / 17.5 / 19.0 / 24.0 / 25.25 / 26.5, then a ramp to
+            // fully extended at 5.0 m) were tuned with an inconsistent boot zero, so the whole table shifts by one
+            // offset. First guess -2.5 (1.8 m "basically no hood"): on the robot 1.8 m needed more at 11.2 and again
+            // at 12.7 deg. The old soft limit sat 1.3 deg above the top stop, so belt skips at the top left the
+            // readings above the real angle: the shift goes up. Now old + 1.0 (1.75 m 14.5; verify per station);
+            // 3.75-4.75 m a linear ramp from 3.5 m to fully extended (40.17) at 5.0 m (untested).
+            addPointToDistanceToShooterAngle(1.75, 14.5);
+            addPointToDistanceToShooterAngle(2.0, 16.0);
+            addPointToDistanceToShooterAngle(2.25, 17.5);
+            // Team, 2026-10-22 (before the shift): 2.5 m 17.5 -> 16.5 -> 17.5; 3.0 m 21.0 -> 22.5 -> 24.0 (still
             // needs more), 3.5 m 21.0 -> 22.5 -> 26.5 (needs a lot more), 5.0 m (max hub shot) fully extended
-            addPointToDistanceToShooterAngle(2.5, 15.0);
-            addPointToDistanceToShooterAngle(2.75, 16.5);
-            addPointToDistanceToShooterAngle(3.0, 21.5);
-            addPointToDistanceToShooterAngle(3.25, 22.75);
-            addPointToDistanceToShooterAngle(3.5, 24.0);
-            addPointToDistanceToShooterAngle(3.75, 26.7);
-            addPointToDistanceToShooterAngle(4.0, 29.4);
-            addPointToDistanceToShooterAngle(4.25, 32.1);
-            addPointToDistanceToShooterAngle(4.5, 34.8);
-            addPointToDistanceToShooterAngle(4.75, 37.5);
+            addPointToDistanceToShooterAngle(2.5, 18.5);
+            addPointToDistanceToShooterAngle(2.75, 20.0);
+            addPointToDistanceToShooterAngle(3.0, 25.0);
+            addPointToDistanceToShooterAngle(3.25, 26.25);
+            addPointToDistanceToShooterAngle(3.5, 27.5);
+            addPointToDistanceToShooterAngle(3.75, 29.6);
+            addPointToDistanceToShooterAngle(4.0, 31.7);
+            addPointToDistanceToShooterAngle(4.25, 33.8);
+            addPointToDistanceToShooterAngle(4.5, 35.9);
+            addPointToDistanceToShooterAngle(4.75, 38.1);
             addPointToDistanceToShooterAngle(5, ShooterHoodConstants.kForwardSoftLimit.in(Degrees));
             // Beyond the max hub shot (aim tracking, auto, manual): fully extended (were 22.0 and 30.0)
             addPointToDistanceToShooterAngle(5.25, ShooterHoodConstants.kForwardSoftLimit.in(Degrees));
