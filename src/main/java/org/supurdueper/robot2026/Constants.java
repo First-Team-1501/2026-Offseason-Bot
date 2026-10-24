@@ -118,8 +118,9 @@ public final class Constants {
         // (ShooterHood.isDown). Adjustable live in tuning mode as "ShooterHood/Stow Margin (Deg)", clamped below.
         // 1.5 -> 2.0: the hood still hit occasionally while idling (team, 2026-10-21). 2.0 -> 4.0: with the zero
         // against the bottom stop (row 44 of SPEC section 3) the hood rubs at 2.0 (team, 2026-10-22; idle follower
-        // current 11.9 A vs 6.5 A); earlier the boot zero left the real stow higher than the reading
-        public static final double kStowMarginDeg = 4.0;
+        // current 11.9 A vs 6.5 A); earlier the boot zero left the real stow higher than the reading. 4.0 -> 4.5: team,
+        // 2026-10-23, "just a little higher still"
+        public static final double kStowMarginDeg = 4.5;
         public static final double kMinStowMarginDeg = 0.5;
         public static final double kMaxStowMarginDeg = 5.0;
         public static final Voltage kPeakForwardVoltage = Volts.of(12);
@@ -326,12 +327,14 @@ public final class Constants {
         static {
             // 2026-10-23: the 2026-10-22 angles were tuned with an inconsistent boot zero (real angle above the
             // reading by an unknown, varying amount). With the bottom-stop zero (SPEC row 44) the whole table shifts
-            // by one offset; the 1.8 m shot wants basically no hood (team), so 1.75 m is the stow angle (11.0 =
-            // kReverseSoftLimit + kStowMarginDeg) and every tuned point moves -2.5 deg (best guess: verify per
-            // station). 3.75-4.75 m re-derived as a linear ramp from 3.5 m to fully extended (40.17) at 5.0 m
+            // by one offset; the 1.8 m shot wants basically no hood (team), so 1.75 m went to the stow angle (11.0)
+            // and every tuned point moved -2.5 deg (best guess: verify per station). Then (team, 2026-10-23, on the
+            // robot): 1.8 m needed a little hood: 1.75 m 11.0 -> 12.5 (stow is 11.5), 2.0 m 12.5 -> 13.5 to keep the
+            // table rising (2.0 m not yet tested). 3.75-4.75 m re-derived as a linear ramp from 3.5 m to fully extended
+            // (40.17) at 5.0 m
             // (untested).
-            addPointToDistanceToShooterAngle(1.75, 11.0);
-            addPointToDistanceToShooterAngle(2.0, 12.5);
+            addPointToDistanceToShooterAngle(1.75, 12.5);
+            addPointToDistanceToShooterAngle(2.0, 13.5);
             addPointToDistanceToShooterAngle(2.25, 14.0);
             // Team, 2026-10-22 (before the -2.5 shift): 2.5 m 17.5 -> 16.5 -> 17.5; 3.0 m 21.0 -> 22.5 -> 24.0 (still
             // needs more), 3.5 m 21.0 -> 22.5 -> 26.5 (needs a lot more), 5.0 m (max hub shot) fully extended
