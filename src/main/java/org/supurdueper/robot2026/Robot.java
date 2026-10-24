@@ -169,6 +169,7 @@ public class Robot extends SupurdueperRobot {
         Vision.setEnabled();
         Vision.setAprilTagFilter();
         Vision.updateIMUMode();
+        RobotStates.clearAutoFlags();
         RobotContainer.getShooterHood().zeroIfNeeded();
         autoChooser.selectedCommandScheduler().schedule();
     }
@@ -182,6 +183,7 @@ public class Robot extends SupurdueperRobot {
     @Override
     public void teleopInit() {
         DataLogManager.log(kBuildSummary);
+        RobotStates.clearAutoFlags();
         resetCommandsAndButtons();
         Vision.setEnabled();
         Vision.setAprilTagFilter();

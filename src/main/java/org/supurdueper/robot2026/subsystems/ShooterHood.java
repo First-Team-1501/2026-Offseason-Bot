@@ -27,6 +27,7 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import org.supurdueper.lib.LoggedTunableNumber;
@@ -48,6 +49,9 @@ public class ShooterHood extends PositionSubsystem implements SupurdueperSubsyst
     private PositionVoltage noMagicMotion = new PositionVoltage(0).withEnableFOC(false);
     private final Debouncer zeroLoad = new Debouncer(ShooterHoodConstants.kZeroDetectTimeSec, DebounceType.kRising);
     private boolean zeroedSinceStart = false;
+    // While the zero runs, setPosition from other hood commands is ignored (the zero does not require the subsystem,
+    // so the auto routine's and the driver's hood commands no longer cancel it; they take over when it ends)
+    private boolean zeroing = false;
     private double zeroStartDeg;
     private double zeroStartSec;
     private String zeroResult = "none";
@@ -75,11 +79,13 @@ public class ShooterHood extends PositionSubsystem implements SupurdueperSubsyst
 
     @Override
     protected void setPosition(Angle position) {
+        if (zeroing) return;
         motor.setControl(noMagicMotion.withPosition(position));
     }
 
     @Override
     protected void setPosition(double position) {
+        if (zeroing) return;
         motor.setControl(noMagicMotion.withPosition(position));
     }
 
@@ -94,7 +100,9 @@ public class ShooterHood extends PositionSubsystem implements SupurdueperSubsyst
      * left unchanged. Log: ShooterHood/Zero Result, ShooterHood/Zeroed.
      */
     public Command zero() {
-        return startRun(
+        // No subsystem requirement: other hood commands must not interrupt it (they were cancelling it within one or
+        // two loops in most autos and on the driver's first aim press); setPosition is gated by `zeroing` instead
+        return Commands.startRun(
                         this::startZero,
                         () -> motor.setControl(voltageRequest
                                 .withOutput(ShooterHoodConstants.kZeroVoltage)
@@ -102,10 +110,12 @@ public class ShooterHood extends PositionSubsystem implements SupurdueperSubsyst
                 .until(this::onBottomStop)
                 .withTimeout(ShooterHoodConstants.kZeroTimeoutSec)
                 .finallyDo(this::endZero)
+                .unless(() -> zeroing)
                 .withName("ShooterHood/zero");
     }
 
     private void startZero() {
+        zeroing = true;
         zeroStartDeg = getPosition().in(Degrees);
         zeroStartSec = Timer.getFPGATimestamp();
         zeroLoad.calculate(false);
@@ -133,6 +143,7 @@ public class ShooterHood extends PositionSubsystem implements SupurdueperSubsyst
     }
 
     private void endZero(boolean interrupted) {
+        zeroing = false;
         motor.setControl(voltageRequest.withOutput(0).withIgnoreSoftwareLimits(false));
         motor.getConfigurator().apply(config.CurrentLimits, 0.05);
         if (!interrupted && !zeroResult.equals("timeout")) {
@@ -376,7 +387,7 @@ public class ShooterHood extends PositionSubsystem implements SupurdueperSubsyst
         RobotStates.auto_drop_intake.onTrue(releaseIntake());
         RobotStates.actionZeroHood.onTrue(zero());
         SmartDashboard.putBoolean(kFindTopKey, false);
-        new Trigger(() -> SmartDashboard.getBoolean(kFindTopKey, false))
+        new Trigger(() -> SmartDashboard.getBoolean(kFindTopKey, false) && !DriverStation.isFMSAttached())
                 .and(RobotStates.teleop)
                 .onTrue(findTop());
         RobotStates.testController.leftStickY.whileTrue(

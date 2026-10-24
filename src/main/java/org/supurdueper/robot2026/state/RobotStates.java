@@ -48,6 +48,20 @@ public final class RobotStates {
     @Setter
     private static boolean autoDropHood = false;
 
+    /**
+     * The auto flags are static and the routines leave some set (autoDropIntake/autoDropHood always, aim/shoot when
+     * auto ends mid-volley); stale flags fire their auto_* bindings at the start of the next auto in the same code run.
+     * Called at the start of auto and teleop.
+     */
+    public static void clearAutoFlags() {
+        autoAim = false;
+        autoIntake = false;
+        autoShoot = false;
+        autoDropIntake = false;
+        autoRev = false;
+        autoDropHood = false;
+    }
+
     // Defense mode (driver toggle, teleop; cleared when auto starts): intake, hopper, feeder, uptake and shooter
     // neutral and their actions off; drive and hood (stow, trench, max-angle hold) keep working
     @Getter

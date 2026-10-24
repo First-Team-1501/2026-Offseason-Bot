@@ -124,7 +124,8 @@ public final class ShotCalculator {
         }
     }
 
+    /** Never on a field (FMS attached): a switch left on would override every match shot. */
     private static boolean isManual() {
-        return SmartDashboard.getBoolean(kManualKey, false);
+        return SmartDashboard.getBoolean(kManualKey, false) && !DriverStation.isFMSAttached();
     }
 }
